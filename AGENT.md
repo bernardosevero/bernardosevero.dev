@@ -1,56 +1,44 @@
-# Navfolio 主站 Agent 指南
+# Navfolio Main Site Agent Guide
 
-本仓库是可运行的 Astro starter，也是 Navfolio 生态的组合根。它负责站点配置、内容
-schema、host adapter、尚未抽取的 UI、构建部署，以及各 `@navfolio/*` 包的集成。
-当前产品分支是 `v1`。
+This repository is a runnable Astro starter and the composition root of the Navfolio ecosystem. It is responsible for site configuration, content schemas, the host adapter, not-yet-extracted UI, build and deployment, and the integration of the various `@navfolio/*` packages. The current product branch is `v1`.
 
-## 开始工作
+## Getting Started
 
-1. 从多仓库工作区进入时，先读 `../AGENT.md`。
-2. 读 `../.agents/context/ecosystem-map.md`，确认能力归属和依赖方向。
-3. 读本仓库 `.agents/context/current-design.md` 与
-   `.agents/context/current-progress.md`。
-4. 跨仓库或公共契约变更遵循
-   `../.agents/workflows/cross-repository-change.md`。
-5. 以当前源码、`package.json`、`bun.lock` 和 workflow 为准，不从旧 RFC 推断现状。
+1. When entering from the monorepo workspace, first read `../AGENT.md`.
+2. Read `../.agents/context/ecosystem-map.md` to confirm capability ownership and dependency direction.
+3. Read this repository's `.agents/context/current-design.md` and
+   `.agents/context/current-progress.md`.
+4. Cross-repository or public-contract changes follow
+   `../.agents/workflows/cross-repository-change.md`.
+5. Treat the current source code, `package.json`, `bun.lock`, and workflows as authoritative; do not infer the current state from old RFCs.
 
-上层工作区目前包含全部 15 个本地仓库，包括 `core`、`theme-default` 和
-`page-media`。但本仓库通过 GitHub spec 安装依赖，同级 working tree 不会自动参与
-构建；上游变更仍需先推送，再刷新下游 lockfile。
+The upper-level workspace currently contains all 15 local repositories, including `core`, `theme-default`, and `page-media`. However, this repository installs dependencies via GitHub specs, so sibling working trees are not automatically part of the build; upstream changes still need to be pushed first, then the downstream lockfile refreshed.
 
-## 当前边界
+## Current Boundaries
 
-- `navfolio.config.ts` 显式启用 Projects、Vibe、Media、Pages marker 和 Markdown
-  preset。
-- `src/config/site.toml` 管理用户可编辑的站点、主题、字体、页面文案、导航、搜索、
-  评论和首页配置。
-- `src/content.config.ts` 仍集中拥有 Astro collection schemas，并按 module 状态
-  条件注册 Projects、Vibe、Media。
-- Projects UI 仍在 `src/modules/routes/**`；Vibe 与 Media 使用 package-owned
-  routes。
-- `src/modules/page-runtime.ts` 是 package-owned route 使用的 host adapter。
-- `@navfolio/core` 已同时提供 i18n 与 theme manifest contracts；它不依赖具体主题。
-- `@navfolio/theme-default` 提供已抽取的默认主题组件和样式；其余 UI 与兼容 wrapper
-  仍属于主站。
-- `@navfolio/plugin-markdown` 配置编译管线；`@navfolio/mdx-components` 提供显式
-  import 的内容组件。
-- `src/docs` 是 `astro-navfolio-docs` 的 submodule，不是普通主站源码目录。
-- Friend Circle 已接入部署；WeRead 仍没有主站 consumer。
+- `navfolio.config.ts` explicitly enables Projects, Vibe, Media, the Pages marker, and the Markdown preset.
+- `src/config/site.toml` manages the user-editable site, theme, font, page copy, navigation, search, comment, and homepage configuration.
+- `src/content.config.ts` still centrally owns the Astro collection schemas and conditionally registers Projects, Vibe, and Media based on module status.
+- Projects UI still lives in `src/modules/routes/**`; Vibe and Media use package-owned routes.
+- `src/modules/page-runtime.ts` is the host adapter used by package-owned routes.
+- `@navfolio/core` already provides both the i18n and theme manifest contracts; it does not depend on a specific theme.
+- `@navfolio/theme-default` provides the extracted default theme components and styles; the remaining UI and compatibility wrappers still belong to the main site.
+- `@navfolio/plugin-markdown` configures the compilation pipeline; `@navfolio/mdx-components` provides the explicitly imported content components.
+- `src/docs` is the `astro-navfolio-docs` submodule, not an ordinary main-site source directory.
+- Friend Circle is wired into deployment; WeRead still has no main-site consumer.
 
-## 修改规则
+## Modification Rules
 
-- 行为应改在真正的 owner 仓库，不要因为主站是组合根就把逻辑写回主站。
-- 页面模块变更同时检查 route、collection、navigation、scaffold、i18n 与
-  `virtual:navfolio/page-runtime`。
-- 修改 docs 时先提交并推送独立 docs 仓库，再更新主站 submodule 指针。
-- 保持 starter/docs 两种内容模式可构建，保持 calm editorial 视觉、可访问性、响应式
-  行为和无 JavaScript 的基本可读性。
-- 不提交 secret、依赖缓存、临时构建产物或未经明确授权的个人数据快照。
-- 保留用户无关改动，不回滚或覆盖任务范围外的工作。
+- Behavior changes should be made in the true owner repository; do not write logic back into the main site just because it is the composition root.
+- Page-module changes should also check route, collection, navigation, scaffold, i18n, and `virtual:navfolio/page-runtime`.
+- When modifying docs, first commit and push to the separate docs repository, then update the main site's submodule pointer.
+- Keep both the starter and docs content modes buildable, and keep the calm editorial visuals, accessibility, responsive behavior, and basic no-JavaScript readability.
+- Do not commit secrets, dependency caches, temporary build artifacts, or personal data snapshots without explicit authorization.
+- Preserve changes unrelated to the user's task; do not roll back or overwrite work outside the task scope.
 
-## 验证
+## Verification
 
-先运行最接近变更的测试，再按影响范围执行：
+First run the tests closest to the change, then run according to impact scope:
 
 ```bash
 bun run format:check
@@ -58,13 +46,11 @@ bun run build
 bun run docs:build
 ```
 
-可见 UI、路由、导航、样式或 hydration 改动还要进行浏览器检查。
+Visible UI, routing, navigation, style, or hydration changes also require a browser check.
 
-## 维护本仓库 Agent 记忆
+## Maintaining This Repository's Agent Memory
 
-- 架构/所有权变化时更新 `.agents/context/current-design.md`。
-- 能力接入、撤销或过渡状态变化时更新
-  `.agents/context/current-progress.md`。
-- 区分“已落地、过渡中、未接入”；只有源码、manifest、lockfile 或 workflow 有证据
-  才能标为已落地。
-- 历史实施计划保留在 Git/issue/PR，不把已完成清单继续当成当前工作记忆。
+- Update `.agents/context/current-design.md` when architecture or ownership changes.
+- Update `.agents/context/current-progress.md` when capability onboarding, rollback, or transition state changes.
+- Distinguish "landed, in transition, not yet integrated"; only mark something as landed when the source code, manifests, lockfiles, or workflows provide evidence.
+- Historical implementation plans live in Git/issues/PRs; do not keep a list of completed items as current working memory.

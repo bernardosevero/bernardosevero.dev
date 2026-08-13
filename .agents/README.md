@@ -1,19 +1,18 @@
-# Navfolio 主站 Agent 工作区
+# Navfolio Main Site Agent Workspace
 
-这里仅保存 `astro-navfolio` 自己的当前工作记忆。跨仓库所有权、依赖图和变更顺序由
-上层 `../../.agents/` 维护，避免两套生态地图漂移。
+Only `astro-navfolio`'s own current working memory is kept here. Cross-repository ownership, dependency graph, and change ordering are maintained by the upper-level `../../.agents/`, to avoid two ecosystem maps drifting apart.
 
-读取顺序：
+Reading order:
 
 1. `../AGENT.md`
 2. `context/current-design.md`
 3. `context/current-progress.md`
-4. 跨仓库任务再读上层 `../../.agents/context/ecosystem-map.md` 与对应 workflow
+4. For cross-repository tasks, additionally read the upper-level `../../.agents/context/ecosystem-map.md` and the corresponding workflows
 
-维护规则：
+Maintenance rules:
 
-- `current-design.md` 只记录当前产品形态和真实实现边界。
-- `current-progress.md` 只记录已落地、过渡中、未接入状态，不保存历史任务清单。
-- 当前源码、manifest、lockfile 和 workflow 高于这些文档；发现漂移就同步修正。
-- 不保存 secret、生成数据、缓存、构建产物或已完成的大型计划。
-- docs 内容属于 `src/docs` submodule，按上层跨仓库 workflow 操作。
+- `current-design.md` only records the current product shape and the real implementation boundary.
+- `current-progress.md` only records landed, in-transition, and not-yet-integrated states; it does not keep a list of historical tasks.
+- Current source code, manifests, lockfiles, and workflows take precedence over these documents; fix drift when you find it.
+- Do not store secrets, generated data, caches, build artifacts, or large completed plans.
+- Docs content belongs to the `src/docs` submodule; operate on it per the upper-level cross-repository workflows.
