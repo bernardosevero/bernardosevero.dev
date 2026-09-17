@@ -1,0 +1,16 @@
+# Dependencies and generated files
+node_modules/
+dist/
+.astro/
+coverage/
+*.tsbuildinfo
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+.venv/
+.vercel/
+*.log
+.DS_Store
+Thumbs.db
