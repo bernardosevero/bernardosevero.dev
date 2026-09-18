@@ -1,53 +1,98 @@
-# Bernardo Severo — Personal Portfolio
+# ⚔️ Bernardo Severo's Personal Log
 
-Bernardo Severo's personal portfolio, built with **Astro and TypeScript**. Its visual direction is a cozy medieval RPG in pixel art, inspired by a game's pause menu, with sections for projects, writing, experience, and reading.
+> A portfolio disguised as a cozy RPG menu. No dragons were harmed; several CSS gradients were.
 
-Live site: [bernardosevero.github.io/bernardosevero.dev](https://bernardosevero.github.io/bernardosevero.dev/)
+This is the source of [Bernardo Severo's portfolio](https://bernardosevero.github.io/bernardosevero.dev/): a small, static Astro site where recruiters and curious humans can explore projects, writing, experience, tools, and books without fighting a cookie banner boss.
 
-## Development
+## 🗺️ What lives here?
 
-Use Node.js 24 (specified in `.nvmrc`) and npm.
+- 🏡 **Personal Log** — the RPG-style entrance to the portfolio.
+- 📜 **Quest Log** — projects and the decisions behind them.
+- ✍️ **Journal** — engineering notes and lessons learned.
+- 🛡️ **Character Sheet** — experience, specialties, and tools.
+- 📚 **Reading Codex** — books, ratings, and optional reviews.
+- 🎨 **Design System** — the live tokens and components at [`/system/`](https://bernardosevero.github.io/bernardosevero.dev/system/).
+
+Only Home and the design-system inventory are currently implemented. The other chapters announce their unfinished state honestly instead of pretending a locked door is a feature.
+
+## 🧪 Start the local quest
+
+You need Node.js 24 and npm.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-The development server runs at `http://localhost:4321`. To check and build the site:
+Open `http://localhost:4321/`. Astro will reload the page while you edit.
+
+Useful spells:
 
 ```sh
-npm run check
-npm run build
-npm run preview
+npm run check              # Type-check Astro and TypeScript
+npm run build              # Forge the static production build
+npm run preview            # Preview the build locally
+npm test                   # Run browser, layout, and accessibility checks
 ```
 
-## Design references
+The first browser-test run may need `npx playwright install chromium`.
 
-The five approved mockups are stored in [docs/design/references](docs/design/references/README.md). Read [AGENTS.md](AGENTS.md) before making changes.
+## 🧰 The intentionally boring stack
 
-## Current scope: Home
+- [Astro](https://astro.build/) for static pages and content collections.
+- TypeScript for schemas and behavior that should not be mysterious.
+- Vanilla CSS for tokens, shared primitives, and route composition.
+- Markdown/MDX for posts and projects; Markdown for books and page copy.
+- Playwright + axe-core for behavior, overflow, and automated accessibility checks.
 
-The Home / Personal Log screen is implemented with real Astro components and CSS: wood frames, parchment panels, pixel-style ornaments, green menu buttons, and selectable profile text. Only the decorative village scenery is a bitmap. It does not contain the original mockup's interface.
+There is no Tailwind and no client framework. The site is small enough that explicit CSS is a superpower, not a punishment. The rationale and rules live in [the design-system guide](docs/design-system.md).
 
-The four menu buttons open accessible status dialogs. Posts, About, Projects, and Reading are **not implemented as separate pages yet**. Use Tab or the up/down arrow keys to select a button, Enter to open its dialog, and Escape to return.
+## ✍️ Add content, not components
 
-- Profile content: `src/data/portfolio.ts`
-- Colors and typography: `src/styles/tokens.css`
-- Shared frames, buttons, and ornaments: `src/styles/global.css`
-- Home layout and responsive rules: `src/styles/home.css`
-- Asset provenance and implementation choices: [Home implementation](docs/implementation/home.md)
+Content lives under `src/content/` and is validated by `src/content.config.ts`.
 
-All code, comments, documentation, and default interface copy are in English.
-
-## Browser tests
+Create a safe project draft:
 
 ```sh
-npx playwright install chromium
-npm test
+npm run content:add-project -- --slug reliable-ai-agents --title "Reliable AI Agents"
 ```
 
-The tests build the site, start a temporary preview on port 4322, and check menu interactions, keyboard focus, missing assets, accessibility, and overflow at six viewport widths. Screenshots are saved in the ignored `test-results/` directory. This port must be free before running the tests.
+Import normalized book data produced from Notion:
 
-## Deployment
+```sh
+npm run content:import-books -- --input C:\path\to\books.json
+```
 
-The site deploys automatically to GitHub Pages whenever a commit reaches `main`. The workflow in `.github/workflows/deploy.yml` uses Astro's official GitHub Action and publishes the static `dist/` output at `https://bernardosevero.github.io/bernardosevero.dev/`.
+The personal Codex skills `$add-project` and `$sync-notion-books` automate those workflows. See [the content handbook](docs/content.md) and [skills guide](docs/skills.md) before publishing.
+
+## 🏰 Map of the codebase
+
+```text
+src/
+├── components/      Reusable RPG interface primitives
+├── content/         Markdown and MDX source material
+├── layouts/         Shared document shell
+├── pages/           Astro routes
+└── styles/          Tokens, foundations, and route composition
+```
+
+Start with [AGENTS.md](AGENTS.md) for the project's rules and [architecture.md](docs/architecture.md) for the guided tour. The original visual references stay in `docs/design/references/` until every page passes the retirement gate in `AGENTS.md`.
+
+## 🚀 Deployment
+
+Pushes to `main` trigger `.github/workflows/deploy.yml`. GitHub Pages publishes the static build at:
+
+👉 [bernardosevero.github.io/bernardosevero.dev](https://bernardosevero.github.io/bernardosevero.dev/)
+
+The repository name stays in the URL because no custom domain is configured yet. Internal asset and route paths must therefore respect Astro's `/bernardosevero.dev` base.
+
+## 🧭 Project status
+
+- ✅ Real Astro/CSS Home screen
+- ✅ Responsive and keyboard-aware menu dialogs
+- ✅ Typed content foundations
+- ✅ Live design-system route
+- 🛠️ Posts, About, Projects, and Reading screens
+- 🐉 Final content, SEO pass, and custom domain: future quests
+
+Made with parchment, pixels, and a healthy suspicion of unnecessary JavaScript. 🌿

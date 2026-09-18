@@ -1,7 +1,13 @@
 ---
 import WoodFrame from './WoodFrame.astro';
 import Ornament from './Ornament.astro';
-import type { PortfolioSection } from '../data/portfolio';
+export interface PortfolioSection {
+  id: 'posts' | 'about' | 'projects' | 'reading';
+  label: string;
+  subtitle: string;
+  description: string;
+  status: string;
+}
 interface Props { section: PortfolioSection; }
 const { section } = Astro.props;
 ---

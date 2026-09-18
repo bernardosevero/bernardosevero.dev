@@ -1,7 +1,9 @@
 ---
 import WoodFrame from './WoodFrame.astro';
 import Ornament from './Ornament.astro';
-import { sections } from '../data/portfolio';
+import type { PortfolioSection } from './SectionPreview.astro';
+interface Props { sections: PortfolioSection[]; }
+const { sections } = Astro.props;
 ---
 <WoodFrame class="menu-panel">
   <header class="menu-heading">

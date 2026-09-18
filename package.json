@@ -13,6 +13,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "test": "playwright test",
+    "content:add-project": "node scripts/add-project.mjs",
+    "content:import-books": "node scripts/import-books.mjs",
     "astro": "astro"
   },
   "dependencies": {

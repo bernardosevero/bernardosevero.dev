@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Ornament from '../components/Ornament.astro';
+import WoodFrame from '../components/WoodFrame.astro';
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const colorTokens = [
+  '--ink', '--ink-soft', '--parchment', '--parchment-light', '--parchment-edge',
+  '--wood-dark', '--wood', '--wood-light', '--green-dark', '--green', '--green-light',
+  '--gold', '--ornament',
+];
+---
+
+<BaseLayout
+  title="Design System — Bernardo Severo"
+  description="The live visual language and reusable interface primitives behind Bernardo Severo's RPG portfolio."
+>
+  <main id="main-content" class="system-page" tabindex="-1">
+    <header class="system-header">
+      <a href={base}>← Return to the Personal Log</a>
+      <p class="system-kicker">Field guide · v0.1</p>
+      <h1>Design System</h1>
+      <p>The live inventory for the portfolio’s parchment, timber, type, ornaments, and interaction states.</p>
+    </header>
+
+    <WoodFrame class="system-section">
+      <h2>Principles</h2>
+      <Ornament variant="divider" />
+      <div class="principle-grid">
+        <article><h3>Readable first</h3><p>The RPG world creates memory; professional evidence creates trust.</p></article>
+        <article><h3>Crafted, not flattened</h3><p>Interface controls remain semantic HTML and CSS, never a screenshot with hotspots.</p></article>
+        <article><h3>One source of truth</h3><p>These specimens render the same tokens and components used by the product.</p></article>
+      </div>
+    </WoodFrame>
+
+    <WoodFrame class="system-section">
+      <h2>Color tokens</h2>
+      <Ornament variant="divider" />
+      <div class="swatch-grid">
+        {colorTokens.map((token) => (
+          <article class="swatch" data-token={token}>
+            <span class="swatch-color" style={`--swatch: var(${token})`}></span>
+            <code>{token}</code>
+            <small data-token-value>Computed by the browser</small>
+          </article>
+        ))}
+      </div>
+    </WoodFrame>
+
+    <WoodFrame class="system-section">
+      <h2>Typography</h2>
+      <Ornament variant="divider" />
+      <div class="type-grid">
+        <article><p class="type-heading">Quest headings</p><code>Pixelify Sans · 700</code></article>
+        <article><p class="type-body">Readable notes, metadata, and longer stories.</p><code>VT323 · 400</code></article>
+      </div>
+    </WoodFrame>
+
+    <WoodFrame class="system-section">
+      <h2>Components and states</h2>
+      <Ornament variant="divider" />
+      <div class="component-grid">
+        <article>
+          <h3>Primary action</h3>
+          <button class="rpg-button" type="button">Continue quest</button>
+          <p>Hover, focus, active, and reduced-motion states belong to the same primitive.</p>
+        </article>
+        <article>
+          <h3>Ornaments</h3>
+          <div class="ornament-row"><Ornament variant="sprig" /><Ornament variant="divider" /></div>
+          <p>Decorative shapes are hidden from assistive technology.</p>
+        </article>
+      </div>
+    </WoodFrame>
+
+    <footer>
+      <p>Implementation rules, token ownership, and contribution checks live in <code>docs/design-system.md</code>.</p>
+    </footer>
+  </main>
+</BaseLayout>
+
+<script>
+  for (const swatch of document.querySelectorAll<HTMLElement>('[data-token]')) {
+    const token = swatch.dataset.token;
+    const value = swatch.querySelector<HTMLElement>('[data-token-value]');
+    if (token && value) value.textContent = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+  }
+</script>
+
+<style>
+  .system-page { width: min(1120px, calc(100% - 32px)); margin-inline: auto; padding: 48px 0 72px; }
+  .system-page:focus { outline: 0; }
+  .system-header { color: var(--parchment-light); max-width: 780px; margin: 0 auto 38px; text-align: center; text-shadow: 2px 2px var(--green-dark); }
+  .system-header a { color: var(--parchment-light); }
+  .system-kicker { color: var(--gold); font-family: var(--font-heading); text-transform: uppercase; letter-spacing: .12em; }
+  .system-header h1 { margin: 12px 0; font-size: clamp(46px, 9vw, 82px); text-transform: uppercase; }
+  :global(.system-section) { margin-block: 24px; }
+  :global(.system-section .frame-surface) { padding: clamp(22px, 4vw, 44px); }
+  :global(.system-section h2) { font-size: clamp(32px, 5vw, 48px); text-align: center; text-transform: uppercase; }
+  :global(.system-section > .frame-surface > .ornament--divider) { margin: 10px 0 28px; }
+  .principle-grid, .component-grid, .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  article h3 { font-size: 26px; text-transform: uppercase; }
+  article p { margin-top: 8px; }
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .swatch { display: grid; grid-template-columns: 46px 1fr; gap: 2px 12px; align-items: center; min-width: 0; }
+  .swatch-color { grid-row: span 2; width: 46px; aspect-ratio: 1; background: var(--swatch); border: 3px solid var(--ink); box-shadow: inset 2px 2px #ffffff55; }
+  .swatch code, .swatch small { overflow-wrap: anywhere; }
+  .swatch small { color: var(--ink-soft); }
+  .type-heading { font: 700 38px/1 var(--font-heading); text-transform: uppercase; }
+  .type-body { font: 400 30px/1.15 var(--font-body); }
+  .component-grid > article { display: grid; align-content: start; gap: 12px; }
+  .component-grid .rpg-button { width: 100%; }
+  .ornament-row { display: flex; gap: 24px; align-items: center; min-height: 66px; }
+  .ornament-row :global(.ornament--divider) { width: min(260px, 70%); margin: 0; }
+  footer { color: var(--parchment-light); text-align: center; }
+  @media (max-width: 520px) { .system-page { padding-top: 28px; } :global(.system-section .frame-surface) { padding: 22px 16px; } }
+</style>
