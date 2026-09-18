@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WoodFrame from '../../components/WoodFrame.astro';
+import Ornament from '../../components/Ornament.astro';
+import { getCollection } from 'astro:content';
+import '../../styles/portfolio.css';
+const showDraftPreviews = import.meta.env.DEV;
+const projects = (await getCollection('projects', ({ data }) => !data.draft || (showDraftPreviews && data.preview))).sort((a, b) => Number(b.data.featured) - Number(a.data.featured));
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+<BaseLayout title="Projects — Bernardo Severo" description="Selected engineering projects by Bernardo Severo." preloadVillage>
+  <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1"><div class="portfolio-shell">
+    <a class="back-link" href={base}>← Personal Log</a><WoodFrame class="portfolio-frame"><header><p class="page-kicker">Quest Log</p><h1 class="page-title">Projects</h1><p class="page-intro">Real engineering work, described with only public and supportable detail.</p><Ornament variant="divider" /></header>
+    {projects.length ? <ol class="project-list">{projects.map((project) => <li><article class:list={['project-card', { featured: project.data.featured }]}><div><p class="project-label">{project.data.preview ? 'Draft preview' : project.data.featured ? 'Featured quest' : 'Case study'}</p><h2>{project.data.title}</h2><p>{project.data.summary}</p><ul class="tag-list">{project.data.technologies.map((technology) => <li>{technology}</li>)}</ul></div><a class="rpg-button" href={`${base}projects/${project.id}/`}>View case study</a></article></li>)}</ol> : <section class="empty-state"><h2 class="page-heading">No published projects yet</h2><p>Case studies appear here once they can be shared with real context, decisions, and outcomes.</p></section>}
+    </WoodFrame></div></main>
+</BaseLayout>
+<style>
+  .project-list {
+    display: grid;
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .project-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 20px;
+    padding: 22px;
+    border: 3px solid var(--parchment-edge);
+    background: #f9e5b188;
+  }
+
+  .project-card.featured {
+    border-color: var(--green-dark);
+    background: #cfe0988c;
+  }
+
+  .project-label {
+    color: var(--ink-soft);
+    font-family: var(--font-heading);
+    font-size: 17px;
+    text-transform: uppercase;
+  }
+
+  .project-card h2 {
+    font-size: clamp(28px, 4vw, 39px);
+    text-transform: uppercase;
+  }
+
+  .project-card .tag-list {
+    margin-top: 14px;
+  }
+
+  .project-card .rpg-button {
+    min-width: 210px;
+    text-decoration: none;
+  }
+
+  @media (max-width: 650px) {
+    .project-card {
+      grid-template-columns: 1fr;
+    }
+
+    .project-card .rpg-button {
+      width: 100%;
+    }
+  }
+</style>

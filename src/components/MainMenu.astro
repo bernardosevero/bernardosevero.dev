@@ -4,6 +4,9 @@ import Ornament from './Ornament.astro';
 import type { PortfolioSection } from './SectionPreview.astro';
 interface Props { sections: PortfolioSection[]; }
 const { sections } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 ---
 <WoodFrame class="menu-panel">
   <header class="menu-heading">
@@ -11,11 +14,17 @@ const { sections } = Astro.props;
   </header>
   <Ornament variant="divider" />
   <nav class="main-menu" aria-labelledby="menu-title">
-    {sections.map(({ id, label }, index) => (
-      <button type="button" class="rpg-button menu-button" data-open-section={id}
-        data-active={index === 0 ? 'true' : 'false'} aria-haspopup="dialog" aria-controls={`${id}-preview`}>
-        <span class="selection-gem" aria-hidden="true"></span><span>{label}</span>
-      </button>
+    {sections.map(({ id, label, route }, index) => (
+      route ? (
+        <a class="rpg-button menu-button" href={`${base}${route}`} data-menu-item data-active={index === 0 ? 'true' : 'false'}>
+          <span class="selection-gem" aria-hidden="true"></span><span>{label}</span>
+        </a>
+      ) : (
+        <button type="button" class="rpg-button menu-button" data-menu-item data-open-section={id}
+          data-active={index === 0 ? 'true' : 'false'} aria-haspopup="dialog" aria-controls={`${id}-preview`}>
+          <span class="selection-gem" aria-hidden="true"></span><span>{label}</span>
+        </button>
+      )
     ))}
   </nav>
   <Ornament variant="divider" />
@@ -23,28 +32,69 @@ const { sections } = Astro.props;
 
 <script>
   const menu = document.querySelector<HTMLElement>('.main-menu');
-  const buttons = Array.from(menu?.querySelectorAll<HTMLButtonElement>('[data-open-section]') ?? []);
-  function selectButton(selected: HTMLButtonElement) {
-    for (const button of buttons) button.dataset.active = String(button === selected);
+  const items = Array.from(menu?.querySelectorAll<HTMLElement>('[data-menu-item]') ?? []);
+  function selectItem(selected: HTMLElement) {
+    for (const item of items) item.dataset.active = String(item === selected);
   }
-  for (const button of buttons) {
-    button.addEventListener('focus', () => selectButton(button));
-    button.addEventListener('pointerenter', () => selectButton(button));
-    button.addEventListener('click', () => {
-      const dialog = document.getElementById(`${button.dataset.openSection}-preview`);
+  for (const item of items) {
+    item.addEventListener('focus', () => selectItem(item));
+    item.addEventListener('pointerenter', () => selectItem(item));
+    item.addEventListener('click', () => {
+      if (!item.dataset.openSection) return;
+      const dialog = document.getElementById(`${item.dataset.openSection}-preview`);
       if (dialog instanceof HTMLDialogElement) dialog.showModal();
     });
   }
   menu?.addEventListener('keydown', (event: KeyboardEvent) => {
-    const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    const current = items.indexOf(document.activeElement as HTMLElement);
     if (current < 0) return;
     let next = current;
-    if (event.key === 'ArrowDown') next = (current + 1) % buttons.length;
-    else if (event.key === 'ArrowUp') next = (current - 1 + buttons.length) % buttons.length;
+    if (event.key === 'ArrowDown') next = (current + 1) % items.length;
+    else if (event.key === 'ArrowUp') next = (current - 1 + items.length) % items.length;
     else if (event.key === 'Home') next = 0;
-    else if (event.key === 'End') next = buttons.length - 1;
+    else if (event.key === 'End') next = items.length - 1;
     else return;
     event.preventDefault();
-    buttons[next]?.focus();
+    items[next]?.focus();
   });
 </script>
+
+<style>
+  :global(.menu-panel .frame-surface) { padding: 18px 24px 12px; }
+  .menu-heading { display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .menu-heading h2 { font-size: 31px; white-space: nowrap; text-transform: uppercase; }
+  .menu-heading :global(.ornament) { width: 22px; scale: .8; }
+  .menu-heading :global(.ornament:last-child) { transform: scaleX(-1) rotate(-30deg); }
+  :global(.menu-panel > .frame-surface > .ornament--divider) { margin: 4px 0 10px; height: 16px; }
+  :global(.menu-panel .main-menu + .ornament--divider) { margin: 12px 0 0; }
+  .main-menu { display: grid; gap: 16px; }
+  .menu-button { width: 100%; min-width: 0; min-height: 72px; font-size: 34px; text-decoration: none; }
+  .selection-gem {
+    position: absolute; width: 22px; height: 22px; left: -18px; top: calc(50% - 11px);
+    transform: rotate(45deg); background: #ffc84b; border: 3px solid #8b5515;
+    box-shadow: inset 3px 3px #fff0a0, inset -3px -3px #d89220, 0 0 0 2px #4b2e11;
+    opacity: 0;
+  }
+  .selection-gem::after { content: ''; position: absolute; width: 5px; height: 5px; left: 2px; top: 2px; background: #fff5b6; }
+  .menu-button[data-active='true'] .selection-gem { opacity: 1; }
+
+  @media (max-width: 1080px) and (min-width: 761px) {
+    :global(.menu-panel .frame-surface) { padding-inline: 14px; }
+    .menu-heading { gap: 4px; }
+    .menu-heading h2 { font-size: 26px; }
+    .menu-heading :global(.ornament) { display: none; }
+    .menu-button { font-size: clamp(20px, 2.7vw, 29px); padding-inline: 6px; }
+  }
+  @media (max-width: 760px) {
+    :global(.menu-panel .frame-surface) { padding: 20px 26px; }
+    .menu-heading h2 { font-size: 30px; }
+    .main-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .menu-button { min-height: 63px; font-size: 25px; padding-inline: 10px; }
+    .selection-gem { width: 17px; height: 17px; left: -11px; top: calc(50% - 8px); border-width: 2px; }
+  }
+  @media (max-width: 370px) {
+    .main-menu { grid-template-columns: 1fr; }
+    :global(.menu-panel .frame-surface) { padding-inline: 20px; }
+    .menu-button { font-size: 22px; }
+  }
+</style>

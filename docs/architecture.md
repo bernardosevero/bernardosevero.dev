@@ -37,4 +37,4 @@ The Home page already reads profile and section copy from `src/content/pages/hom
 
 ## Current state and next routes
 
-Home and `/system/` are implemented. Posts, About, Projects, and Reading still use honest preview states. The recommended sequence is Projects, About, Posts, then Reading: it establishes the strongest recruiter-facing evidence first and leaves the external Notion integration until the content contract is stable.
+Home, `/system/`, About, Projects, Posts, and Reading are implemented. Posts and Reading render honest empty states until editorial entries exist. Projects has two résumé-supported public case studies; dynamic project and post routes are statically generated only for non-draft collection entries.

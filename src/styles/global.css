@@ -10,6 +10,17 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 ::selection { background: #a3bd77; color: #172c20; }
 .skip-link { position: fixed; left: 20px; top: 14px; z-index: 20; transform: translateY(-160%); background: var(--parchment); padding: 12px 18px; color: var(--ink); border: 3px solid var(--wood-dark); }
 .skip-link:focus { transform: none; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* All panel wood, bevels, parchment and hardware are CSS, not flattened images. */
 .wood-frame {

@@ -18,7 +18,7 @@ Run:
 npm run content:add-project -- --slug project-slug --title "Real project title"
 ```
 
-The command fails if the slug exists and creates a draft with prompts for the problem, constraints, decisions, outcome, and lessons. Replace every `TODO` before publishing. Add only outcomes you can support and remove confidential details.
+The command fails if the slug exists and creates a draft with prompts for the problem, constraints, decisions, contribution, outcome, and lessons. Replace every `TODO` before publishing. A published project requires these sections plus a real role and supportable outcomes. Add only outcomes you can support and remove confidential details.
 
 ## Books
 
@@ -59,3 +59,7 @@ Low-frequency Home and About copy lives in `src/content/pages/`. The schema uses
 - Headings form a logical outline.
 - Images include correct alt text and attribution when required.
 - `npm run check` and `npm run build` pass.
+
+## Local draft previews
+
+Set `preview: true` only on a `draft: true` entry when a local interface flow needs fixture content. These entries render in `npm run dev` with a visible Draft preview label, but remain excluded from production builds and deploys.

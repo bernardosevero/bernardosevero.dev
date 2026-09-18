@@ -72,6 +72,8 @@ Not every dimension must become a token. Promote a value when it represents a re
 
 `WoodFrame.astro` provides the timber surround, corner hardware, and optional parchment surface. Use it for primary RPG windows, not every content card. Nested frames should be rare so the hierarchy remains obvious.
 
+The Components and States section on `/system/` includes a live timber-only specimen alongside the parchment-backed production windows that structure the page.
+
 ### RPG button
 
 `.rpg-button` is the primary action primitive. Its focus ring uses gold and remains visible independently of hover. Use native links for navigation even if they share the visual class; use buttons only for actions.
@@ -83,6 +85,14 @@ Not every dimension must become a token. Promote a value when it represents a re
 ### Dialogs
 
 Section previews use native `<dialog>` for focus management and Escape behavior. Dialog copy must state unfinished routes honestly. A dialog must have a labelled title, described status, explicit close action, and restored opener focus.
+
+### Tags and status labels
+
+`.tag-list` groups technologies and topics; `.status-badge` labels a reading status or rating. Both use the legible body pixel font rather than the display face, so compact labels retain distinct glyph shapes at small resolutions. They are real semantic list or text content, not icon-only indicators, and are demonstrated on `/system/`.
+
+### Topic filters
+
+`.topic-filter` is a native button used for client-side post filtering. The active option carries `aria-pressed="true"` as well as a gold selected state. Without JavaScript, every post remains visible and readable.
 
 ## Responsive behavior
 

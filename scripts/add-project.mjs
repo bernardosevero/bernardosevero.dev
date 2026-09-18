@@ -37,6 +37,11 @@ technologies: []
 outcomes: []
 featured: false
 draft: true
+problem: "TODO: explain the real problem."
+constraints: []
+decisions: []
+contribution: "TODO: describe your real contribution."
+lessons: []
 ---
 
 ## The problem

@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WoodFrame from '../../components/WoodFrame.astro';
+import Ornament from '../../components/Ornament.astro';
+import { getCollection, render } from 'astro:content';
+import '../../styles/portfolio.css';
+
+export async function getStaticPaths() {
+  const posts = await getCollection(
+    'posts',
+    ({ data }) => !data.draft || (import.meta.env.DEV && data.preview),
+  );
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+<BaseLayout title={`${post.data.title} — Bernardo Severo`} description={post.data.description} preloadVillage><main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1"><article class="portfolio-shell"><a class="back-link" href={`${base}posts/`}>← Journal</a><WoodFrame class="portfolio-frame article"><header><p class="page-kicker">{post.data.readingMinutes} min read</p><h1 class="page-title">{post.data.title}</h1><p class="page-intro">{post.data.description}</p><p class="meta article-date">Published {post.data.publishedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p><Ornament variant="divider" /></header><ul class="tag-list">{post.data.topics.map((topic) => <li>{topic}</li>)}</ul><div class="article-content"><Content /></div></WoodFrame></article></main></BaseLayout>
+<style>
+  .article-date {
+    text-align: center;
+  }
+
+  .article-content {
+    max-width: 760px;
+    margin: 28px auto 0;
+    font-size: clamp(26px, 3vw, 31px);
+    line-height: 1.25;
+  }
+
+  .article-content :global(h2) {
+    margin-top: 32px;
+    font-size: 34px;
+  }
+
+  .article-content :global(p + p),
+  .article-content :global(ul + p) {
+    margin-top: 16px;
+  }
+
+  .article-content :global(a) {
+    color: var(--green-dark);
+  }
+</style>

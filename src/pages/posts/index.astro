@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WoodFrame from '../../components/WoodFrame.astro';
+import Ornament from '../../components/Ornament.astro';
+import { getCollection } from 'astro:content';
+import '../../styles/portfolio.css';
+const showDraftPreviews = import.meta.env.DEV;
+const posts = (await getCollection('posts', ({ data }) => !data.draft || (showDraftPreviews && data.preview))).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort(); const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+<BaseLayout title="Posts — Bernardo Severo" description="Engineering notes and lessons from Bernardo Severo." preloadVillage>
+  <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1"><div class="portfolio-shell"><a class="back-link" href={base}>← Personal Log</a><WoodFrame class="portfolio-frame"><header><p class="page-kicker">Journal</p><h1 class="page-title">Posts</h1><p class="page-intro">Notes on engineering, useful products, and the work behind them.</p><Ornament variant="divider" /></header>
+  {posts.length ? <><nav class="topic-nav" aria-label="Post topics"><button class="topic-filter" type="button" data-topic="all" data-active="true" aria-pressed="true">All</button>{topics.map((topic) => <button class="topic-filter" type="button" data-topic={topic.toLowerCase()} aria-pressed="false">{topic}</button>)}</nav><p class="sr-only" data-filter-status aria-live="polite"></p><ol class="post-list">{posts.map((post) => <li data-topics={post.data.topics.map((topic) => topic.toLowerCase()).join('|')}><article><p class="meta">{post.data.preview && <span class="status-badge">Draft preview</span>} {post.data.publishedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} · {post.data.readingMinutes} min read</p><div class="post-title-row"><ul class="tag-list">{post.data.topics.map((topic) => <li>{topic}</li>)}</ul><h2><a href={`${base}posts/${post.id}/`}>{post.data.title}</a></h2></div><p>{post.data.description}</p></article></li>)}</ol></> : <section class="empty-state"><h2 class="page-heading">The journal is waiting for its first entry</h2><p>No posts are published yet. When a note is ready to share, it will appear here with its topic and reading time.</p></section>}
+  </WoodFrame></div></main>
+</BaseLayout>
+<script>
+  const controls = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-topic]'));
+  const entries = Array.from(document.querySelectorAll<HTMLElement>('.post-list > li[data-topics]'));
+  const status = document.querySelector<HTMLElement>('[data-filter-status]');
+  for (const control of controls) {
+    control.addEventListener('click', () => {
+      const topic = control.dataset.topic ?? 'all';
+      let visibleCount = 0;
+      for (const entry of entries) {
+        const visible = topic === 'all' || entry.dataset.topics?.split('|').includes(topic);
+        entry.hidden = !visible;
+        if (visible) visibleCount += 1;
+      }
+      for (const item of controls) {
+        const active = item === control;
+        item.dataset.active = String(active);
+        item.setAttribute('aria-pressed', String(active));
+      }
+      if (status) status.textContent = topic === 'all'
+        ? `Showing all ${visibleCount} posts.`
+        : `Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'} tagged ${control.textContent?.trim() ?? topic}.`;
+    });
+  }
+</script>
+<style>
+  .topic-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .post-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .post-list li + li {
+    border-top: 2px solid var(--ornament);
+  }
+
+  .post-list article {
+    padding: 20px 0;
+  }
+
+  .post-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    margin: 6px 0;
+  }
+
+  .post-title-row h2 {
+    font-family: var(--font-body);
+    font-size: clamp(29px, 4vw, 42px);
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .post-list h2 a {
+    color: var(--ink);
+  }
+
+  @media (max-width: 520px) {
+    .post-title-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+</style>

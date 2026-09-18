@@ -1,49 +1,38 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test('menu supports arrows, wraparound, Home/End, Enter and Escape', async ({ page }) => {
+test('menu supports arrows, wraparound, Home/End, and route links', async ({ page }) => {
   await page.goto('./');
   const menu = page.getByRole('navigation', { name: 'Main Menu' });
-  const posts = menu.getByRole('button', { name: 'Posts', exact: true });
+  const posts = menu.getByRole('link', { name: 'Posts', exact: true });
   await posts.focus();
   await page.keyboard.press('ArrowUp');
-  await expect(menu.getByRole('button', { name: 'Reading', exact: true })).toBeFocused();
+  await expect(menu.getByRole('link', { name: 'Reading', exact: true })).toBeFocused();
   await page.keyboard.press('ArrowDown');
   await expect(posts).toBeFocused();
   await page.keyboard.press('ArrowDown');
-  const about = menu.getByRole('button', { name: 'About', exact: true });
+  const about = menu.getByRole('link', { name: 'About', exact: true });
   await expect(about).toBeFocused();
   await expect(about).toHaveAttribute('data-active', 'true');
+  await expect(about).toHaveAttribute('href', '/bernardosevero.dev/about/');
   await page.keyboard.press('Enter');
-  const dialog = page.getByRole('dialog', { name: 'About', exact: true });
-  await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole('button', { name: 'Back to main menu' })).toBeFocused();
-  await page.keyboard.press('Tab');
-  await expect.poll(() => page.evaluate(() => {
-    const active = document.activeElement;
-    return active === document.body || !!active?.closest('dialog[open]');
-  })).toBe(true);
-  await page.keyboard.press('Escape');
-  await expect(dialog).not.toBeVisible();
-  await expect(about).toBeFocused();
+  await expect(page).toHaveURL('/bernardosevero.dev/about/');
+  await page.goto('./');
+  await posts.focus();
   await page.keyboard.press('End');
-  await expect(menu.getByRole('button', { name: 'Reading', exact: true })).toBeFocused();
+  await expect(menu.getByRole('link', { name: 'Reading', exact: true })).toBeFocused();
   await page.keyboard.press('Home');
   await expect(posts).toBeFocused();
 });
 
-test('every menu item opens and closes its own honest section preview', async ({ page }) => {
+test('every menu item reaches its implemented route', async ({ page }) => {
   await page.goto('./');
-  for (const name of ['Posts', 'About', 'Projects', 'Reading']) {
-    const opener = page.getByRole('navigation').getByRole('button', { name, exact: true });
-    await opener.click();
-    const dialog = page.getByRole('dialog', { name, exact: true });
-    await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText('not available yet');
-    await dialog.getByRole('button', { name: 'Back to main menu' }).click();
-    await expect(dialog).not.toBeVisible();
-    await expect(opener).toBeFocused();
-    await expect(page).toHaveURL('/bernardosevero.dev/');
+  for (const [name, path] of [['Posts', 'posts/'], ['About', 'about/'], ['Projects', 'projects/'], ['Reading', 'reading/']]) {
+    const link = page.getByRole('navigation').getByRole('link', { name, exact: true });
+    await expect(link).toHaveAttribute('href', `/bernardosevero.dev/${path}`);
+    await link.click();
+    await expect(page).toHaveURL(`/bernardosevero.dev/${path}`);
+    await page.goto('./');
   }
 });
 
@@ -98,9 +87,9 @@ for (const width of [390, 1586]) {
     await page.evaluate(() => document.fonts.ready);
     const home = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(home.violations).toEqual([]);
-    await page.getByRole('button', { name: 'About', exact: true }).click();
-    const dialog = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
-    expect(dialog.violations).toEqual([]);
+    await page.getByRole('link', { name: 'About', exact: true }).click();
+    const about = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(about.violations).toEqual([]);
   });
 }
 

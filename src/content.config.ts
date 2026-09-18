@@ -14,6 +14,7 @@ const posts = defineCollection({
     topics: z.array(z.string()).default([]),
     readingMinutes: z.number().int().positive(),
     draft: z.boolean().default(false),
+    preview: z.boolean().default(false),
   }),
 });
 
@@ -27,9 +28,15 @@ const projects = defineCollection({
     outcomes: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     draft: z.boolean().default(true),
+    preview: z.boolean().default(false),
     publishedAt: date.optional(),
     repositoryUrl: z.url().optional(),
     liveUrl: z.url().optional(),
+    problem: z.string(),
+    constraints: z.array(z.string()).default([]),
+    decisions: z.array(z.string()).default([]),
+    contribution: z.string(),
+    lessons: z.array(z.string()).default([]),
   }),
 });
 
@@ -45,6 +52,7 @@ const books = defineCollection({
     notionId: z.string().optional(),
     notionLastEditedAt: date.optional(),
     draft: z.boolean().default(false),
+    preview: z.boolean().default(false),
   }),
 });
 
@@ -63,6 +71,7 @@ const pages = defineCollection({
         subtitle: z.string(),
         description: z.string(),
         status: z.string(),
+        route: z.string().optional(),
       })),
     }),
     z.object({
@@ -72,6 +81,19 @@ const pages = defineCollection({
       base: z.string(),
       focus: z.array(z.string()),
       description: z.string(),
+      tagline: z.string(),
+      experience: z.array(z.object({
+        company: z.string(),
+        role: z.string(),
+        period: z.string(),
+        description: z.string(),
+      })),
+      specializations: z.array(z.string()),
+      tools: z.array(z.string()),
+      links: z.array(z.object({
+        label: z.string(),
+        url: z.url(),
+      })),
     }),
   ]),
 });

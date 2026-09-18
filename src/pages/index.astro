@@ -51,5 +51,5 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       </WoodFrame>
     </div>
   </main>
-  {sections.map((section) => <SectionPreview section={section} />)}
+  {sections.filter((section) => !section.route).map((section) => <SectionPreview section={section} />)}
 </BaseLayout>
