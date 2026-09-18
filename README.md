@@ -1,4 +1,4 @@
-# ⚔️ Bernardo Severo's Personal Log
+# ⚔️ Bernardo Severo's Personal Website  
 
 > A portfolio disguised as a cozy RPG menu. No dragons were harmed; several CSS gradients were.
 
@@ -6,14 +6,11 @@ This is the source of [Bernardo Severo's portfolio](https://bernardosevero.githu
 
 ## 🗺️ What lives here?
 
-- 🏡 **Personal Log** — the RPG-style entrance to the portfolio.
+- 🛡️ **Character Sheet** — about me page with experience, specialties, and tools.
 - 📜 **Quest Log** — projects and the decisions behind them.
-- ✍️ **Journal** — engineering notes and lessons learned.
-- 🛡️ **Character Sheet** — experience, specialties, and tools.
+- ✍️ **Journal** — random texts, engineering notes, and lessons learned.
 - 📚 **Reading Codex** — books, ratings, and optional reviews.
 - 🎨 **Design System** — the live tokens and components at [`/system/`](https://bernardosevero.github.io/bernardosevero.dev/system/).
-
-Only Home and the design-system inventory are currently implemented. The other chapters announce their unfinished state honestly instead of pretending a locked door is a feature.
 
 ## 🧪 Start the local quest
 
@@ -37,15 +34,13 @@ npm test                   # Run browser, layout, and accessibility checks
 
 The first browser-test run may need `npx playwright install chromium`.
 
-## 🧰 The intentionally boring stack
+## 🧰 The tech stack
 
 - [Astro](https://astro.build/) for static pages and content collections.
 - TypeScript for schemas and behavior that should not be mysterious.
 - Vanilla CSS for tokens, shared primitives, and route composition.
 - Markdown/MDX for posts and projects; Markdown for books and page copy.
-- Playwright + axe-core for behavior, overflow, and automated accessibility checks.
-
-There is no Tailwind and no client framework. The site is small enough that explicit CSS is a superpower, not a punishment. The rationale and rules live in [the design-system guide](docs/design-system.md).
+- [Playwright](https://playwright.dev/) + [axe-core](https://github.com/dequelabs/axe-core) for behavior, overflow, and automated accessibility checks.
 
 ## ✍️ Add content, not components
 
@@ -60,10 +55,10 @@ npm run content:add-project -- --slug reliable-ai-agents --title "Reliable AI Ag
 Import normalized book data produced from Notion:
 
 ```sh
-npm run content:import-books -- --input C:\path\to\books.json
+npm run content:import-books -- --input [path]\books.json
 ```
 
-The personal Codex skills `$add-project` and `$sync-notion-books` automate those workflows. See [the content handbook](docs/content.md) and [skills guide](docs/skills.md) before publishing.
+The personal agent skills `$add-project` and `$sync-notion-books` automate those workflows. See [the content handbook](docs/content.md) and [skills guide](docs/skills.md) before publishing.
 
 ## 🏰 Map of the codebase
 
