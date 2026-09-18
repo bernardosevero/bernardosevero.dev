@@ -126,6 +126,12 @@ Rules:
 - A skill may prepare local changes, but it may not commit, push, deploy, delete references, or mutate Notion without the user's request.
 - Skills are personal Codex skills stored under the user's Codex skills directory. Their project contract is documented in `docs/skills.md`.
 
+## Git workflow
+
+- Always write commit messages in English using both Gitmoji and the Conventional Commits specification.
+- Format commit subjects as `<gitmoji> <type>(<scope>): <description>`, for example `✨ feat(home): add social sharing metadata`.
+- Keep the Gitmoji consistent with the intent of the Conventional Commit type.
+
 ## Reference retirement gate
 
 Do not delete `docs/design/references/` during normal page work. Remove it only when all five experience areas are complete and all of the following are true:
