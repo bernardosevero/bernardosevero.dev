@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Ornament from '../components/Ornament.astro';
+import PixelIcon from '../components/PixelIcon.astro';
 import WoodFrame from '../components/WoodFrame.astro';
 import '../styles/portfolio.css';
 
@@ -82,6 +83,12 @@ const colorTokens = [
           <p>Decorative shapes are hidden from assistive technology.</p>
         </article>
         <article>
+          <h3>Pixel icons</h3>
+          <div class="pixel-icon-row" aria-hidden="true"><PixelIcon name="vscode" /><PixelIcon name="github" /><PixelIcon name="docker" /><PixelIcon name="cloud" /><PixelIcon name="linkedin" /></div>
+          <div class="pixel-icon-row" aria-hidden="true"><PixelIcon name="briefcase" /><PixelIcon name="star" /><PixelIcon name="wrench" /><PixelIcon name="book" /></div>
+          <p>Tool marks keep their distinct colors. Section artwork shares walnut outlines, bronze shading, and gold highlights. Links retain accessible names.</p>
+        </article>
+        <article>
           <h3>Tags and status</h3>
           <ul class="tag-list"><li>React</li><li>Go</li></ul>
           <p><span class="status-badge">Finished</span></p>
@@ -151,6 +158,7 @@ const colorTokens = [
   :global(.wood-frame-specimen .frame-surface) { display: grid; place-items: center; border: 2px solid var(--wood-dark); background: #321b1088; color: var(--parchment-light); font-family: var(--font-heading); font-size: 19px; text-align: center; text-transform: uppercase; }
   .ornament-row { display: flex; gap: 24px; align-items: center; min-height: 66px; }
   .ornament-row :global(.ornament--divider) { width: min(260px, 70%); margin: 0; }
+  .pixel-icon-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; min-height: 66px; }
   footer { color: var(--parchment-light); text-align: center; }
   @media (max-width: 760px) { .component-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
   @media (max-width: 520px) { .system-page { padding-top: 28px; } :global(.system-section .frame-surface) { padding: 22px 16px; } }

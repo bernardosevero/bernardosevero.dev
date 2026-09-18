@@ -29,7 +29,29 @@ test('About exposes the requested professional profile links', async ({ page }) 
   await page.goto('./about/');
   await expect(page.getByRole('link', { name: /LinkedIn/ })).toHaveAttribute('href', 'https://www.linkedin.com/in/bernardosevero/');
   await expect(page.getByRole('link', { name: /GitHub/ })).toHaveAttribute('href', 'https://github.com/bernardosevero');
+  await expect(page.getByRole('heading', { name: 'Experience' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Specializations' })).toBeVisible();
+  await expect(page.getByRole('list', { name: 'Working strengths' })).toBeVisible();
+  await expect(page.locator('.social-link .pixel-icon')).toHaveCount(2);
 });
+
+for (const width of [320, 390, 1586]) {
+  test(`About portrait and heading links fit at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 992 });
+    await page.goto('./about/');
+    await page.evaluate(() => document.fonts.ready);
+    const portrait = page.getByRole('img', { name: /Bernardo wearing round glasses/ });
+    await expect(portrait).toBeVisible();
+    expect(await portrait.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
+    const heading = await page.getByRole('heading', { name: 'About me', exact: true }).boundingBox();
+    for (const name of [/LinkedIn/, /GitHub/]) {
+      const link = await page.getByRole('link', { name }).boundingBox();
+      expect(Math.abs((heading!.y + heading!.height / 2) - (link!.y + link!.height / 2))).toBeLessThan(2);
+    }
+    await expect(page.getByText('Better tools. Kinder humans.')).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
+}
 
 test('Reading opens a book review from its card', async ({ page }) => {
   await page.goto('./reading/');

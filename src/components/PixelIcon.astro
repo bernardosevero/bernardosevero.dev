@@ -1,0 +1,73 @@
+---
+interface Props {
+  name: 'briefcase' | 'star' | 'wrench' | 'book' | 'linkedin' | 'github' | 'vscode' | 'docker' | 'cloud';
+  size?: number;
+}
+
+const { name, size = 28 } = Astro.props;
+---
+
+<svg class="pixel-icon" style={`--pixel-icon-size: ${size}px`} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+  <g stroke-linejoin="round">
+  {name === 'briefcase' && <>
+    <path fill="#d8af61" stroke="#352014" stroke-width="2" d="M11 8V4h10v4h-3V7h-4v1Z" />
+    <path fill="#56341e" stroke="#352014" stroke-width="2" d="M3 9h26v19H3Z" />
+    <path fill="#80502b" d="M5 11h22v8H5Z" />
+    <path fill="none" stroke="#d8af61" stroke-width="2" d="M4 17l12 3 12-3M5 26h22" />
+    <path fill="#f8d77f" stroke="#352014" d="M13 17h6v6h-6Z" />
+  </>}
+  {name === 'star' && <>
+    <path fill="#a87932" stroke="#352014" stroke-width="2" d="m16 2 4 9 10 2-7 7 1 10-8-5-8 5 1-10-7-7 10-2Z" />
+    <path fill="#e4b45b" d="m16 5 3 8 8 1-7 5 2 8-6-5-6 5 2-8-7-5 8-1Z" />
+    <path fill="#ffe4a0" d="m16 5 0 12-4 2-7-5 8-1Z" />
+  </>}
+  {name === 'wrench' && <>
+    <path fill="#916437" stroke="#352014" stroke-width="2" d="m29 3-6 5-3-3 5-4-7 1-4 6 1 6L3 25v4h4l12-12 6-1 4-6Z" />
+    <path fill="none" stroke="#e9c47a" stroke-width="2" d="m5 26 12-12M17 7l1-3M23 13l3-2" />
+    <path fill="#352014" d="M5 26h2v2H5Z" />
+  </>}
+  {name === 'book' && <>
+    <path fill="#63371f" stroke="#352014" stroke-width="2" d="M2 5h9l5 3 5-3h9v23h-9l-5 2-5-2H2Z" />
+    <path fill="#b98545" d="M5 4h6l4 3v20l-4-3H5Zm22 0h-6l-4 3v20l4-3h6Z" />
+    <path fill="#704326" d="M6 7h5l2 2v13l-2-1H6Zm20 0h-5l-2 2v13l2-1h5Z" />
+    <path fill="none" stroke="#e4c17d" d="M4 5v20h7l4 3M28 5v20h-7l-4 3M16 8v20" />
+  </>}
+  {name === 'linkedin' && <>
+    <path fill="#0a66c2" d="M4 2h24v2h2v24h-2v2H4v-2H2V4h2Z" />
+    <path fill="#fff" d="M7 12h4v13H7Zm0-6h4v4H7Zm7 6h4v2c1-2 3-3 5-2 3 1 3 3 3 6v7h-4v-7c0-4-4-4-4 0v7h-4Z" />
+  </>}
+  {name === 'github' && <path fill="#33251f" d="M16 2a14 14 0 0 0-4.4 27.3c.7.1 1-.3 1-.7v-2.8c-4 .9-4.8-1.7-4.8-1.7-.6-1.6-1.6-2-1.6-2-1.3-.9.1-.9.1-.9 1.4.1 2.1 1.4 2.1 1.4 1.3 2.1 3.3 1.5 4.2 1.1.1-.9.5-1.5.9-1.9-3.2-.4-6.5-1.6-6.5-7 0-1.6.6-2.9 1.5-3.9-.1-.4-.7-1.9.2-3.9 0 0 1.2-.4 4 1.5a14 14 0 0 1 7.2 0c2.8-1.9 4-1.5 4-1.5.9 2 .3 3.5.2 3.9.9 1 1.5 2.3 1.5 3.9 0 5.4-3.3 6.6-6.5 7 .5.5 1 1.4 1 2.7v4.1c0 .4.3.8 1 .7A14 14 0 0 0 16 2Z" />}
+  {name === 'vscode' && <>
+    <path fill="#0875b9" d="m23 2 7 3v24l-7 3L9 20l-6 5-3-2 7-7-7-7 3-2 6 5Z" />
+    <path fill="#23a9f2" d="M23 2v30L9 20l4-4 10 9V7L3 25l-3-2Z" />
+    <path fill="#168bd0" d="m23 2 7 3v24l-7 3Z" />
+    <path fill="#70cbfa" d="m23 2 7 3-2 1-5-2Z" />
+  </>}
+  {name === 'docker' && <>
+    <path fill="#1599d6" d="M2 15h21c0-4 0-6 2-8 3 2 3 4 3 5h4c-1 4-3 5-6 5-2 9-9 13-17 11-5-1-7-6-7-13Z" />
+    <path fill="#4fc5f1" d="M3 17h20c-3 5-11 7-18 4Z" />
+    <path fill="#0874b2" d="M8 26c7 1 13-2 16-7-2 8-10 12-16 7Z" />
+    <g fill="#269ed7" stroke="#e0f6ff" stroke-width=".5">
+      <path d="M3 10h4v4H3Zm5 0h4v4H8Zm5 0h4v4h-4Zm5 0h4v4h-4ZM8 5h4v4H8Zm5 0h4v4h-4Zm0-5h4v4h-4Z" />
+    </g>
+    <path fill="#153d52" d="M7 18h2v2H7Z" />
+  </>}
+  {name === 'cloud' && <>
+    <path fill="#30465d" d="M8 5h10l2 4h6v4h4v11H2V13h3V9h3Z" />
+    <path fill="#65849a" d="M9 7h7v3h-5v3H7v3H4v-2h3v-3h2Z" />
+    <path fill="none" stroke="#f5a623" stroke-width="2.5" d="M7 20c5 5 12 5 18 0" />
+    <path fill="#f5a623" d="m21 18 7 0-2 7-1-4Z" />
+  </>}
+  </g>
+</svg>
+
+<style>
+  .pixel-icon {
+    width: var(--pixel-icon-size);
+    height: var(--pixel-icon-size);
+    display: block;
+    flex: none;
+    fill: currentColor;
+    shape-rendering: geometricPrecision;
+  }
+</style>

@@ -82,6 +82,10 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 `Ornament.astro` renders divider, sprig, and branch variants as CSS shapes. They are decorative and hidden from assistive technology. Ornaments reinforce structure but never replace a heading or label.
 
+### Pixel icons
+
+`PixelIcon.astro` contains multicolor SVG artwork for the character sheet, tool tiles, and professional profile links. Tool marks retain recognizable colors; the briefcase, star, wrench, and book share dark walnut outlines, bronze shading, and gold highlights drawn from the About reference. The AWS illustration is a cloud symbol with an orange smile, not an official logo. Artwork is independent of CSS geometry; CSS controls its size and surrounding tile. Decorative instances are hidden from assistive technology; icon-only controls must provide an accessible name and a visible tooltip or nearby label. The live inventory shows both icon families.
+
 ### Dialogs
 
 Section previews use native `<dialog>` for focus management and Escape behavior. Dialog copy must state unfinished routes honestly. A dialog must have a labelled title, described status, explicit close action, and restored opener focus.

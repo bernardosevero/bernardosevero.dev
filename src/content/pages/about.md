@@ -8,7 +8,17 @@ focus:
   - Web
   - Platforms
 description: I build useful products at the intersection of AI, the web, and real people.
-tagline: Better tools. Kinder humans.
+strengths:
+  - label: Creativity
+    level: 8
+  - label: Problem solving
+    level: 8
+  - label: Building
+    level: 8
+  - label: Learning
+    level: 9
+  - label: Collaboration
+    level: 8
 experience:
   - company: SAP Concur
     role: Software Engineer

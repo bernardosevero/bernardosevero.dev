@@ -81,7 +81,10 @@ const pages = defineCollection({
       base: z.string(),
       focus: z.array(z.string()),
       description: z.string(),
-      tagline: z.string(),
+      strengths: z.array(z.object({
+        label: z.string(),
+        level: z.number().int().min(1).max(10),
+      })),
       experience: z.array(z.object({
         company: z.string(),
         role: z.string(),
