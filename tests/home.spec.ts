@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test('menu supports arrows, wraparound, Home/End, Enter and Escape', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('./');
   const menu = page.getByRole('navigation', { name: 'Main Menu' });
   const posts = menu.getByRole('button', { name: 'Posts', exact: true });
   await posts.focus();
@@ -33,7 +33,7 @@ test('menu supports arrows, wraparound, Home/End, Enter and Escape', async ({ pa
 });
 
 test('every menu item opens and closes its own honest section preview', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('./');
   for (const name of ['Posts', 'About', 'Projects', 'Reading']) {
     const opener = page.getByRole('navigation').getByRole('button', { name, exact: true });
     await opener.click();
@@ -43,12 +43,12 @@ test('every menu item opens and closes its own honest section preview', async ({
     await dialog.getByRole('button', { name: 'Back to main menu' }).click();
     await expect(dialog).not.toBeVisible();
     await expect(opener).toBeFocused();
-    await expect(page).toHaveURL('/');
+    await expect(page).toHaveURL('/bernardosevero.dev/');
   }
 });
 
 test('skip link moves keyboard focus directly to the main content', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('./');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
   await page.keyboard.press('Enter');
@@ -68,7 +68,7 @@ for (const viewport of [
     const failures: string[] = [];
     page.on('pageerror', error => failures.push(error.message));
     page.on('response', response => { if (response.status() >= 400) failures.push(response.url()); });
-    await page.goto('/');
+    await page.goto('./');
     await page.evaluate(() => document.fonts.ready);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     const overflow = await page.evaluate(() => {
@@ -82,7 +82,7 @@ for (const viewport of [
     expect(overflow).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(await page.evaluate(() => document.fonts.check('700 30px "Pixelify Sans"') && document.fonts.check('400 28px "VT323"'))).toBe(true);
-    const image = await page.request.get('/images/village.webp');
+    const image = await page.request.get('images/village.webp');
     expect(image.ok()).toBe(true);
     expect(image.headers()['content-type']).toContain('image/webp');
     expect(failures).toEqual([]);
@@ -94,7 +94,7 @@ for (const width of [390, 1586]) {
   test(`Home and its open dialog pass automated accessibility checks at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 992 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
+    await page.goto('./');
     await page.evaluate(() => document.fonts.ready);
     const home = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(home.violations).toEqual([]);

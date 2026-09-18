@@ -2,7 +2,7 @@
 
 Bernardo Severo's personal portfolio, built with **Astro and TypeScript**. Its visual direction is a cozy medieval RPG in pixel art, inspired by a game's pause menu, with sections for projects, writing, experience, and reading.
 
-Live site: [bernardosevero.github.io](https://bernardosevero.github.io/)
+Live site: [bernardosevero.github.io/bernardosevero.dev](https://bernardosevero.github.io/bernardosevero.dev/)
 
 ## Development
 
@@ -50,4 +50,4 @@ The tests build the site, start a temporary preview on port 4322, and check menu
 
 ## Deployment
 
-The site deploys automatically to GitHub Pages whenever a commit reaches `main`. The workflow in `.github/workflows/deploy.yml` uses Astro's official GitHub Action and publishes the static `dist/` output at `https://bernardosevero.github.io/`.
+The site deploys automatically to GitHub Pages whenever a commit reaches `main`. The workflow in `.github/workflows/deploy.yml` uses Astro's official GitHub Action and publishes the static `dist/` output at `https://bernardosevero.github.io/bernardosevero.dev/`.

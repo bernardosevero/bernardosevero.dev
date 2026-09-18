@@ -1,6 +1,6 @@
 .village {
   position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: #527254 url('/images/village.webp') center center / cover no-repeat;
+  background: #527254 var(--village-image) center center / cover no-repeat;
   image-rendering: pixelated;
 }
 .village::after { content: ''; position: absolute; inset: 0; background: #c0bea238; }
