@@ -95,7 +95,9 @@ Rules:
 - Prefer Grid and Flexbox. Use absolute positioning only for decorative details and overlays that require it.
 - Avoid `!important` except for a documented accessibility or third-party override.
 - The public `/system/` page must render production classes, components, fonts, and CSS variables. If a specimen disagrees with the real component, fix or remove the specimen.
-- Update `docs/design-system.md` and `/system/` in the same change whenever a token or shared primitive changes materially.
+- Every new or changed reusable UI component, visual variant, design token, or interaction state must update `/system/` in the same change.
+- Page-specific layout CSS does not require a `/system/` specimen unless it introduces a reusable pattern or changes a shared visual rule.
+- Update `docs/design-system.md` in the same change whenever the design system's ownership, usage rules, tokens, or shared primitives change materially.
 
 ## Visual source of truth
 
