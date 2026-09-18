@@ -9,6 +9,7 @@ interface Props {
   description?: string;
   preloadVillage?: boolean;
   socialImage?: string;
+  socialImageAlt?: string;
 }
 
 const {
@@ -16,6 +17,7 @@ const {
   description = "Bernardo Severo's personal portfolio with a medieval RPG theme.",
   preloadVillage = false,
   socialImage,
+  socialImageAlt = 'Bernardo Severo, Software Engineer, on a parchment sign in a welcoming pixel-art medieval village.',
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL.endsWith('/')
@@ -23,7 +25,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   : `${import.meta.env.BASE_URL}/`;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
-const socialImageUrl = new URL(socialImage ?? `${base}images/social-card.png`, Astro.site);
+const socialImageUrl = new URL(socialImage ?? `${base}images/social-card-v2.jpg`, Astro.site);
 ---
 
 <!doctype html>
@@ -34,20 +36,27 @@ const socialImageUrl = new URL(socialImage ?? `${base}images/social-card.png`, A
     <meta name="description" content={description} />
     <meta name="theme-color" content="#315746" />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="image_src" href={socialImageUrl} />
+    <meta itemprop="image" content={socialImageUrl} />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Bernardo Severo — Personal Log" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
-    <meta property="og:image:width" content="1728" />
-    <meta property="og:image:height" content="920" />
-    <meta property="og:image:alt" content="Bernardo Severo, Software Engineer, on a parchment sign in a welcoming pixel-art medieval village." />
+    <meta property="og:image:url" content={socialImageUrl} />
+    <meta property="og:image:secure_url" content={socialImageUrl} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={socialImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:url" content={canonicalUrl} />
     <meta name="twitter:image" content={socialImageUrl} />
-    <meta name="twitter:image:alt" content="Bernardo Severo, Software Engineer, on a parchment sign in a welcoming pixel-art medieval village." />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
     {preloadVillage && <link rel="preload" href={`${base}images/village.webp`} as="image" fetchpriority="high" />}
     <title>{title}</title>

@@ -44,6 +44,24 @@ test('skip link moves keyboard focus directly to the main content', async ({ pag
   await expect(page.getByRole('main')).toBeFocused();
 });
 
+test('social metadata exposes a crawler-friendly sharing image', async ({ page }) => {
+  await page.goto('./');
+  const socialImage = page.locator('meta[property="og:image"]');
+  await expect(socialImage).toHaveAttribute('content', /\/bernardosevero\.dev\/images\/social-card-v2\.jpg$/);
+  await expect(page.locator('meta[property="og:image:url"]')).toHaveAttribute('content', await socialImage.getAttribute('content') as string);
+  await expect(page.locator('meta[property="og:image:secure_url"]')).toHaveAttribute('content', await socialImage.getAttribute('content') as string);
+  await expect(page.locator('meta[property="og:image:type"]')).toHaveAttribute('content', 'image/jpeg');
+  await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute('content', '1200');
+  await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute('content', '630');
+  await expect(page.locator('link[rel="image_src"]')).toHaveAttribute('href', await socialImage.getAttribute('content') as string);
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
+
+  const response = await page.request.get('images/social-card-v2.jpg');
+  expect(response.ok()).toBe(true);
+  expect(response.headers()['content-type']).toContain('image/jpeg');
+  expect((await response.body()).byteLength).toBeLessThan(300_000);
+});
+
 for (const viewport of [
   { width: 320, height: 740 },
   { width: 390, height: 844 },
