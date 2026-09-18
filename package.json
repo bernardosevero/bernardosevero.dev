@@ -12,13 +12,18 @@
     "check": "astro check",
     "build": "astro build",
     "preview": "astro preview",
+    "test": "playwright test",
     "astro": "astro"
   },
   "dependencies": {
+    "@fontsource/pixelify-sans": "^5.3.0",
+    "@fontsource/vt323": "^5.3.0",
     "astro": "^7.3.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
     "typescript": "^6.0.3"
   }
 }

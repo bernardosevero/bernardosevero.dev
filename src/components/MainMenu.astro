@@ -1,0 +1,48 @@
+---
+import WoodFrame from './WoodFrame.astro';
+import Ornament from './Ornament.astro';
+import { sections } from '../data/portfolio';
+---
+<WoodFrame class="menu-panel">
+  <header class="menu-heading">
+    <Ornament variant="sprig" /><h2 id="menu-title">Main Menu</h2><Ornament variant="sprig" />
+  </header>
+  <Ornament variant="divider" />
+  <nav class="main-menu" aria-labelledby="menu-title">
+    {sections.map(({ id, label }, index) => (
+      <button type="button" class="rpg-button menu-button" data-open-section={id}
+        data-active={index === 0 ? 'true' : 'false'} aria-haspopup="dialog" aria-controls={`${id}-preview`}>
+        <span class="selection-gem" aria-hidden="true"></span><span>{label}</span>
+      </button>
+    ))}
+  </nav>
+  <Ornament variant="divider" />
+</WoodFrame>
+
+<script>
+  const menu = document.querySelector<HTMLElement>('.main-menu');
+  const buttons = Array.from(menu?.querySelectorAll<HTMLButtonElement>('[data-open-section]') ?? []);
+  function selectButton(selected: HTMLButtonElement) {
+    for (const button of buttons) button.dataset.active = String(button === selected);
+  }
+  for (const button of buttons) {
+    button.addEventListener('focus', () => selectButton(button));
+    button.addEventListener('pointerenter', () => selectButton(button));
+    button.addEventListener('click', () => {
+      const dialog = document.getElementById(`${button.dataset.openSection}-preview`);
+      if (dialog instanceof HTMLDialogElement) dialog.showModal();
+    });
+  }
+  menu?.addEventListener('keydown', (event: KeyboardEvent) => {
+    const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    if (current < 0) return;
+    let next = current;
+    if (event.key === 'ArrowDown') next = (current + 1) % buttons.length;
+    else if (event.key === 'ArrowUp') next = (current - 1 + buttons.length) % buttons.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = buttons.length - 1;
+    else return;
+    event.preventDefault();
+    buttons[next]?.focus();
+  });
+</script>

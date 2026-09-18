@@ -1,11 +1,44 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import WoodFrame from '../components/WoodFrame.astro';
+import Ornament from '../components/Ornament.astro';
+import MainMenu from '../components/MainMenu.astro';
+import SectionPreview from '../components/SectionPreview.astro';
+import { profile, sections } from '../data/portfolio';
+import '../styles/home.css';
 ---
 
-<BaseLayout title="Bernardo Severo — Personal Portfolio">
-  <main>
-    <h1>Bernardo Severo</h1>
-    <p>My personal portfolio is under construction.</p>
-    <p>A journey through projects, writing, and reading in a medieval RPG world is coming soon.</p>
+<BaseLayout title="Bernardo Severo — Personal Log">
+  <div class="village" aria-hidden="true"></div>
+  <main id="main-content" class="home" tabindex="-1">
+    <WoodFrame class="nameplate" parchment={false}>
+      <Ornament variant="sprig" />
+      <p>Bernardo Severo <span class="nameplate-dot">·</span> Personal Log</p>
+      <Ornament variant="sprig" />
+    </WoodFrame>
+    <div class="home-panels">
+      <MainMenu />
+      <WoodFrame class="character-panel">
+        <header class="character-heading">
+          <h1>{profile.name}</h1>
+          <div class="profession"><span aria-hidden="true"></span><p>{profile.title}</p><span aria-hidden="true"></span></div>
+        </header>
+        <div class="character-details">
+          <dl class="character-stats">
+            {profile.details.map(({ label, value }) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+          </dl>
+          <div class="character-flourish" aria-hidden="true"><Ornament variant="branch" /></div>
+        </div>
+        <div class="welcome-message">
+          <Ornament variant="sprig" />
+          <p>Welcome. Choose a section to continue.</p>
+          <span class="message-corner top-left" aria-hidden="true"></span>
+          <span class="message-corner top-right" aria-hidden="true"></span>
+          <span class="message-corner bottom-left" aria-hidden="true"></span>
+          <span class="message-corner bottom-right" aria-hidden="true"></span>
+        </div>
+      </WoodFrame>
+    </div>
   </main>
+  {sections.map((section) => <SectionPreview section={section} />)}
 </BaseLayout>

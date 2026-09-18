@@ -1,0 +1,22 @@
+:root {
+  color-scheme: light;
+  --ink: #301a0d;
+  --ink-soft: #654327;
+  --parchment: #ecd59c;
+  --parchment-light: #f9e5b1;
+  --parchment-edge: #b58242;
+  --ornament: #a7884f;
+  --wood-dark: #321b10;
+  --wood-shadow: #492719;
+  --wood: #704129;
+  --wood-light: #a26c40;
+  --green-dark: #173e2d;
+  --green: #429365;
+  --green-light: #9ec578;
+  --gold: #f8c454;
+  --font-heading: 'Pixelify Sans', 'Courier New', monospace;
+  --font-body: 'VT323', 'Courier New', monospace;
+  --space-unit: 4px;
+  --frame-width: 20px;
+  --frame-shadow: 0 4px 0 #2a201b, 0 8px 0 #30241b55, 0 12px 22px #17282035;
+}

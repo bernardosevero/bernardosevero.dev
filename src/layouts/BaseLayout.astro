@@ -1,4 +1,9 @@
 ---
+import '@fontsource/pixelify-sans/latin-700.css';
+import '@fontsource/vt323/latin-400.css';
+import '../styles/tokens.css';
+import '../styles/global.css';
+
 interface Props {
   title: string;
   description?: string;
@@ -16,9 +21,13 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#315746" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/images/village.webp" as="image" fetchpriority="high" />
     <title>{title}</title>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <slot />
   </body>
 </html>

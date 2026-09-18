@@ -4,7 +4,7 @@
 
 Build Bernardo Severo's personal portfolio in Astro as a cozy medieval pixel-art RPG pause menu. Present professional work clearly, accessibly, and with good performance.
 
-The current home page is a temporary starter, not an approved visual implementation. Work within the requested scope. Publishing, external service changes, and full screen implementations require a corresponding user request.
+The Home / Personal Log screen is implemented in Astro and CSS; visual approval remains with the user. Only Home is currently in scope. Its menu opens explicit status dialogs, not finished destination pages. Work within the requested scope. Publishing, external service changes, and additional full screen implementations require a corresponding user request.
 
 ## Language
 
@@ -56,6 +56,7 @@ Use parchment, dark wood, green actions, golden selection indicators, and a medi
 ## Verification and delivery
 
 - Run `npm run check` and `npm run build` after code or configuration changes.
+- Run `npm test` after changing Home layout or interactions. Install its browser once with `npx playwright install chromium`; tests use a separate preview server on port 4322.
 - For visual changes, open the site and compare screenshots with the mockups at equivalent dimensions. Also check mobile layouts, scrolling, focus, and relevant interaction states.
 - Fix overflow, overlap, and material composition differences before declaring a screen complete.
 - Add tests for meaningful behavior when logic is introduced; avoid tests that merely repeat static markup.

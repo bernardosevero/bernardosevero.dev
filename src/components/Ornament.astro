@@ -1,0 +1,10 @@
+---
+interface Props { variant?: 'sprig' | 'branch' | 'divider'; }
+const { variant = 'divider' } = Astro.props;
+---
+<span class:list={['ornament', `ornament--${variant}`]} aria-hidden="true">
+  {variant === 'divider' ? <i class="diamond"></i> : <>
+    <i class="stem"></i>
+    {Array.from({ length: variant === 'branch' ? 8 : 3 }, (_, index) => <i class:list={['leaf', `leaf--${index + 1}`]}></i>)}
+  </>}
+</span>

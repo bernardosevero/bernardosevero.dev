@@ -1,0 +1,18 @@
+---
+import WoodFrame from './WoodFrame.astro';
+import Ornament from './Ornament.astro';
+import type { PortfolioSection } from '../data/portfolio';
+interface Props { section: PortfolioSection; }
+const { section } = Astro.props;
+---
+<dialog id={`${section.id}-preview`} class="section-dialog" aria-labelledby={`${section.id}-title`} aria-describedby={`${section.id}-status`}>
+  <WoodFrame>
+    <p class="dialog-eyebrow">{section.subtitle}</p>
+    <h2 id={`${section.id}-title`}>{section.label}</h2>
+    <Ornament variant="divider" />
+    <p>{section.description}</p>
+    <p class="chapter-status" id={`${section.id}-status`}>{section.status}</p>
+    <form method="dialog"><button class="rpg-button" type="submit" autofocus>Back to main menu</button></form>
+    <p class="dialog-hint"><kbd>Esc</kbd> to return</p>
+  </WoodFrame>
+</dialog>
