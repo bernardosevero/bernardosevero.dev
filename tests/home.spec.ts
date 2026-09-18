@@ -1,34 +1,25 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test('menu supports arrows, wraparound, Home/End, and route links', async ({ page }) => {
+test('homepage opens the character sheet with keyboard-accessible navigation', async ({ page }) => {
   await page.goto('./');
-  const menu = page.getByRole('navigation', { name: 'Main Menu' });
-  const posts = menu.getByRole('link', { name: 'Posts', exact: true });
-  await posts.focus();
-  await page.keyboard.press('ArrowUp');
-  await expect(menu.getByRole('link', { name: 'Reading', exact: true })).toBeFocused();
-  await page.keyboard.press('ArrowDown');
-  await expect(posts).toBeFocused();
-  await page.keyboard.press('ArrowDown');
+  await expect(page.getByRole('heading', { level: 1, name: 'About', exact: true })).toBeVisible();
+  await expect(page.getByRole('img', { name: /Bernardo wearing round glasses/ })).toBeVisible();
+  await expect(page).toHaveTitle('Bernardo Severo — Product Engineer');
+  const menu = page.getByRole('navigation', { name: 'Main navigation' });
   const about = menu.getByRole('link', { name: 'About', exact: true });
-  await expect(about).toBeFocused();
   await expect(about).toHaveAttribute('data-active', 'true');
-  await expect(about).toHaveAttribute('href', '/bernardosevero.dev/about/');
+  await about.focus();
+  await page.keyboard.press('Tab');
+  await expect(menu.getByRole('link', { name: 'Projects', exact: true })).toBeFocused();
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL('/bernardosevero.dev/about/');
-  await page.goto('./');
-  await posts.focus();
-  await page.keyboard.press('End');
-  await expect(menu.getByRole('link', { name: 'Reading', exact: true })).toBeFocused();
-  await page.keyboard.press('Home');
-  await expect(posts).toBeFocused();
+  await expect(page).toHaveURL('/bernardosevero.dev/projects/');
 });
 
 test('every menu item reaches its implemented route', async ({ page }) => {
   await page.goto('./');
-  for (const [name, path] of [['Posts', 'posts/'], ['About', 'about/'], ['Projects', 'projects/'], ['Reading', 'reading/']]) {
-    const link = page.getByRole('navigation').getByRole('link', { name, exact: true });
+  for (const [name, path] of [['Writing', 'posts/'], ['Projects', 'projects/'], ['Reading', 'reading/']]) {
+    const link = page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name, exact: true });
     await expect(link).toHaveAttribute('href', `/bernardosevero.dev/${path}`);
     await link.click();
     await expect(page).toHaveURL(`/bernardosevero.dev/${path}`);
@@ -79,7 +70,7 @@ for (const viewport of [
     await page.evaluate(() => document.fonts.ready);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     const overflow = await page.evaluate(() => {
-      const selectors = ['.home', '.nameplate', '.menu-panel', '.character-panel', '.character-heading', '.character-stats', '.welcome-message'];
+      const selectors = ['.about-page', '.about-shell', '.character-sheet', '.sheet-grid', '.identity-panel', '.about-heading-row'];
       return selectors.filter(selector => {
         const element = document.querySelector<HTMLElement>(selector)!;
         const rect = element.getBoundingClientRect();
@@ -98,7 +89,7 @@ for (const viewport of [
 }
 
 for (const width of [390, 1586]) {
-  test(`Home and its open dialog pass automated accessibility checks at ${width}px`, async ({ page }) => {
+  test(`Home character sheet passes automated accessibility checks at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 992 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('./');

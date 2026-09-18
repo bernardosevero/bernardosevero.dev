@@ -33,10 +33,10 @@ Visual charm supports those answers; it must never hide them.
 
 ## Information architecture
 
-- `/` — Personal Log: introduction and primary navigation.
+- `/` — Character Sheet: profile, experience, specialties, tools, contact, and primary navigation.
 - `/posts/` — Journal: writing list with useful topic filters.
 - `/posts/[slug]/` — Individual article.
-- `/about/` — Character Sheet: profile, experience, specialties, tools, and contact path.
+- `/about/` — Compatibility entry point to the same Character Sheet layout.
 - `/projects/` — Quest Log: project list and featured work.
 - `/projects/[slug]/` — Case study with problem, constraints, decisions, contribution, outcome, and lessons.
 - `/reading/` — Reading Codex: reading, finished, and wishlist shelves with ratings and optional reviews.

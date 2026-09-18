@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WoodFrame from '../components/WoodFrame.astro';
+import Ornament from '../components/Ornament.astro';
+import PixelIcon from '../components/PixelIcon.astro';
+import { Image } from 'astro:assets';
+import wizardPortrait from '../assets/bernardo-wizard.png';
+import { getEntry, render } from 'astro:content';
+import '../styles/portfolio.css';
+import '../styles/about.css';
+
+interface Props { isHome?: boolean; }
+const { isHome = false } = Astro.props;
+
+const about = await getEntry('pages', 'about');
+if (!about || about.data.kind !== 'about') throw new Error('The About content entry is missing or invalid.');
+const { Content } = await render(about);
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+
+const menu = [
+  { label: 'About', href: '#profile', active: true },
+  { label: 'Projects', href: `${base}projects/` },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Skills', href: '#specializations' },
+  { label: 'Writing', href: `${base}posts/` },
+  { label: 'Contact', href: '#contact' },
+  { label: 'Reading', href: `${base}reading/` },
+  ...(!isHome ? [{ label: 'Personal Log', href: base }] : []),
+];
+
+const toolIcons = {
+  'VS Code': 'vscode',
+  GitHub: 'github',
+  Docker: 'docker',
+  AWS: 'cloud',
+} as const;
+
+const socialIcons = {
+  LinkedIn: 'linkedin',
+  GitHub: 'github',
+} as const;
+---
+
+<BaseLayout title={isHome ? 'Bernardo Severo — Product Engineer' : 'About — Bernardo Severo'} description="Experience, specialties, tools, and contact paths for Bernardo Severo." preloadVillage>
+  <main id="main-content" class="portfolio-page about-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
+    <div class="about-shell">
+      <aside class="about-rail" aria-label="About navigation">
+        <WoodFrame parchment={false} class="about-menu-frame">
+          <nav class="about-menu" aria-label="Main navigation">
+            {menu.map((item) => (
+              <a class="rpg-button about-menu-link" data-active={item.active ? 'true' : 'false'} href={item.href} aria-current={item.active ? 'page' : undefined}>
+                {item.active && <span class="selection-gem" aria-hidden="true"></span>}
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </WoodFrame>
+        <WoodFrame class="about-motto">
+          <p>Good ideas make brighter tomorrows.</p>
+          <Ornament variant="sprig" />
+        </WoodFrame>
+      </aside>
+
+      <WoodFrame class="about-frame character-sheet">
+        <header class="sheet-header">
+          <div class="sheet-title-row"><Ornament variant="sprig" /><h1>About</h1><Ornament variant="sprig" /></div>
+          <div class="sheet-subtitle"><span></span><p>Character Sheet</p><span></span></div>
+        </header>
+
+        <div class="sheet-grid">
+          <section id="profile" class="identity-panel" aria-labelledby="identity-heading">
+            <Image class="wizard-portrait" src={wizardPortrait} alt="Bernardo wearing round glasses and a green-and-gold wizard costume, illustrated in pixel art." width={240} densities={[1, 2]} format="webp" loading="eager" />
+            <h2 id="identity-heading" class="sr-only">Profile</h2>
+            <dl class="identity-list">
+              <div><dt>Name</dt><dd>{about.data.name}</dd></div>
+              <div><dt>Class</dt><dd>{about.data.title}</dd></div>
+              <div><dt>Base</dt><dd>{about.data.base}</dd></div>
+              <div><dt>Focus</dt><dd>{about.data.focus.join(' · ')}</dd></div>
+            </dl>
+            <ul class="strength-list" aria-label="Working strengths">
+              {about.data.strengths.map(({ label, level }) => (
+                <li>
+                  <span>{label}</span>
+                  <span class="strength-meter" role="img" aria-label={`${level} out of 10`}>
+                    {Array.from({ length: 10 }, (_, index) => <i data-filled={index < level ? 'true' : 'false'}></i>)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section id="experience" class="experience-panel" aria-labelledby="experience-heading">
+            <h2 id="experience-heading" class="section-heading"><PixelIcon name="briefcase" size={30} />Experience</h2>
+            <ol class="timeline">
+              {about.data.experience.map((item) => (
+                <li>
+                  <h3>{item.company}</h3>
+                  <p class="timeline-role">{item.role}</p>
+                  <p class="timeline-period">{item.period}</p>
+                  <p>{item.description}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section id="specializations" class="specializations-panel sheet-section" aria-labelledby="specializations-heading">
+            <h2 id="specializations-heading" class="section-heading"><PixelIcon name="star" size={30} />Specializations</h2>
+            <ul class="tag-list specialization-list">{about.data.specializations.map((item) => <li>{item}</li>)}</ul>
+          </section>
+
+          <section class="tools-panel sheet-section" aria-labelledby="tools-heading">
+            <h2 id="tools-heading" class="section-heading"><PixelIcon name="wrench" size={30} />Tools</h2>
+            <ul class="tool-list">
+              {about.data.tools.map((tool) => (
+                <li title={tool}>
+                  <PixelIcon name={toolIcons[tool as keyof typeof toolIcons]} size={34} />
+                  <span class="sr-only">{tool}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+
+        <section class="about-copy" aria-labelledby="about-me-heading">
+          <div class="about-heading-row">
+            <h2 id="about-me-heading" class="section-heading"><PixelIcon name="book" size={30} />About me</h2>
+            <nav id="contact" class="contact-links" aria-label="Professional profiles">
+              <div>
+                {about.data.links.map(({ label, url }) => (
+                  <a class="social-link" href={url} target="_blank" rel="noreferrer" aria-label={`${label} (opens in a new tab)`} title={label}>
+                    <PixelIcon name={socialIcons[label as keyof typeof socialIcons]} size={31} />
+                    <span class="sr-only">{label}</span>
+                  </a>
+                ))}
+              </div>
+            </nav>
+          </div>
+          <div class="about-prose"><Content /></div>
+        </section>
+      </WoodFrame>
+    </div>
+  </main>
+</BaseLayout>

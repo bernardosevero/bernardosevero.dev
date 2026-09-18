@@ -112,6 +112,12 @@
   .specialization-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+@media (min-width: 821px) and (max-width: 1200px) {
+  .sheet-grid { grid-template-columns: 1fr; grid-template-areas: 'identity' 'experience' 'specializations' 'tools'; }
+  .identity-panel { padding: 0 0 22px; border-right: 0; }
+  .experience-panel { padding-top: 14px; border-top: 2px solid var(--ornament); }
+}
+
 @media (max-width: 820px) {
   .about-page { align-items: start; }
   .about-shell { grid-template-columns: 1fr; }

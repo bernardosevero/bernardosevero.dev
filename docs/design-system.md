@@ -84,6 +84,8 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 ### Pixel icons
 
+The homepage and `/about/` share `src/layouts/CharacterSheet.astro`, backed by the About content entry. The approved About composition supersedes the original Home mockup for the landing screen. Existing Personal Log return links still lead to `/`. The homepage menu retains Reading instead of a redundant home link. The sheet stacks its columns at intermediate widths to preserve readability.
+
 `PixelIcon.astro` contains multicolor SVG artwork for the character sheet, tool tiles, and professional profile links. Tool marks retain recognizable colors; the briefcase, star, wrench, and book share dark walnut outlines, bronze shading, and gold highlights drawn from the About reference. The AWS illustration is a cloud symbol with an orange smile, not an official logo. Artwork is independent of CSS geometry; CSS controls its size and surrounding tile. Decorative instances are hidden from assistive technology; icon-only controls must provide an accessible name and a visible tooltip or nearby label. The live inventory shows both icon families.
 
 ### Dialogs
