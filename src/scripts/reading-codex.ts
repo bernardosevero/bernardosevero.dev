@@ -19,7 +19,12 @@ class ReadingCodex extends HTMLElement {
       empty.hidden = Boolean(selected);
       if (selected) {
         remembered.set(selected.dataset.status!, bookId!);
-        if (focus) selected.focus({ preventScroll: true });
+        if (focus) {
+          window.posthog?.capture('reading_book_selected', {
+            book_status: selected.dataset.status,
+          });
+          selected.focus({ preventScroll: true });
+        }
         if (focus && this.clientWidth <= 650) selected.scrollIntoView({ block: 'nearest' });
       }
     };
@@ -32,7 +37,13 @@ class ReadingCodex extends HTMLElement {
       }
       const available = details.filter((detail) => detail.dataset.status === shelf);
       selectBook(remembered.get(shelf) ?? available[0]?.dataset.detail);
-      if (announce) announcement.textContent = `${shelf}: ${available.length} books`;
+      if (announce) {
+        announcement.textContent = `${shelf}: ${available.length} books`;
+        window.posthog?.capture('reading_shelf_selected', {
+          shelf,
+          available_book_count: available.length,
+        });
+      }
     };
 
     this.querySelector('.codex-tabs')!.setAttribute('role', 'tablist');

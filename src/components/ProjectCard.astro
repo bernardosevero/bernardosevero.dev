@@ -19,6 +19,10 @@ function isPublicProjectUrl(value: string) {
 }
 
 const verifiedLinks = links.filter((link) => isPublicProjectUrl(link.url));
+
+function getProjectDestinationType(value: string) {
+  return new URL(value).hostname === 'github.com' ? 'source_repository' : 'published_formation';
+}
 ---
 
 <article class="project-card">
@@ -27,10 +31,20 @@ const verifiedLinks = links.filter((link) => isPublicProjectUrl(link.url));
   <p>{summary}</p>
   {verifiedLinks.length > 0 && (
     <ul class="project-card__links" aria-label={`${title} links`}>
-      {verifiedLinks.map((link) => <li><a href={link.url}>{link.label} <span aria-hidden="true">↗</span></a></li>)}
+      {verifiedLinks.map((link) => <li><a href={link.url} data-project-destination={getProjectDestinationType(link.url)}>{link.label} <span aria-hidden="true">↗</span></a></li>)}
     </ul>
   )}
 </article>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-project-destination]').forEach((link) => {
+    link.addEventListener('click', () => {
+      window.posthog?.capture('project_destination_opened', {
+        destination_type: link.dataset.projectDestination,
+      });
+    });
+  });
+</script>
 
 <style>
   .project-card {

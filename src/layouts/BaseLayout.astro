@@ -4,6 +4,7 @@ import '@fontsource/vt323/latin-400.css';
 import '../styles/tokens.css';
 import '../styles/global.css';
 import SiteNavigation from '../components/SiteNavigation.astro';
+import PostHog from '../components/posthog.astro';
 
 interface Props {
   title: string;
@@ -65,6 +66,7 @@ const showSiteNavigation = navigation && !['', 'about', 'about/', 'system', 'sys
     <meta name="twitter:image" content={socialImageUrl} />
     <meta name="twitter:image:alt" content={socialImageAlt} />
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <PostHog />
     {preloadVillage && <link rel="preload" href={`${base}images/village.webp`} as="image" fetchpriority="high" />}
     <title>{title}</title>
   </head>

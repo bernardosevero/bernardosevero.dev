@@ -34,6 +34,10 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort(); c
       if (status) status.textContent = topic === 'all'
         ? `Showing all ${visibleCount} posts.`
         : `Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'} tagged ${control.textContent?.trim() ?? topic}.`;
+      window.posthog?.capture('post_topic_filtered', {
+        topic,
+        visible_post_count: visibleCount,
+      });
     });
   }
 </script>
