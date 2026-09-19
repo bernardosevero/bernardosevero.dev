@@ -4,6 +4,7 @@ import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
 import WoodFrame from '../components/WoodFrame.astro';
 import SiteNavigation from '../components/SiteNavigation.astro';
+import BookCard from '../components/BookCard.astro';
 import '../styles/portfolio.css';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
@@ -93,6 +94,18 @@ const colorTokens = [
           <div class="pixel-icon-row" aria-hidden="true"><PixelIcon name="vscode" /><PixelIcon name="github" /><PixelIcon name="docker" /><PixelIcon name="cloud" /><PixelIcon name="linkedin" /></div>
           <div class="pixel-icon-row" aria-hidden="true"><PixelIcon name="briefcase" /><PixelIcon name="star" /><PixelIcon name="wrench" /><PixelIcon name="book" /></div>
           <p>Tool marks keep their distinct colors. Section artwork shares walnut outlines, bronze shading, and gold highlights. Links retain accessible names.</p>
+        </article>
+        <article>
+          <h3>Book card</h3>
+          <BookCard
+            title="White Nights"
+            author="Fyodor Dostoyevsky"
+            status="finished"
+            coverSrc={`${base}images/books/white-nights-penguin.jpg`}
+            rating={4.5}
+            reviewHref={`${base}reading/fiodor-dostoievski-noites-brancas/`}
+          />
+          <p>Verified covers, factual metadata, and review navigation share one resilient card.</p>
         </article>
         <article>
           <h3>Tags and status</h3>
