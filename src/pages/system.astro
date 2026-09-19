@@ -5,6 +5,7 @@ import PixelIcon from '../components/PixelIcon.astro';
 import WoodFrame from '../components/WoodFrame.astro';
 import SiteNavigation from '../components/SiteNavigation.astro';
 import BookCard from '../components/BookCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import '../styles/portfolio.css';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
@@ -96,6 +97,14 @@ const colorTokens = [
           <p>Tool marks keep their distinct colors. Section artwork shares walnut outlines, bronze shading, and gold highlights. Links retain accessible names.</p>
         </article>
         <article>
+          <h3>Project cards</h3>
+          <div class="project-card-specimens">
+            <ProjectCard title="Portfolio source" summary="A project can expose several verified public destinations." links={[{ label: 'Source repository', url: 'https://github.com/bernardosevero/bernardosevero.dev' }, { label: 'Live site', url: 'https://www.alura.com.br/formacao-full-stack-react-node-js' }]} />
+            <ProjectCard title="Repository unavailable" summary="Projects without a verified public repository remain readable without a fabricated link." />
+          </div>
+          <p>Multi-link and read-only states share the same hierarchy with explicit destinations.</p>
+        </article>
+        <article>
           <h3>Book card</h3>
           <BookCard
             title="White Nights"
@@ -172,6 +181,7 @@ const colorTokens = [
   .type-heading { font: 700 38px/1 var(--font-heading); text-transform: uppercase; }
   .type-body { font: 400 30px/1.15 var(--font-body); }
   .component-grid > article { display: grid; align-content: start; gap: 12px; }
+  .project-card-specimens { display: grid; gap: 12px; }
   .component-grid .rpg-button { width: 100%; }
   :global(.wood-frame-specimen) { width: 100%; min-height: 94px; }
   :global(.wood-frame-specimen .frame-surface) { display: grid; place-items: center; border: 2px solid var(--wood-dark); background: #321b1088; color: var(--parchment-light); font-family: var(--font-heading); font-size: 19px; text-align: center; text-transform: uppercase; }

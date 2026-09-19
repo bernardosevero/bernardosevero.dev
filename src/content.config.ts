@@ -32,6 +32,10 @@ const projects = defineCollection({
     publishedAt: date.optional(),
     repositoryUrl: z.url().optional(),
     liveUrl: z.url().optional(),
+    links: z.array(z.object({
+      label: z.string(),
+      url: z.url(),
+    })).default([]),
     problem: z.string(),
     constraints: z.array(z.string()).default([]),
     decisions: z.array(z.string()).default([]),

@@ -66,6 +66,25 @@ test('Reading opens a book review from its card', async ({ page }) => {
   await expect(page.getByText('O livro apresenta um protagonista', { exact: false })).toBeVisible();
 });
 
+test('Projects list uses repository cards without case-study actions', async ({ page }) => {
+  await page.goto('./projects/');
+  await expect(page.getByRole('link', { name: 'View case study' })).toHaveCount(0);
+  await expect(page.locator('.project-list a[href*="/projects/"]')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Unified troubleshooting platform' })).toBeVisible();
+  await expect(page.getByText('Consolidated fragmented troubleshooting tools', { exact: false })).toBeVisible();
+  const aluraLinks = page.getByRole('list', { name: 'Full-stack courses for Alura links' });
+  await expect(aluraLinks.getByRole('link', { name: /View Alura formation/ })).toHaveAttribute('href', 'https://www.alura.com.br/formacao-full-stack-react-node-js');
+  await expect(aluraLinks.getByRole('link', { name: /Frontend repository/ })).toHaveAttribute('href', 'https://github.com/bernardosevero/alura-books-aulas');
+  await expect(aluraLinks.getByRole('link', { name: /API repository/ })).toHaveAttribute('href', 'https://github.com/bernardosevero/alura-books-server-aulas');
+});
+
+test('Project card specimens expose linked and read-only states', async ({ page }) => {
+  await page.goto('./system/');
+  await expect(page.getByRole('link', { name: /Source repository/ })).toHaveAttribute('href', 'https://github.com/bernardosevero/bernardosevero.dev');
+  await expect(page.getByRole('heading', { name: 'Repository unavailable' })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Repository unavailable/ })).toHaveCount(0);
+});
+
 for (const width of [390, 1586]) {
   test(`portfolio pages fit and pass automated accessibility checks at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 992 });

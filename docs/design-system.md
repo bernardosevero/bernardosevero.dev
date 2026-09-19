@@ -86,6 +86,10 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 `BookCard.astro` owns the Reading Codex cover, title, author, status, optional rating, and review actions. A supplied cover fills a stable 2:3 area without distortion; missing covers retain the same layout. When a review exists, both its title and explicit review action are semantic links.
 
+### Project card
+
+`ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified Alura and GitHub destinations without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Project list cards do not show technology tags or case-study labels.
+
 ### Ornaments
 
 `Ornament.astro` renders divider, sprig, and branch variants as CSS shapes. They are decorative and hidden from assistive technology. Ornaments reinforce structure but never replace a heading or label.

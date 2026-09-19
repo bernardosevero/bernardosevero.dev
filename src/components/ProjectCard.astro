@@ -1,0 +1,81 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  links?: Array<{ label: string; url: string }>;
+  preview?: boolean;
+}
+
+const { title, summary, links = [], preview = false } = Astro.props;
+
+function isPublicProjectUrl(value: string) {
+
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && ['github.com', 'www.alura.com.br'].includes(url.hostname);
+  } catch {
+    return false;
+  }
+}
+
+const verifiedLinks = links.filter((link) => isPublicProjectUrl(link.url));
+---
+
+<article class="project-card">
+  {preview && <p class="project-card__label">Draft preview</p>}
+  <h2>{title}</h2>
+  <p>{summary}</p>
+  {verifiedLinks.length > 0 && (
+    <ul class="project-card__links" aria-label={`${title} links`}>
+      {verifiedLinks.map((link) => <li><a href={link.url}>{link.label} <span aria-hidden="true">↗</span></a></li>)}
+    </ul>
+  )}
+</article>
+
+<style>
+  .project-card {
+    position: relative;
+    display: block;
+    min-height: 100%;
+    padding: 22px;
+    border: 3px solid var(--parchment-edge);
+    background: #f9e5b188;
+    color: var(--ink);
+  }
+
+  .project-card h2 {
+    font-size: clamp(28px, 4vw, 39px);
+    text-transform: uppercase;
+  }
+
+  .project-card__label {
+    color: var(--ink-soft);
+    font-family: var(--font-heading);
+    font-size: 17px;
+    text-transform: uppercase;
+  }
+
+  .project-card__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .project-card__links a {
+    color: var(--green-dark);
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .project-card__links a:hover { color: var(--green); }
+  .project-card__links a:focus-visible { outline: 4px solid var(--gold); outline-offset: 4px; }
+
+  @media (max-width: 520px) {
+    .project-card__links { display: grid; }
+  }
+</style>
