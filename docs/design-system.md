@@ -144,5 +144,3 @@ The public route must import real production components and read computed CSS va
 2. Update the live specimen if a new state or variant exists.
 3. Update this document if the ownership or rule changes.
 4. Run type, build, browser, accessibility, and responsive checks.
-
-This follows the useful principle demonstrated by [Bruno Paulino's public system page](https://bpaulino.com/system/): the specimen documents the production system instead of becoming a parallel design.
