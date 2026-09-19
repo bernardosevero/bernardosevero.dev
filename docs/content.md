@@ -46,6 +46,8 @@ The normalized import shape is:
 
 The Notion database identifier and credentials stay outside the repository. Review the normalized diff before importing.
 
+For verified fallback covers, prefer a durable catalog URL such as Open Library's ISBN or edition endpoint. Record the edition or ISBN in the normalized cover provenance; do not replace an explicitly supplied cover with a discovered match.
+
 ## Pages
 
 Low-frequency Home and About copy lives in `src/content/pages/`. The schema uses a `kind` discriminator so each page has an explicit contract. Do not move button behavior or layout configuration into prose files.

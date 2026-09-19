@@ -4,6 +4,10 @@ author: "Fiódor Dostoiévski"
 status: finished
 rating: 4.5
 finishedAt: "2026-09-06"
+coverUrl: "https://covers.openlibrary.org/b/isbn/9780140449140-L.jpg"
+coverAsset: "/images/books/white-nights-penguin.jpg"
+coverSource: catalog
+coverProvenance: "Open Library ISBN 9780140449140 (Penguin Classics)"
 notionId: "3d474cb445b881629c05e1c0862934d8"
 notionLastEditedAt: "2026-09-07T16:42:46.081Z"
 draft: false

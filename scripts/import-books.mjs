@@ -16,7 +16,7 @@ for (const file of await readdir(targetDirectory)) {
   if (!file.endsWith('.md')) continue;
   const body = await readFile(resolve(targetDirectory, file), 'utf8');
   const id = body.match(/^notionId:\s*["']?([^\n"']+)/m)?.[1]?.trim();
-  if (id) existingByNotionId.set(id, file);
+  if (id) existingByNotionId.set(id, { file, coverUrl: body.match(/^coverUrl:\s*["']?([^\n"']+)/m)?.[1]?.trim(), coverOverride: /^coverOverride:\s*true/m.test(body) });
 }
 
 const slugify = (value) => value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
@@ -34,7 +34,8 @@ for (const book of raw) {
     throw new Error(`Invalid rating for ${book.title}.`);
   }
 
-  const filename = existingByNotionId.get(book.notionId) ?? `${slugify(`${book.author}-${book.title}`)}.md`;
+  const existing = existingByNotionId.get(book.notionId);
+  const filename = existing?.file ?? `${slugify(`${book.author}-${book.title}`)}.md`;
   const target = resolve(targetDirectory, filename);
   const frontmatter = [
     '---',
@@ -43,7 +44,8 @@ for (const book of raw) {
     `status: ${book.status}`,
     ...(book.rating == null ? [] : [`rating: ${book.rating}`]),
     ...(book.finishedAt ? [`finishedAt: ${yaml(book.finishedAt)}`] : []),
-    ...(book.coverUrl ? [`coverUrl: ${yaml(book.coverUrl)}`] : []),
+    ...(book.coverUrl || existing?.coverUrl ? [`coverUrl: ${yaml(existing?.coverOverride ? existing.coverUrl : book.coverUrl ?? existing?.coverUrl)}`] : []),
+    ...(existing?.coverOverride ? ['coverOverride: true'] : []),
     `notionId: ${yaml(book.notionId)}`,
     `notionLastEditedAt: ${yaml(book.notionLastEditedAt)}`,
     'draft: false',

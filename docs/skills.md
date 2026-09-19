@@ -20,6 +20,8 @@ The expected semantic properties are title, author, status, rating, finished dat
 
 The sync is deliberately one-way from Notion to local Markdown for managed book entries. It does not delete local books, write back to Notion, store credentials, commit, push, or deploy.
 
+When Notion does not supply a cover, the importer preserves an existing local `coverUrl`. Cover discovery must match title and author, verify an ISBN or edition when available, prefer durable publisher or library-catalog URLs, and leave ambiguous matches absent.
+
 ## Updating the skills
 
 When a content schema or script changes, update the corresponding personal skill and this document in the same task. Validate personal skills with the `quick_validate.py` utility from the Codex skill-creator package.
