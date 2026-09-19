@@ -1,32 +1,49 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import WoodFrame from '../components/WoodFrame.astro';
-import Ornament from '../components/Ornament.astro';
-import BookCard from '../components/BookCard.astro';
+import ReadingCodex from '../components/ReadingCodex.astro';
+import { navigationItems } from '../config/navigation';
 import { getCollection } from 'astro:content';
 import '../styles/portfolio.css';
 
 const showDraftPreviews = import.meta.env.DEV;
 const books = (await getCollection('books', ({ data }) => !data.draft || (showDraftPreviews && data.preview))).sort((a, b) => a.data.title.localeCompare(b.data.title));
-const sections = ['reading', 'finished', 'wishlist'] as const;
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const codexBooks = books.map((book) => ({
+  id: book.id,
+  ...book.data,
+  coverSrc: book.data.coverAsset ? `${base}${book.data.coverAsset.slice(1)}` : book.data.coverUrl,
+  reviewHref: book.body?.trim() ? `${base}reading/${book.id}/` : undefined,
+}));
 ---
 
-<BaseLayout title="Reading — Bernardo Severo" description="A small reading codex maintained by Bernardo Severo." preloadVillage>
-  <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
-    <div class="portfolio-shell">
-      <a class="back-link" href={base}>← Personal Log</a>
-      <WoodFrame class="portfolio-frame">
-        <header><p class="page-kicker">Reading Codex</p><h1 class="page-title">Reading</h1><p class="page-intro">Books collected here only when their status and rating can be represented honestly.</p><Ornament variant="divider" /></header>
-        <div class="shelves">{sections.map((status) => <section><h2 class="page-heading">{status}</h2><div class="book-grid">{books.filter((book) => book.data.status === status).map((book) => <BookCard title={book.data.title} author={book.data.author} status={book.data.status} coverSrc={book.data.coverAsset ? `${base}${book.data.coverAsset.slice(1)}` : book.data.coverUrl} rating={book.data.rating} reviewHref={book.body?.trim() ? `${base}reading/${book.id}/` : undefined} />)}</div>{!books.some((book) => book.data.status === status) && <p class="shelf-empty">No books listed in this shelf yet.</p>}</section>)}</div>
-      </WoodFrame>
+<BaseLayout title="Reading — Bernardo Severo" description="Explore Bernardo Severo's bookshelves, ratings, and reviews." preloadVillage navigation={false}>
+  <main id="main-content" class="portfolio-page reading-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
+    <div class="reading-shell">
+      <div class="reading-navigation">
+        <a href={base}>← Personal Log</a>
+        <nav aria-label="Main navigation">
+          {navigationItems.map((item) => <a href={`${base}${item.path}`} aria-current={item.id === 'books' ? 'page' : undefined}>{item.label}</a>)}
+        </nav>
+      </div>
+      <ReadingCodex books={codexBooks} />
     </div>
   </main>
 </BaseLayout>
 
 <style>
-  .shelves { display: grid; gap: 30px; }
-  .shelves section + section { padding-top: 28px; border-top: 2px solid var(--ornament); }
-  .book-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 14px; }
-  .shelf-empty { margin-top: 10px; color: var(--ink-soft); }
+  .reading-page { display: grid; align-items: center; padding-block: 36px; }
+  .reading-page::before { background: var(--portfolio-village) center / cover no-repeat, var(--green-dark); }
+  .reading-page::after { opacity: .25; }
+  .reading-shell { width: min(1050px, 100%); margin-inline: auto; }
+  .reading-navigation { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; font: 700 18px/1.2 var(--font-heading); }
+  .reading-navigation nav { display: flex; flex-wrap: wrap; gap: 8px; }
+  .reading-navigation a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px; background: var(--wood-dark); color: var(--parchment-light); text-underline-offset: 4px; }
+  .reading-navigation [aria-current] { color: var(--gold); }
+  @media (max-width: 650px) {
+    .reading-page { padding-block: 16px; align-items: start; }
+    .reading-navigation { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 16px; }
+    .reading-navigation nav { width: 100%; justify-content: space-between; gap: 4px; }
+    .reading-navigation nav a { flex: 1; justify-content: center; }
+    .reading-navigation a { font-size: 16px; padding: 6px; }
+  }
 </style>

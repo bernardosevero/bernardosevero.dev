@@ -82,9 +82,17 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 `SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's four page destinations: About, Projects, Posts, and Books. It uses real anchors, derives the active section from the current route, and renders on every public content route. The Character Sheet uses its rail variant; other pages use the bar variant. The bar renders four columns on wide screens and two columns below 820px; the page shell reserves enough vertical space to keep the mobile menu separate from page content.
 
-### Book card
+### Reading Codex
 
-`BookCard.astro` owns the Reading Codex cover, title, author, status, optional rating, and review actions. A supplied cover fills a stable 2:3 area without distortion; missing covers retain the same layout. When a review exists, both its title and explicit review action are semantic links.
+`ReadingCodex.astro` renders the compact banner, bookshelf tiles, selected-book details, and shelf navigation. Its named styles live in `src/styles/reading-codex.css`; enhancement lives in `src/scripts/reading-codex.ts`. The same complete component runs on Reading and `/system/`, using real collection data. Each instance requires a unique ID.
+
+Desktop uses a 3:2 split between shelf and details, with four cover-first columns. Container queries reduce the shelf to three columns on tablets, then two columns with stacked panels on phones. Real edition covers use `object-fit: contain`; metadata is semantic HTML. Selected tiles have gold corner brackets and a diamond, while the active shelf has a gold border and marker. Keyboard focus remains distinct from selection.
+
+Without JavaScript, shelf navigation and book tiles are fragment links and all metadata and review links remain readable. Enhancement displays one shelf and detail at a time, remembers a selection per shelf, supports Arrow Left/Right and Home/End on tabs, and moves focus to the chosen book details. The first populated shelf opens by default. Empty shelves never display stale book details.
+
+`BookRating.astro` renders five outlined stars with full or fractional fills plus an exact accessible value. Missing ratings say “Not rated”; zero remains a valid rating. The system page shows all these states. No ratings or review summaries are inferred.
+
+Reading uses compact page-specific navigation above the window to preserve the reference's visual hierarchy, with destinations sourced from the shared navigation configuration. Other routes retain `SiteNavigation`.
 
 ### Project card
 
@@ -106,7 +114,7 @@ Section previews use native `<dialog>` for focus management and Escape behavior.
 
 ### Tags and status labels
 
-`.tag-list` groups technologies and topics; `.status-badge` labels a reading status or rating. Both use the legible body pixel font rather than the display face, so compact labels retain distinct glyph shapes at small resolutions. They are real semantic list or text content, not icon-only indicators, and are demonstrated on `/system/`. `BookCard.astro` keeps its cover and metadata top-aligned, then narrows the cover and type below 560px so long English titles and author names remain inside the card.
+`.tag-list` groups technologies and topics; `.status-badge` labels metadata. Both use the legible body pixel font rather than the display face. They are real semantic list or text content and are demonstrated on `/system/`. The Codex's status field and star rating belong to its detail panel.
 
 ### Topic filters
 

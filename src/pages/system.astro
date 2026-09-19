@@ -4,7 +4,9 @@ import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
 import WoodFrame from '../components/WoodFrame.astro';
 import SiteNavigation from '../components/SiteNavigation.astro';
-import BookCard from '../components/BookCard.astro';
+import ReadingCodex from '../components/ReadingCodex.astro';
+import BookRating from '../components/BookRating.astro';
+import { getCollection } from 'astro:content';
 import ProjectCard from '../components/ProjectCard.astro';
 import '../styles/portfolio.css';
 
@@ -17,6 +19,12 @@ const colorTokens = [
   '--wood-dark', '--wood', '--wood-light', '--green-dark', '--green', '--green-light',
   '--gold', '--ornament',
 ];
+const books = (await getCollection('books', ({ data }) => !data.draft)).map((book) => ({
+  id: book.id,
+  ...book.data,
+  coverSrc: book.data.coverAsset ? `${base}${book.data.coverAsset.slice(1)}` : book.data.coverUrl,
+  reviewHref: book.body?.trim() ? `${base}reading/${book.id}/` : undefined,
+}));
 ---
 
 <BaseLayout
@@ -105,16 +113,12 @@ const colorTokens = [
           <p>Multi-link and read-only states share the same hierarchy with explicit destinations.</p>
         </article>
         <article>
-          <h3>Book card</h3>
-          <BookCard
-            title="White Nights"
-            author="Fyodor Dostoyevsky"
-            status="finished"
-            coverSrc={`${base}images/books/white-nights-penguin.jpg`}
-            rating={4.5}
-            reviewHref={`${base}reading/fiodor-dostoievski-noites-brancas/`}
-          />
-          <p>Verified covers, factual metadata, and review navigation share one resilient card with a compact, top-aligned mobile layout.</p>
+          <h3>Book ratings</h3>
+          <BookRating rating={5} />
+          <BookRating rating={4.5} />
+          <BookRating rating={0} />
+          <BookRating />
+          <p>Full, fractional, zero, and unrated values use the production star component with an exact screen-reader label.</p>
         </article>
         <article>
           <h3>Tags and status</h3>
@@ -129,6 +133,11 @@ const colorTokens = [
         </article>
       </div>
     </WoodFrame>
+
+    <section class="system-codex" aria-label="Reading Codex specimen">
+      <p class="system-codex-note">Live Reading Codex: select a book, switch shelves, or use the arrow keys on the shelf tabs. Empty shelves and review links use the real collection.</p>
+      <ReadingCodex books={books} id="system-codex" headingLevel="h2" />
+    </section>
 
     <footer>
       <p>Implementation rules, token ownership, and contribution checks live in <code>docs/design-system.md</code>.</p>
@@ -189,6 +198,8 @@ const colorTokens = [
   .ornament-row :global(.ornament--divider) { width: min(260px, 70%); margin: 0; }
   .pixel-icon-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; min-height: 66px; }
   footer { color: var(--parchment-light); text-align: center; }
+  .system-codex { margin-block: 32px; }
+  .system-codex-note { color: var(--parchment-light); margin-bottom: 16px; }
   @media (max-width: 760px) { .component-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
   @media (max-width: 520px) { .system-page { padding-top: 28px; } :global(.system-section .frame-surface) { padding: 22px 16px; } }
 </style>

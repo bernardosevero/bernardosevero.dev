@@ -11,12 +11,14 @@ interface Props {
   preloadVillage?: boolean;
   socialImage?: string;
   socialImageAlt?: string;
+  navigation?: boolean;
 }
 
 const {
   title,
   description = "Bernardo Severo's personal portfolio with a medieval RPG theme.",
   preloadVillage = false,
+  navigation = true,
   socialImage,
   socialImageAlt = 'Bernardo Severo, Software Engineer, on a parchment sign in a welcoming pixel-art medieval village.',
 } = Astro.props;
@@ -30,7 +32,7 @@ const socialImageUrl = new URL(socialImage ?? `${base}images/social-card-v2.jpg`
 const relativePath = Astro.url.pathname.startsWith(base)
   ? Astro.url.pathname.slice(base.length)
   : Astro.url.pathname.replace(/^\/+/, '');
-const showSiteNavigation = !['', 'about', 'about/', 'system', 'system/'].includes(relativePath);
+const showSiteNavigation = navigation && !['', 'about', 'about/', 'system', 'system/'].includes(relativePath);
 ---
 
 <!doctype html>

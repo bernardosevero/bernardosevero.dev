@@ -57,33 +57,74 @@ for (const width of [320, 390, 1586]) {
   });
 }
 
-test('Reading opens a book review from its card', async ({ page }) => {
+test('Reading selects a book and opens its review', async ({ page }) => {
   await page.goto('./reading/');
   await expect(page.getByText('O livro apresenta um protagonista', { exact: false })).toHaveCount(0);
   await page.getByRole('link', { name: /White Nights/ }).click();
+  await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
+  await page.getByRole('link', { name: 'Read review →' }).click();
   await expect(page).toHaveURL(/reading\/fiodor-dostoievski-noites-brancas\/$/);
   await expect(page.getByRole('heading', { level: 1, name: 'White Nights' })).toBeVisible();
   await expect(page.getByText('O livro apresenta um protagonista', { exact: false })).toBeVisible();
 });
 
-test('mobile navigation clears page content and book metadata stays aligned', async ({ page }) => {
+test('mobile codex keeps navigation, bookshelf, and details separate', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('./reading/');
   await page.evaluate(() => document.fonts.ready);
 
-  const navigation = await page.locator('.base-navigation').boundingBox();
-  const backLink = await page.getByRole('link', { name: /Personal Log/ }).boundingBox();
-  expect(backLink!.y - (navigation!.y + navigation!.height)).toBeGreaterThanOrEqual(12);
-
-  for (const card of await page.locator('.book-card').all()) {
-    const cardBox = await card.boundingBox();
-    const cover = await card.locator('.book-card__cover').boundingBox();
-    const content = await card.locator('.book-card__content').boundingBox();
-    expect(Math.abs(cover!.y - content!.y)).toBeLessThanOrEqual(1);
-    expect(cover!.x + cover!.width).toBeLessThan(content!.x);
-    expect(content!.x + content!.width).toBeLessThanOrEqual(cardBox!.x + cardBox!.width);
-  }
+  const navigation = await page.locator('.reading-navigation').boundingBox();
+  const codex = await page.locator('reading-codex').boundingBox();
+  expect(codex!.y - (navigation!.y + navigation!.height)).toBeGreaterThanOrEqual(12);
+  const shelf = await page.locator('.codex-library').boundingBox();
+  const details = await page.locator('.codex-details').boundingBox();
+  expect(details!.y).toBeGreaterThan(shelf!.y + shelf!.height);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+test('shelf tabs support keyboard selection, empty states, and remembered books', async ({ page }) => {
+  await page.goto('./reading/');
+  await page.getByRole('link', { name: 'White Nights', exact: true }).click();
+  await expect(page.getByRole('article', { name: 'White Nights' }).getByText('4.5 out of 5 stars', { exact: true })).toBeVisible();
+  const finished = page.getByRole('tab', { name: 'finished', exact: true });
+  await finished.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'wishlist' })).toBeFocused();
+  await expect(page.getByRole('tab', { name: 'wishlist' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tabpanel', { name: 'wishlist' }).getByText('No books on this shelf yet.', { exact: true })).toBeVisible();
+  await expect(page.locator('.codex-detail:visible')).toHaveCount(0);
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
+});
+
+test('books and reviews remain available without JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('http://127.0.0.1:4322/bernardosevero.dev/reading/');
+  await expect(page.locator('.codex-detail')).toHaveCount(3);
+  await page.getByRole('link', { name: 'White Nights', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
+  await page.getByRole('link', { name: 'Read review →' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'White Nights' })).toBeVisible();
+  await context.close();
+});
+
+for (const width of [320, 390, 760, 1586]) {
+  test(`Reading Codex fits at ${width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 992 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('./reading/');
+    await page.evaluate(() => document.fonts.ready);
+    for (const title of ['The Death of Ivan Ilyich', 'The Metamorphosis', 'White Nights']) {
+      await page.getByRole('link', { name: title, exact: true }).click();
+      const detail = page.getByRole('article', { name: title });
+      expect(await detail.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: testInfo.outputPath(`codex-${width}.png`), fullPage: true });
+  });
+}
 
 test('Projects list uses repository cards without case-study actions', async ({ page }) => {
   await page.goto('./projects/');

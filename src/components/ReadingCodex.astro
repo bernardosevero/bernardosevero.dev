@@ -1,0 +1,78 @@
+---
+import WoodFrame from './WoodFrame.astro';
+import Ornament from './Ornament.astro';
+import BookRating from './BookRating.astro';
+import '../styles/reading-codex.css';
+
+export interface CodexBook {
+  id: string;
+  title: string;
+  author: string;
+  status: 'reading' | 'finished' | 'wishlist';
+  coverSrc?: string;
+  rating?: number;
+  reviewHref?: string;
+}
+interface Props { books: CodexBook[]; id?: string; headingLevel?: 'h1' | 'h2'; }
+const { books, id = 'reading-codex', headingLevel: Heading = 'h1' } = Astro.props;
+const shelves = ['reading', 'finished', 'wishlist'] as const;
+---
+
+<reading-codex id={id}>
+  <WoodFrame parchment={false} class="codex-frame">
+    <header class="codex-banner codex-parchment">
+      <div class="codex-title"><Ornament variant="sprig" /><Heading>Reading</Heading><Ornament variant="sprig" /></div>
+      <p class="codex-subtitle">Codex</p>
+    </header>
+    <div class="codex-body">
+      <div class="codex-library codex-parchment">
+        {shelves.map((shelf) => (
+          <section class="codex-shelf" data-shelf={shelf} id={`${id}-${shelf}`} aria-label={`${shelf} books`}>
+            <h2 class="codex-shelf-title">{shelf}</h2>
+            <ul class="codex-grid">
+              {books.filter((book) => book.status === shelf).map((book) => (
+                <li>
+                  <a class="codex-tile" href={`#${id}-book-${book.id}`} data-book={book.id}>
+                    <span class="codex-tile__cover">
+                      {book.coverSrc ? <img src={book.coverSrc} alt="" width="120" height="180" /> : <span class="codex-cover-missing">Cover unavailable</span>}
+                    </span>
+                    <span class="codex-tile__title">{book.title}</span>
+                    <span class="codex-selected-mark" aria-hidden="true">◆</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            {!books.some((book) => book.status === shelf) && <p class="codex-empty">No books on this shelf yet.</p>}
+          </section>
+        ))}
+      </div>
+      <div class="codex-details codex-parchment" aria-label="Book details">
+        {books.map((book) => (
+          <article class="codex-detail" id={`${id}-book-${book.id}`} data-detail={book.id} data-status={book.status} tabindex="-1" aria-labelledby={`${id}-title-${book.id}`}>
+            <div class="codex-detail__cover">
+              {book.coverSrc ? <img src={book.coverSrc} alt={`Cover of ${book.title}`} width="240" height="360" /> : <span class="codex-cover-missing">Cover unavailable</span>}
+            </div>
+            <h2 id={`${id}-title-${book.id}`}>{book.title}</h2>
+            <p class="codex-author">{book.author}</p>
+            <Ornament variant="divider" />
+            <dl class="codex-facts">
+              <div><dt>Status</dt><dd><span class="codex-status">{book.status}</span></dd></div>
+              <div><dt>Rating</dt><dd><BookRating rating={book.rating} /></dd></div>
+            </dl>
+            <Ornament variant="divider" />
+            {book.reviewHref && <a class="codex-review" href={book.reviewHref}>Read review →</a>}
+          </article>
+        ))}
+        <p class="codex-detail-empty" hidden data-empty-detail>Select a populated shelf to explore a book.</p>
+      </div>
+    </div>
+    <nav class="codex-tabs" aria-label="Bookshelves">
+      {shelves.map((shelf) => <a class="rpg-button codex-tab" href={`#${id}-${shelf}`} data-shelf-link={shelf}>{shelf}</a>)}
+    </nav>
+    <p class="sr-only" aria-live="polite" data-announcement></p>
+  </WoodFrame>
+</reading-codex>
+
+<script>
+  import '../scripts/reading-codex';
+</script>
