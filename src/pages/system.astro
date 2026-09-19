@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
 import WoodFrame from '../components/WoodFrame.astro';
+import SiteNavigation from '../components/SiteNavigation.astro';
 import '../styles/portfolio.css';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
@@ -69,6 +70,11 @@ const colorTokens = [
           <h3>Primary action</h3>
           <button class="rpg-button" type="button">Continue quest</button>
           <p>Hover, focus, active, and reduced-motion states belong to the same primitive.</p>
+        </article>
+        <article>
+          <h3>Site navigation</h3>
+          <SiteNavigation pathname={`${base}projects/`} />
+          <p>The same page-only menu highlights the active section on every portfolio route.</p>
         </article>
         <article>
           <h3>Wood frame</h3>

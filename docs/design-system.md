@@ -78,6 +78,10 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 `.rpg-button` is the primary action primitive. Its focus ring uses gold and remains visible independently of hover. Use native links for navigation even if they share the visual class; use buttons only for actions.
 
+### Site navigation
+
+`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's four page destinations: About, Projects, Posts, and Books. It uses real anchors, derives the active section from the current route, and renders on every public content route. The Character Sheet uses its rail variant; other pages use the bar variant.
+
 ### Ornaments
 
 `Ornament.astro` renders divider, sprig, and branch variants as CSS shapes. They are decorative and hidden from assistive technology. Ornaments reinforce structure but never replace a heading or label.

@@ -1,0 +1,74 @@
+---
+import WoodFrame from './WoodFrame.astro';
+import { getActiveNavigationItem, navigationItems } from '../config/navigation';
+
+interface Props {
+  pathname: string;
+  variant?: 'rail' | 'bar';
+}
+
+const { pathname, variant = 'bar' } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const activeItem = getActiveNavigationItem(pathname, base);
+---
+
+<WoodFrame parchment={false} class:list={['site-navigation', `site-navigation--${variant}`]}>
+  <nav class="site-navigation__list" aria-label="Main navigation">
+    {navigationItems.map((item) => {
+      const active = item.id === activeItem;
+      return (
+        <a
+          class="rpg-button site-navigation__link"
+          data-active={active ? 'true' : 'false'}
+          href={`${base}${item.path}`}
+          aria-current={active ? 'page' : undefined}
+        >
+          <span class="site-navigation__gem" aria-hidden="true"></span>
+          {item.label}
+        </a>
+      );
+    })}
+  </nav>
+</WoodFrame>
+
+<style>
+  :global(.site-navigation) { width: 100%; }
+  :global(.site-navigation .frame-surface) { padding: 10px; border: 2px solid #2a190f; background: #5b3422; }
+  .site-navigation__list { display: grid; gap: 10px; }
+  .site-navigation__link { min-height: 48px; padding: 8px 10px; font-size: 22px; text-decoration: none; }
+  .site-navigation__link[data-active='true'] {
+    border-color: #754815;
+    background: linear-gradient(#71c17f, #49a76b);
+    color: #182b20;
+    text-shadow: 1px 1px #9de19d;
+  }
+  .site-navigation__gem {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: -14px;
+    top: calc(50% - 9px);
+    transform: rotate(45deg);
+    border: 2px solid #8b5515;
+    background: #ffc84b;
+    box-shadow: inset 2px 2px #fff0a0, inset -2px -2px #d89220, 0 0 0 2px #4b2e11;
+    opacity: 0;
+  }
+  .site-navigation__link[data-active='true'] .site-navigation__gem { opacity: 1; }
+
+  :global(.site-navigation--bar) { margin-bottom: 18px; }
+  :global(.site-navigation--bar .frame-surface) { padding: 12px; }
+  .site-navigation--bar .site-navigation__list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .site-navigation--bar .site-navigation__link { min-height: 54px; font-size: clamp(18px, 2.2vw, 26px); }
+
+  @media (max-width: 820px) {
+    .site-navigation--rail .site-navigation__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .site-navigation--bar .site-navigation__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 520px) {
+    :global(.site-navigation .frame-surface) { padding: 8px; }
+    .site-navigation__link { min-height: 45px; font-size: 18px; }
+    .site-navigation__gem { left: -10px; }
+  }
+</style>

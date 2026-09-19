@@ -3,6 +3,7 @@ import '@fontsource/pixelify-sans/latin-700.css';
 import '@fontsource/vt323/latin-400.css';
 import '../styles/tokens.css';
 import '../styles/global.css';
+import SiteNavigation from '../components/SiteNavigation.astro';
 
 interface Props {
   title: string;
@@ -26,6 +27,10 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const socialImageUrl = new URL(socialImage ?? `${base}images/social-card-v2.jpg`, Astro.site);
+const relativePath = Astro.url.pathname.startsWith(base)
+  ? Astro.url.pathname.slice(base.length)
+  : Astro.url.pathname.replace(/^\/+/, '');
+const showSiteNavigation = !['', 'about', 'about/', 'system', 'system/'].includes(relativePath);
 ---
 
 <!doctype html>
@@ -63,6 +68,25 @@ const socialImageUrl = new URL(socialImage ?? `${base}images/social-card-v2.jpg`
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
+    {showSiteNavigation && <div class="base-navigation"><SiteNavigation pathname={Astro.url.pathname} /></div>}
     <slot />
   </body>
 </html>
+
+<style>
+  .base-navigation {
+    position: absolute;
+    z-index: 1;
+    top: clamp(18px, 3vw, 40px);
+    left: 50%;
+    width: min(1160px, calc(100% - 32px));
+    transform: translateX(-50%);
+  }
+
+  .base-navigation + :global(.portfolio-page) { padding-top: clamp(114px, 12vw, 160px); }
+
+  @media (max-width: 520px) {
+    .base-navigation { width: min(100% - 16px, 1160px); }
+    .base-navigation + :global(.portfolio-page) { padding-top: 148px; }
+  }
+</style>

@@ -19,7 +19,11 @@ for (const route of routes) {
     await page.goto(`./${route.path}`);
     await page.evaluate(() => document.fonts.ready);
     await expect(page.getByRole('heading', { level: 1, name: route.heading })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Personal Log|Quest Log|Reading Codex/ })).toBeVisible();
+    const menu = page.getByRole('navigation', { name: 'Main navigation' });
+    await expect(menu.getByRole('link')).toHaveCount(4);
+    if (route.path !== 'about/') {
+      await expect(page.getByRole('link', { name: /Personal Log|Quest Log|Reading Codex/ })).toBeVisible();
+    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(failures).toEqual([]);
   });

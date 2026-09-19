@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import WoodFrame from '../components/WoodFrame.astro';
 import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
+import SiteNavigation from '../components/SiteNavigation.astro';
 import { Image } from 'astro:assets';
 import wizardPortrait from '../assets/bernardo-wizard.png';
 import { getEntry, render } from 'astro:content';
@@ -16,17 +17,6 @@ const about = await getEntry('pages', 'about');
 if (!about || about.data.kind !== 'about') throw new Error('The About content entry is missing or invalid.');
 const { Content } = await render(about);
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-
-const menu = [
-  { label: 'About', href: '#profile', active: true },
-  { label: 'Projects', href: `${base}projects/` },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Skills', href: '#specializations' },
-  { label: 'Writing', href: `${base}posts/` },
-  { label: 'Contact', href: '#contact' },
-  { label: 'Reading', href: `${base}reading/` },
-  ...(!isHome ? [{ label: 'Personal Log', href: base }] : []),
-];
 
 const toolIcons = {
   'VS Code': 'vscode',
@@ -45,18 +35,9 @@ const socialIcons = {
   <main id="main-content" class="portfolio-page about-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
     <div class="about-shell">
       <aside class="about-rail" aria-label="About navigation">
-        <WoodFrame parchment={false} class="about-menu-frame">
-          <nav class="about-menu" aria-label="Main navigation">
-            {menu.map((item) => (
-              <a class="rpg-button about-menu-link" data-active={item.active ? 'true' : 'false'} href={item.href} aria-current={item.active ? 'page' : undefined}>
-                {item.active && <span class="selection-gem" aria-hidden="true"></span>}
-                {item.label}
-              </a>
-            ))}
-          </nav>
-        </WoodFrame>
+        <SiteNavigation pathname={Astro.url.pathname} variant="rail" />
         <WoodFrame class="about-motto">
-          <p>Good ideas make brighter tomorrows.</p>
+          <p>All we have to decide is what to do with the time that is given us</p>
           <Ornament variant="sprig" />
         </WoodFrame>
       </aside>
