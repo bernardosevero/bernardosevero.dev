@@ -74,6 +74,14 @@ test('mobile codex keeps navigation, bookshelf, and details separate', async ({ 
   await page.evaluate(() => document.fonts.ready);
 
   const navigation = await page.locator('.reading-navigation').boundingBox();
+  const menu = page.locator('.reading-navigation .site-navigation--bar');
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole('link', { name: 'Books', exact: true })).toHaveAttribute('aria-current', 'page');
+  const about = await menu.getByRole('link', { name: 'About', exact: true }).boundingBox();
+  const projects = await menu.getByRole('link', { name: 'Projects', exact: true }).boundingBox();
+  const posts = await menu.getByRole('link', { name: 'Posts', exact: true }).boundingBox();
+  expect(about!.y).toBe(projects!.y);
+  expect(posts!.y).toBeGreaterThan(about!.y + about!.height);
   const codex = await page.locator('reading-codex').boundingBox();
   expect(codex!.y - (navigation!.y + navigation!.height)).toBeGreaterThanOrEqual(12);
   const shelf = await page.locator('.codex-library').boundingBox();

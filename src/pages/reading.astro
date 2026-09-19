@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ReadingCodex from '../components/ReadingCodex.astro';
-import { navigationItems } from '../config/navigation';
+import SiteNavigation from '../components/SiteNavigation.astro';
 import { getCollection } from 'astro:content';
 import '../styles/portfolio.css';
 
@@ -20,30 +20,21 @@ const codexBooks = books.map((book) => ({
   <main id="main-content" class="portfolio-page reading-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
     <div class="reading-shell">
       <div class="reading-navigation">
-        <a href={base}>← Personal Log</a>
-        <nav aria-label="Main navigation">
-          {navigationItems.map((item) => <a href={`${base}${item.path}`} aria-current={item.id === 'books' ? 'page' : undefined}>{item.label}</a>)}
-        </nav>
+        <SiteNavigation pathname={Astro.url.pathname} />
       </div>
+      <a class="back-link" href={base}>← Personal Log</a>
       <ReadingCodex books={codexBooks} />
     </div>
   </main>
 </BaseLayout>
 
 <style>
-  .reading-page { display: grid; align-items: center; padding-block: 36px; }
+  .reading-page { padding-block: 36px; }
   .reading-page::before { background: var(--portfolio-village) center / cover no-repeat, var(--green-dark); }
   .reading-page::after { opacity: .25; }
   .reading-shell { width: min(1050px, 100%); margin-inline: auto; }
-  .reading-navigation { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; font: 700 18px/1.2 var(--font-heading); }
-  .reading-navigation nav { display: flex; flex-wrap: wrap; gap: 8px; }
-  .reading-navigation a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px; background: var(--wood-dark); color: var(--parchment-light); text-underline-offset: 4px; }
-  .reading-navigation [aria-current] { color: var(--gold); }
+  .reading-navigation { display: flow-root; margin-bottom: 12px; }
   @media (max-width: 650px) {
-    .reading-page { padding-block: 16px; align-items: start; }
-    .reading-navigation { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 16px; }
-    .reading-navigation nav { width: 100%; justify-content: space-between; gap: 4px; }
-    .reading-navigation nav a { flex: 1; justify-content: center; }
-    .reading-navigation a { font-size: 16px; padding: 6px; }
+    .reading-page { padding-block: 16px; }
   }
 </style>

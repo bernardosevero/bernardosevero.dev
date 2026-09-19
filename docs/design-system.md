@@ -92,7 +92,7 @@ Without JavaScript, shelf navigation and book tiles are fragment links and all m
 
 `BookRating.astro` renders five outlined stars with full or fractional fills plus an exact accessible value. Missing ratings say “Not rated”; zero remains a valid rating. The system page shows all these states. No ratings or review summaries are inferred.
 
-Reading uses compact page-specific navigation above the window to preserve the reference's visual hierarchy, with destinations sourced from the shared navigation configuration. Other routes retain `SiteNavigation`.
+Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green actions in a timber frame, four columns on desktop and two on mobile. It sits in normal document flow above the Codex so its actual height determines the content spacing.
 
 ### Project card
 
