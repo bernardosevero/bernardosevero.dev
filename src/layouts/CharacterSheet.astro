@@ -108,7 +108,7 @@ const socialIcons = {
             <nav id="contact" class="contact-links" aria-label="Professional profiles">
               <div>
                 {about.data.links.map(({ label, url }) => (
-                  <a class="social-link" href={url} target="_blank" rel="noreferrer" aria-label={`${label} (opens in a new tab)`} title={label}>
+                  <a class="social-link" href={url} target="_blank" rel="noreferrer" data-professional-profile={label.toLowerCase()} aria-label={`${label} (opens in a new tab)`} title={label}>
                     <PixelIcon name={socialIcons[label as keyof typeof socialIcons]} size={31} />
                     <span class="sr-only">{label}</span>
                   </a>
@@ -122,3 +122,13 @@ const socialIcons = {
     </div>
   </main>
 </BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-professional-profile]').forEach((link) => {
+    link.addEventListener('click', () => {
+      window.posthog?.capture('professional_profile_opened', {
+        profile: link.dataset.professionalProfile,
+      });
+    });
+  });
+</script>
