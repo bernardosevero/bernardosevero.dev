@@ -23,6 +23,11 @@ const slugify = (value) => value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '
   .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const yaml = (value) => JSON.stringify(String(value));
 const allowedStatuses = new Set(['reading', 'finished', 'wishlist']);
+const knownEnglishMetadata = new Map([
+  ['3d474cb445b881328124e14e1570a5c8', { title: 'The Metamorphosis', author: 'Franz Kafka' }],
+  ['3d474cb445b881199053ee7d6730761a', { title: 'The Death of Ivan Ilyich', author: 'Leo Tolstoy' }],
+  ['3d474cb445b881629c05e1c0862934d8', { title: 'White Nights', author: 'Fyodor Dostoevsky' }],
+]);
 
 for (const book of raw) {
   if (!book || typeof book !== 'object') throw new Error('Every book must be an object.');
@@ -34,13 +39,20 @@ for (const book of raw) {
     throw new Error(`Invalid rating for ${book.title}.`);
   }
 
+  const knownMetadata = knownEnglishMetadata.get(book.notionId);
+  const title = (typeof book.englishTitle === 'string' ? book.englishTitle.trim() : '') || knownMetadata?.title;
+  const author = (typeof book.englishAuthor === 'string' ? book.englishAuthor.trim() : '') || knownMetadata?.author;
+  if (!title || !author) {
+    throw new Error(`English title and author are required for ${book.title}. Add englishTitle and englishAuthor to the normalized Notion export.`);
+  }
+
   const existing = existingByNotionId.get(book.notionId);
-  const filename = existing?.file ?? `${slugify(`${book.author}-${book.title}`)}.md`;
+  const filename = existing?.file ?? `${slugify(`${author}-${title}`)}.md`;
   const target = resolve(targetDirectory, filename);
   const frontmatter = [
     '---',
-    `title: ${yaml(book.title)}`,
-    `author: ${yaml(book.author)}`,
+    `title: ${yaml(title)}`,
+    `author: ${yaml(author)}`,
     `status: ${book.status}`,
     ...(book.rating == null ? [] : [`rating: ${book.rating}`]),
     ...(book.finishedAt ? [`finishedAt: ${yaml(book.finishedAt)}`] : []),

@@ -1,6 +1,6 @@
 ---
-title: "A Morte de Ivan Ilitch"
-author: "Liev Tolstói"
+title: "The Death of Ivan Ilyich"
+author: "Leo Tolstoy"
 status: finished
 rating: 4.5
 finishedAt: "2026-08-06"

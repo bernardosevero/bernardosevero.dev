@@ -8,7 +8,7 @@ const routes = [
   { path: 'projects/event-driven-invoicing/', heading: 'Event-driven invoicing system' },
   { path: 'posts/', heading: 'Posts' },
   { path: 'reading/', heading: 'Reading' },
-  { path: 'reading/fiodor-dostoievski-noites-brancas/', heading: 'Noites Brancas' },
+  { path: 'reading/fiodor-dostoievski-noites-brancas/', heading: 'White Nights' },
 ];
 
 for (const route of routes) {
@@ -60,10 +60,29 @@ for (const width of [320, 390, 1586]) {
 test('Reading opens a book review from its card', async ({ page }) => {
   await page.goto('./reading/');
   await expect(page.getByText('O livro apresenta um protagonista', { exact: false })).toHaveCount(0);
-  await page.getByRole('link', { name: /Noites Brancas/ }).click();
+  await page.getByRole('link', { name: /White Nights/ }).click();
   await expect(page).toHaveURL(/reading\/fiodor-dostoievski-noites-brancas\/$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Noites Brancas' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'White Nights' })).toBeVisible();
   await expect(page.getByText('O livro apresenta um protagonista', { exact: false })).toBeVisible();
+});
+
+test('mobile navigation clears page content and book metadata stays aligned', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('./reading/');
+  await page.evaluate(() => document.fonts.ready);
+
+  const navigation = await page.locator('.base-navigation').boundingBox();
+  const backLink = await page.getByRole('link', { name: /Personal Log/ }).boundingBox();
+  expect(backLink!.y - (navigation!.y + navigation!.height)).toBeGreaterThanOrEqual(12);
+
+  for (const card of await page.locator('.book-card').all()) {
+    const cardBox = await card.boundingBox();
+    const cover = await card.locator('.book-card__cover').boundingBox();
+    const content = await card.locator('.book-card__content').boundingBox();
+    expect(Math.abs(cover!.y - content!.y)).toBeLessThanOrEqual(1);
+    expect(cover!.x + cover!.width).toBeLessThan(content!.x);
+    expect(content!.x + content!.width).toBeLessThanOrEqual(cardBox!.x + cardBox!.width);
+  }
 });
 
 test('Projects list uses repository cards without case-study actions', async ({ page }) => {

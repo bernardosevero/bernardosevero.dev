@@ -1,6 +1,6 @@
 ---
-title: "Noites Brancas"
-author: "Fiódor Dostoiévski"
+title: "White Nights"
+author: "Fyodor Dostoevsky"
 status: finished
 rating: 4.5
 finishedAt: "2026-09-06"

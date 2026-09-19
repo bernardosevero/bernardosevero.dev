@@ -83,10 +83,13 @@ const showSiteNavigation = !['', 'about', 'about/', 'system', 'system/'].include
     transform: translateX(-50%);
   }
 
-  .base-navigation + :global(.portfolio-page) { padding-top: clamp(114px, 12vw, 160px); }
+  .base-navigation + :global(.portfolio-page) { padding-top: 204px; }
+
+  @media (max-width: 820px) {
+    .base-navigation + :global(.portfolio-page) { padding-top: 240px; }
+  }
 
   @media (max-width: 520px) {
     .base-navigation { width: min(100% - 16px, 1160px); }
-    .base-navigation + :global(.portfolio-page) { padding-top: 148px; }
   }
 </style>

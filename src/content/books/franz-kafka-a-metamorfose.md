@@ -1,5 +1,5 @@
 ---
-title: "A Metamorfose"
+title: "The Metamorphosis"
 author: "Franz Kafka"
 status: finished
 rating: 5

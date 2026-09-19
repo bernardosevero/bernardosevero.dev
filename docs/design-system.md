@@ -80,7 +80,7 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 ### Site navigation
 
-`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's four page destinations: About, Projects, Posts, and Books. It uses real anchors, derives the active section from the current route, and renders on every public content route. The Character Sheet uses its rail variant; other pages use the bar variant.
+`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's four page destinations: About, Projects, Posts, and Books. It uses real anchors, derives the active section from the current route, and renders on every public content route. The Character Sheet uses its rail variant; other pages use the bar variant. The bar renders four columns on wide screens and two columns below 820px; the page shell reserves enough vertical space to keep the mobile menu separate from page content.
 
 ### Book card
 
@@ -106,7 +106,7 @@ Section previews use native `<dialog>` for focus management and Escape behavior.
 
 ### Tags and status labels
 
-`.tag-list` groups technologies and topics; `.status-badge` labels a reading status or rating. Both use the legible body pixel font rather than the display face, so compact labels retain distinct glyph shapes at small resolutions. They are real semantic list or text content, not icon-only indicators, and are demonstrated on `/system/`.
+`.tag-list` groups technologies and topics; `.status-badge` labels a reading status or rating. Both use the legible body pixel font rather than the display face, so compact labels retain distinct glyph shapes at small resolutions. They are real semantic list or text content, not icon-only indicators, and are demonstrated on `/system/`. `BookCard.astro` keeps its cover and metadata top-aligned, then narrows the cover and type below 560px so long English titles and author names remain inside the card.
 
 ### Topic filters
 
