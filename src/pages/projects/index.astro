@@ -11,7 +11,7 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
 ---
 <BaseLayout title="Projects — Bernardo Severo" description="Selected engineering projects by Bernardo Severo." preloadVillage>
   <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1"><div class="portfolio-shell">
-    <a class="back-link" href={base}>← Personal Log</a><WoodFrame class="portfolio-frame"><header><p class="page-kicker">Quest Log</p><h1 class="page-title">Projects</h1><p class="page-intro">Real engineering work, described with only public and supportable detail.</p><Ornament variant="divider" /></header>
+    <WoodFrame class="portfolio-frame"><header><p class="page-kicker">Quest Log</p><h1 class="page-title">Projects</h1><p class="page-intro">Real engineering work, described with only public and supportable detail.</p><Ornament variant="divider" /></header>
     {projects.length ? <ol class="project-list">{projects.map((project) => <li><ProjectCard title={project.data.title} summary={project.data.summary} links={project.data.links} preview={project.data.preview} /></li>)}</ol> : <section class="empty-state"><h2 class="page-heading">No published projects yet</h2><p>Projects appear here once their public details can be shared.</p></section>}
     </WoodFrame></div></main>
 </BaseLayout>

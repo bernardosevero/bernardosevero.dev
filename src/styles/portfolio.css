@@ -72,15 +72,6 @@
   margin: 12px 0 28px;
 }
 
-.back-link {
-  display: inline-flex;
-  margin-bottom: 22px;
-  color: var(--parchment-light);
-  font-family: var(--font-heading);
-  font-size: 20px;
-  text-shadow: 2px 2px var(--green-dark);
-}
-
 .empty-state {
   padding: clamp(28px, 6vw, 72px) 16px;
   border: 2px dashed var(--parchment-edge);
@@ -149,9 +140,6 @@
     padding-inline: 16px;
   }
 
-  .back-link {
-    margin-left: 8px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
