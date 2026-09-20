@@ -102,10 +102,10 @@ test('shelf tabs support keyboard selection, empty states, and remembered books'
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
 });
 
-test('books and reviews remain available without JavaScript', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+test('books and reviews remain available without JavaScript', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4322/bernardosevero.dev/reading/');
+  await page.goto('./reading/');
   await expect(page.locator('.codex-detail')).toHaveCount(3);
   await page.getByRole('link', { name: 'White Nights', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();

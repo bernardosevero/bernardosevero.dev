@@ -2,7 +2,7 @@
 
 > A portfolio disguised as a cozy RPG menu. No dragons were harmed; several CSS gradients were.
 
-This is the source of [Bernardo Severo's portfolio](https://bernardosevero.github.io/bernardosevero.dev/): a small, static Astro site where recruiters and curious humans can explore projects, writing, experience, tools, and books without fighting a cookie banner boss.
+This is the source of [Bernardo Severo's portfolio](https://bernardosevero.dev/): a small, static Astro site where recruiters and curious humans can explore projects, writing, experience, tools, and books without fighting a cookie banner boss.
 
 ## 🗺️ What lives here?
 
@@ -10,7 +10,7 @@ This is the source of [Bernardo Severo's portfolio](https://bernardosevero.githu
 - 📜 **Quest Log** — projects and the decisions behind them.
 - ✍️ **Journal** — random texts, engineering notes, and lessons learned.
 - 📚 **Reading Codex** — books, ratings, and optional reviews.
-- 🎨 **Design System** — the live tokens and components at [`/system/`](https://bernardosevero.github.io/bernardosevero.dev/system/).
+- 🎨 **Design System** — the live tokens and components at [`/system/`](https://bernardosevero.dev/system/).
 
 ## 🧪 Start the local quest
 
@@ -75,11 +75,9 @@ Start with [AGENTS.md](AGENTS.md) for the project's rules and [architecture.md](
 
 ## 🚀 Deployment
 
-Pushes to `main` trigger `.github/workflows/deploy.yml`. GitHub Pages publishes the static build at:
+Pushes to `main` run type checking, production builds, and browser tests before deploying the verified output to Cloudflare Pages. The production target is [bernardosevero.dev](https://bernardosevero.dev/).
 
-👉 [bernardosevero.github.io/bernardosevero.dev](https://bernardosevero.github.io/bernardosevero.dev/)
-
-The repository name stays in the URL because no custom domain is configured yet. Internal asset and route paths must therefore respect Astro's `/bernardosevero.dev` base.
+Follow [the deployment guide](docs/deployment.md) to create the Pages project, configure GitHub secrets, and connect the domain. The default build uses `/`; `SITE_URL` and `BASE_PATH` retain compatibility with the former GitHub Pages location.
 
 ## 🧭 Project status
 

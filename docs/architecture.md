@@ -23,7 +23,7 @@ The project is a statically generated Astro portfolio. Content collections provi
 2. `src/content.config.ts` validates its frontmatter during development and build.
 3. A route queries the collection at build time.
 4. Astro renders static HTML with no content API required in the browser.
-5. GitHub Actions checks types, builds through Playwright, tests, and uploads the verified `dist/` to GitHub Pages. Pull requests validate without deploying.
+5. GitHub Actions checks types, builds through Playwright, tests, and uploads the verified root-path `dist/` to Cloudflare Pages after both root and GitHub Pages compatibility suites pass. Pull requests validate without deploying.
 
 Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md`. Base-path normalization lives in `src/utils/paths.ts`; collection visibility lives in `src/utils/content.ts`. Draft previews are development-only. The design-system page imports the same `WoodFrame` and `Ornament` components and reads CSS token values from the browser, which reduces documentation drift.
 
@@ -31,7 +31,7 @@ Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md
 
 - [Astro styling guide](https://docs.astro.build/en/guides/styling/) — scoped styles, global styles, and CSS variables.
 - [Astro content collections](https://docs.astro.build/en/guides/content-collections/) — build-time content loading and schema validation.
-- [Astro GitHub Pages deployment](https://docs.astro.build/en/guides/deploy/github/) — static deployment model used by the workflow.
+- [Cloudflare Pages deployment](deployment.md) — verified static uploads, credentials, and custom-domain setup.
 - [Bruno Paulino's design system](https://bpaulino.com/system/) — public, inspectable system-page reference.
 - `docs/design/references/` — user-supplied visual direction for all five screens.
 

@@ -15,7 +15,7 @@ async function navigationAppearance(locator: Locator) {
 }
 
 for (const width of [320, 390, 760, 1024, 1586]) {
-  test(`page chrome is consistent and specimens fit at ${width}px`, async ({ page }, testInfo) => {
+  test(`page chrome is consistent and specimens fit at ${width}px`, async ({ page, baseURL }, testInfo) => {
     await page.setViewportSize({ width, height: 992 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     let baseline: unknown;
@@ -30,7 +30,8 @@ for (const width of [320, 390, 760, 1024, 1586]) {
       await expect(menu.locator('[aria-current="page"]')).toHaveCount(1);
       await expect(page.getByRole('link', { name: /Return to the Personal Log/ })).toHaveCount(0);
       for (const link of await menu.getByRole('link').all()) {
-        await expect(link).toHaveAttribute('href', /^\/bernardosevero\.dev\//);
+        const basePath = new URL(baseURL!).pathname;
+        await expect(link).toHaveAttribute('href', new RegExp(`^${basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
         await link.focus();
         await expect(link).toBeFocused();
         expect(await link.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe('none');

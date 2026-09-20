@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -8,8 +8,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages-${{ github.ref }}
@@ -18,8 +16,18 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    strategy:
+      matrix:
+        include:
+          - target: cloudflare
+            site: https://bernardosevero.dev
+            base: /
+          - target: github-compatibility
+            site: https://bernardosevero.github.io
+            base: /bernardosevero.dev
+    env:
+      SITE_URL: ${{ matrix.site }}
+      BASE_PATH: ${{ matrix.base }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
@@ -32,19 +40,31 @@ jobs:
       - run: npm test
       # Playwright builds before testing. Publish that exact verified output.
       - name: Upload verified site
-        if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
+        if: matrix.target == 'cloudflare' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
         with:
+          name: cloudflare-site
           path: dist
+          retention-days: 7
 
   deploy:
     needs: build
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: cloudflare-pages
+      url: https://bernardosevero.dev
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: cloudflare-site
+          path: dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Deploy verified site to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=bernardosevero-dev --branch=main
