@@ -1,13 +1,14 @@
 ---
+import { isVisibleContent } from '../../utils/content';
+import { basePath as base } from '../../utils/paths';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 import '../../styles/portfolio.css';
-const showDraftPreviews = import.meta.env.DEV;
-const projects = (await getCollection('projects', ({ data }) => !data.draft || (showDraftPreviews && data.preview))).sort((a, b) => Number(b.data.featured) - Number(a.data.featured));
-const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const projects = (await getCollection('projects', isVisibleContent)).sort((a, b) => Number(b.data.featured) - Number(a.data.featured));
+
 ---
 <BaseLayout title="Projects — Bernardo Severo" description="Selected engineering projects by Bernardo Severo." preloadVillage>
   <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1"><div class="portfolio-shell">

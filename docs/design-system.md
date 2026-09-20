@@ -30,8 +30,8 @@ Revisit this decision only if repetition or team scale creates a demonstrated ma
 
 | Layer | Location | Owns |
 | --- | --- | --- |
-| Tokens | `src/styles/tokens.css` | Palette, typography families, spacing base, frame geometry, shared effects |
-| Foundations and primitives | `src/styles/global.css` | Reset, document defaults, focus, wood frames, parchment, RPG buttons, ornaments, dialogs |
+| Tokens | `src/styles/tokens.css` | Palette, typography families, shared page spacing, frame geometry, shared effects |
+| Foundations and primitives | `src/styles/global.css` | Reset, document defaults, focus, wood frames, parchment, RPG buttons, ornaments, reduced-motion behavior |
 | Components | Component-local `<style>` | A reusable component's internal layout and variants |
 | Routes | `src/styles/*.css` or route-local `<style>` | Cross-component page composition and responsive changes |
 
@@ -59,9 +59,8 @@ Both fonts are self-hosted through Fontsource. Pixel typography is thematic, not
 
 ### Space and geometry
 
-- The base spacing unit is `--space-unit: 4px`.
-- Shared component spacing should normally use multiples of the base unit.
-- `--frame-width` controls the timber surround and changes responsively.
+- Shared component spacing should normally use multiples of 4px; there is no unused base-unit token.
+- `--frame-width` controls the shared timber surround.
 - `--frame-shadow` owns the shared elevation recipe.
 
 Not every dimension must become a token. Promote a value when it represents a reusable decision, not merely because it appears twice by coincidence.
@@ -80,11 +79,11 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 ### Site navigation
 
-`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's four page destinations: About, Projects, Posts, and Books. It uses real anchors, derives the active section from the current route, and renders on every public content route. The Character Sheet uses its rail variant; other pages use the bar variant. The bar renders four columns on wide screens and two columns below 820px; the page shell reserves enough vertical space to keep the mobile menu separate from page content.
+`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's four page destinations: About, Projects, Posts, and Books. It uses real anchors, derives the active section from the current route, and renders on every public content route. All content pages, including Home, About, and Books, use the same top bar from `BaseLayout`. Navigation stays in normal flow with a token-based gap before content. Container queries use four columns when the menu has room and two columns in narrow containers. There is one navigation layout, without a redundant bar/rail variant. Its 54px minimum link height is preserved at mobile sizes. The documentation-only `preview` mode renders static spans with identical production classes, so its specimen never navigates away.
 
 ### Reading Codex
 
-`ReadingCodex.astro` renders the compact banner, bookshelf tiles, selected-book details, and shelf navigation. Its named styles live in `src/styles/reading-codex.css`; enhancement lives in `src/scripts/reading-codex.ts`. The same complete component runs on Reading and `/system/`, using real collection data. Each instance requires a unique ID.
+`ReadingCodex.astro` renders the compact banner, bookshelf tiles, selected-book details, and shelf navigation. Its page-composition styles live in `src/styles/reading-codex.css`; enhancement lives in `src/scripts/reading-codex.ts`. `BookTile.astro` owns its scoped tile styles and does not import the page stylesheet. The complete component runs only on Reading. `/system/` demonstrates the shared `BookTile` and `BookRating` components individually, without embedding a page or querying the book collection. The page has one fixed level-one heading; its default instance ID is `reading-codex`.
 
 Desktop uses a 3:2 split between shelf and details, with four cover-first columns. Container queries reduce the shelf to three columns on tablets, then two columns with stacked panels on phones. Real edition covers use `object-fit: contain`; metadata is semantic HTML. Selected tiles have gold corner brackets and a diamond, while the active shelf has a gold border and marker. Keyboard focus remains distinct from selection.
 
@@ -100,17 +99,13 @@ Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green act
 
 ### Ornaments
 
-`Ornament.astro` renders divider, sprig, and branch variants as CSS shapes. They are decorative and hidden from assistive technology. Ornaments reinforce structure but never replace a heading or label.
+`Ornament.astro` renders divider and sprig variants as CSS shapes. They are decorative and hidden from assistive technology. Ornaments reinforce structure but never replace a heading or label.
 
 ### Pixel icons
 
 The homepage and `/about/` share `src/layouts/CharacterSheet.astro`, backed by the About content entry. The approved About composition supersedes the original Home mockup for the landing screen. Production content pages use the shared navigation for page switching; redundant return links are not rendered. `/system/` retains a return link as a documentation-page escape hatch and specimen. The homepage menu retains Reading instead of a redundant home link. The sheet stacks its columns at intermediate widths to preserve readability.
 
 `PixelIcon.astro` contains multicolor SVG artwork for the character sheet, tool tiles, and professional profile links. Tool marks retain recognizable colors; the briefcase, star, wrench, and book share dark walnut outlines, bronze shading, and gold highlights drawn from the About reference. The AWS illustration is a cloud symbol with an orange smile, not an official logo. Artwork is independent of CSS geometry; CSS controls its size and surrounding tile. Decorative instances are hidden from assistive technology; icon-only controls must provide an accessible name and a visible tooltip or nearby label. The live inventory shows both icon families.
-
-### Dialogs
-
-Section previews use native `<dialog>` for focus management and Escape behavior. Dialog copy must state unfinished routes honestly. A dialog must have a labelled title, described status, explicit close action, and restored opener focus.
 
 ### Tags and status labels
 
@@ -144,3 +139,10 @@ The public route must import real production components and read computed CSS va
 2. Update the live specimen if a new state or variant exists.
 3. Update this document if the ownership or rule changes.
 4. Run type, build, browser, accessibility, and responsive checks.
+## Shared page geometry and specimen isolation
+
+`tests/design-consistency.spec.ts` enforces the shared geometry, material styles, background layers, keyboard-accessible navigation, and isolated specimen layout at 320, 390, 760, 1024, and 1586 pixels. Home, section indexes, and representative detail routes participate in the same comparison. The navigation preview must match production styling without exposing navigation controls. GitHub Actions runs type checking, a production build, and browser tests on pull requests and before deployment; visual screenshot review remains required for intentional design changes.
+
+All content routes share `--page-width` (1160px), `--page-top-space`, and `--page-section-gap`. `BaseLayout` owns the top navigation; `portfolio.css` owns the common backdrop and content shell. About's former side navigation is intentionally replaced by this shared bar. Books has no background opacity or width override. Codex frames inherit the global timber thickness, and their parchment uses `--surface-parchment`, the same material as `WoodFrame`.
+
+The design-system catalog displays individual components in responsive specimen cells. Layout CSS targets direct specimen children only; it must not override nested component padding, heading styles, or dimensions. The menu specimen uses its own full-width section and static preview mode. The return-to-Personal-Log link remains functional on `/system/`.

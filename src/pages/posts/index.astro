@@ -1,12 +1,13 @@
 ---
+import { isVisibleContent } from '../../utils/content';
+import { basePath as base } from '../../utils/paths';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
 import { getCollection } from 'astro:content';
 import '../../styles/portfolio.css';
-const showDraftPreviews = import.meta.env.DEV;
-const posts = (await getCollection('posts', ({ data }) => !data.draft || (showDraftPreviews && data.preview))).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
-const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort(); const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const posts = (await getCollection('posts', isVisibleContent)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
 ---
 <BaseLayout title="Posts — Bernardo Severo" description="Engineering notes and lessons from Bernardo Severo." preloadVillage>
   <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1"><div class="portfolio-shell"><WoodFrame class="portfolio-frame"><header><p class="page-kicker">Journal</p><h1 class="page-title">Posts</h1><p class="page-intro">Notes on engineering, useful products, and the work behind them.</p><Ornament variant="divider" /></header>

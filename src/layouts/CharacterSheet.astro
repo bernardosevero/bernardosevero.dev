@@ -1,9 +1,9 @@
 ---
+import { basePath as base } from '../utils/paths';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import WoodFrame from '../components/WoodFrame.astro';
 import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
-import SiteNavigation from '../components/SiteNavigation.astro';
 import { Image } from 'astro:assets';
 import wizardPortrait from '../assets/bernardo-wizard.png';
 import { getEntry, render } from 'astro:content';
@@ -16,7 +16,6 @@ const { isHome = false } = Astro.props;
 const about = await getEntry('pages', 'about');
 if (!about || about.data.kind !== 'about') throw new Error('The About content entry is missing or invalid.');
 const { Content } = await render(about);
-const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 
 const toolIcons = {
   'VS Code': 'vscode',
@@ -33,15 +32,7 @@ const socialIcons = {
 
 <BaseLayout title={isHome ? 'Bernardo Severo — Product Engineer' : 'About — Bernardo Severo'} description="Experience, specialties, tools, and contact paths for Bernardo Severo." preloadVillage>
   <main id="main-content" class="portfolio-page about-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
-    <div class="about-shell">
-      <aside class="about-rail" aria-label="About navigation">
-        <SiteNavigation pathname={Astro.url.pathname} variant="rail" />
-        <WoodFrame class="about-motto">
-          <p>All we have to decide is what to do with the time that is given us</p>
-          <Ornament variant="sprig" />
-        </WoodFrame>
-      </aside>
-
+    <div class="portfolio-shell about-shell">
       <WoodFrame class="about-frame character-sheet">
         <header class="sheet-header">
           <div class="sheet-title-row"><Ornament variant="sprig" /><h1>About</h1><Ornament variant="sprig" /></div>
@@ -119,6 +110,7 @@ const socialIcons = {
           <div class="about-prose"><Content /></div>
         </section>
       </WoodFrame>
+      <p class="about-motto">All we have to decide is what to do with the time that is given us</p>
     </div>
   </main>
 </BaseLayout>

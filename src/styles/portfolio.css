@@ -22,7 +22,7 @@
 }
 
 .portfolio-shell {
-  width: min(1160px, 100%);
+  width: min(var(--page-width), 100%);
   margin-inline: auto;
 }
 
@@ -140,14 +140,4 @@
     padding-inline: 16px;
   }
 
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-  }
 }

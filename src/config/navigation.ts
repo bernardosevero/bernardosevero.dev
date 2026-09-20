@@ -1,3 +1,5 @@
+import { normalizeBasePath } from '../utils/paths';
+
 export const navigationItems = [
   { id: 'about', label: 'About', path: '' },
   { id: 'projects', label: 'Projects', path: 'projects/' },
@@ -8,7 +10,7 @@ export const navigationItems = [
 export type NavigationItemId = (typeof navigationItems)[number]['id'];
 
 export function getActiveNavigationItem(pathname: string, base: string): NavigationItemId {
-  const basePath = base.endsWith('/') ? base : `${base}/`;
+  const basePath = normalizeBasePath(base);
   const relativePath = pathname.startsWith(basePath)
     ? pathname.slice(basePath.length)
     : pathname.replace(/^\/+/, '');

@@ -1,6 +1,7 @@
 ---
 import WoodFrame from './WoodFrame.astro';
 import Ornament from './Ornament.astro';
+import BookTile from './BookTile.astro';
 import BookRating from './BookRating.astro';
 import '../styles/reading-codex.css';
 
@@ -13,15 +14,15 @@ export interface CodexBook {
   rating?: number;
   reviewHref?: string;
 }
-interface Props { books: CodexBook[]; id?: string; headingLevel?: 'h1' | 'h2'; }
-const { books, id = 'reading-codex', headingLevel: Heading = 'h1' } = Astro.props;
+interface Props { books: CodexBook[]; id?: string; }
+const { books, id = 'reading-codex' } = Astro.props;
 const shelves = ['reading', 'finished', 'wishlist'] as const;
 ---
 
 <reading-codex id={id}>
   <WoodFrame parchment={false} class="codex-frame">
     <header class="codex-banner codex-parchment">
-      <div class="codex-title"><Ornament variant="sprig" /><Heading>Reading</Heading><Ornament variant="sprig" /></div>
+      <div class="codex-title"><Ornament variant="sprig" /><h1>Reading</h1><Ornament variant="sprig" /></div>
       <p class="codex-subtitle">Codex</p>
     </header>
     <div class="codex-body">
@@ -32,13 +33,7 @@ const shelves = ['reading', 'finished', 'wishlist'] as const;
             <ul class="codex-grid">
               {books.filter((book) => book.status === shelf).map((book) => (
                 <li>
-                  <a class="codex-tile" href={`#${id}-book-${book.id}`} data-book={book.id}>
-                    <span class="codex-tile__cover">
-                      {book.coverSrc ? <img src={book.coverSrc} alt="" width="120" height="180" /> : <span class="codex-cover-missing">Cover unavailable</span>}
-                    </span>
-                    <span class="codex-tile__title">{book.title}</span>
-                    <span class="codex-selected-mark" aria-hidden="true">◆</span>
-                  </a>
+                  <BookTile title={book.title} coverSrc={book.coverSrc} href={`#${id}-book-${book.id}`} bookId={book.id} />
                 </li>
               ))}
             </ul>

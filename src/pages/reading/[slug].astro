@@ -1,4 +1,6 @@
 ---
+import { isVisibleContent } from '../../utils/content';
+import { basePath as base } from '../../utils/paths';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
@@ -8,7 +10,7 @@ import '../../styles/portfolio.css';
 export async function getStaticPaths() {
   const books = await getCollection(
     'books',
-    ({ data }) => !data.draft || (import.meta.env.DEV && data.preview),
+    isVisibleContent,
   );
 
   return books
@@ -21,9 +23,7 @@ export async function getStaticPaths() {
 
 const { book } = Astro.props;
 const { Content } = await render(book);
-const base = import.meta.env.BASE_URL.endsWith('/')
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
+
 const finishedAt = book.data.finishedAt?.toLocaleDateString('en-US', {
   day: 'numeric',
   month: 'long',

@@ -33,8 +33,8 @@ const projects = defineCollection({
     repositoryUrl: z.url().optional(),
     liveUrl: z.url().optional(),
     links: z.array(z.object({
-      label: z.string(),
-      url: z.url(),
+    label: z.string(),
+    url: z.url(),
     })).default([]),
     problem: z.string(),
     constraints: z.array(z.string()).default([]),
@@ -66,47 +66,30 @@ const books = defineCollection({
 
 const pages = defineCollection({
   loader: glob({ base: './src/content/pages', pattern: '**/*.md' }),
-  schema: z.discriminatedUnion('kind', [
-    z.object({
-      kind: z.literal('home'),
-      name: z.string(),
-      title: z.string(),
-      welcome: z.string(),
-      details: z.array(z.object({ label: z.string(), value: z.string() })),
-      sections: z.array(z.object({
-        id: z.enum(['posts', 'about', 'projects', 'reading']),
-        label: z.string(),
-        subtitle: z.string(),
-        description: z.string(),
-        status: z.string(),
-        route: z.string().optional(),
-      })),
-    }),
-    z.object({
-      kind: z.literal('about'),
-      name: z.string(),
-      title: z.string(),
-      base: z.string(),
-      focus: z.array(z.string()),
+  schema: z.object({
+    kind: z.literal('about'),
+    name: z.string(),
+    title: z.string(),
+    base: z.string(),
+    focus: z.array(z.string()),
+    description: z.string(),
+    strengths: z.array(z.object({
+      label: z.string(),
+      level: z.number().int().min(1).max(10),
+    })),
+    experience: z.array(z.object({
+      company: z.string(),
+      role: z.string(),
+      period: z.string(),
       description: z.string(),
-      strengths: z.array(z.object({
-        label: z.string(),
-        level: z.number().int().min(1).max(10),
-      })),
-      experience: z.array(z.object({
-        company: z.string(),
-        role: z.string(),
-        period: z.string(),
-        description: z.string(),
-      })),
-      specializations: z.array(z.string()),
-      tools: z.array(z.string()),
-      links: z.array(z.object({
-        label: z.string(),
-        url: z.url(),
-      })),
-    }),
-  ]),
+    })),
+    specializations: z.array(z.string()),
+    tools: z.array(z.string()),
+    links: z.array(z.object({
+      label: z.string(),
+      url: z.url(),
+    })),
+  }),
 });
 
 export const collections = { posts, projects, books, pages };

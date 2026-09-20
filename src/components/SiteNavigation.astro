@@ -1,41 +1,44 @@
 ---
+import { basePath as base } from '../utils/paths';
 import WoodFrame from './WoodFrame.astro';
 import { getActiveNavigationItem, navigationItems } from '../config/navigation';
 
 interface Props {
   pathname: string;
-  variant?: 'rail' | 'bar';
+  preview?: boolean;
 }
 
-const { pathname, variant = 'bar' } = Astro.props;
-const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const { pathname, preview = false } = Astro.props;
+const Item = preview ? 'span' : 'a';
+const Container = preview ? 'div' : 'nav';
+
 const activeItem = getActiveNavigationItem(pathname, base);
 ---
 
-<WoodFrame parchment={false} class:list={['site-navigation', `site-navigation--${variant}`]}>
-  <nav class="site-navigation__list" aria-label="Main navigation">
+<WoodFrame parchment={false} class="site-navigation">
+  <Container class="site-navigation__list" aria-label={preview ? undefined : 'Main navigation'}>
     {navigationItems.map((item) => {
       const active = item.id === activeItem;
       return (
-        <a
+        <Item
           class="rpg-button site-navigation__link"
           data-active={active ? 'true' : 'false'}
-          href={`${base}${item.path}`}
+          href={preview ? undefined : `${base}${item.path}`}
           aria-current={active ? 'page' : undefined}
         >
           <span class="site-navigation__gem" aria-hidden="true"></span>
           {item.label}
-        </a>
+        </Item>
       );
     })}
-  </nav>
+  </Container>
 </WoodFrame>
 
 <style>
-  :global(.site-navigation) { width: 100%; }
-  :global(.site-navigation .frame-surface) { padding: 10px; border: 2px solid #2a190f; background: #5b3422; }
-  .site-navigation__list { display: grid; gap: 10px; }
-  .site-navigation__link { min-height: 48px; padding: 8px 10px; font-size: 22px; text-decoration: none; }
+  :global(.site-navigation) { width: 100%; margin: 0; container-type: inline-size; }
+  :global(.site-navigation .frame-surface) { padding: 12px; border: 2px solid #2a190f; background: #5b3422; }
+  .site-navigation__list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .site-navigation__link { min-height: 54px; padding: 8px 10px; font-size: clamp(18px, 2.2vw, 26px); text-decoration: none; }
   .site-navigation__link[data-active='true'] {
     border-color: #754815;
     background: linear-gradient(#71c17f, #49a76b);
@@ -56,19 +59,12 @@ const activeItem = getActiveNavigationItem(pathname, base);
   }
   .site-navigation__link[data-active='true'] .site-navigation__gem { opacity: 1; }
 
-  :global(.site-navigation--bar) { margin-bottom: 18px; }
-  :global(.site-navigation--bar .frame-surface) { padding: 12px; }
-  :global(.site-navigation--bar) .site-navigation__list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  :global(.site-navigation--bar) .site-navigation__link { min-height: 54px; font-size: clamp(18px, 2.2vw, 26px); }
-
-  @media (max-width: 820px) {
-    :global(.site-navigation--rail) .site-navigation__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    :global(.site-navigation--bar) .site-navigation__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @container (max-width: 760px) {
+    .site-navigation__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
   @media (max-width: 520px) {
     :global(.site-navigation .frame-surface) { padding: 8px; }
-    .site-navigation__link { min-height: 45px; font-size: 18px; }
     .site-navigation__gem { left: -10px; }
   }
 </style>

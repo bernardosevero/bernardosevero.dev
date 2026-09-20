@@ -1,13 +1,13 @@
 ---
+import { isVisibleContent } from '../utils/content';
+import { basePath as base } from '../utils/paths';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ReadingCodex from '../components/ReadingCodex.astro';
-import SiteNavigation from '../components/SiteNavigation.astro';
 import { getCollection } from 'astro:content';
 import '../styles/portfolio.css';
 
-const showDraftPreviews = import.meta.env.DEV;
-const books = (await getCollection('books', ({ data }) => !data.draft || (showDraftPreviews && data.preview))).sort((a, b) => a.data.title.localeCompare(b.data.title));
-const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const books = (await getCollection('books', isVisibleContent)).sort((a, b) => a.data.title.localeCompare(b.data.title));
+
 const codexBooks = books.map((book) => ({
   id: book.id,
   ...book.data,
@@ -16,24 +16,10 @@ const codexBooks = books.map((book) => ({
 }));
 ---
 
-<BaseLayout title="Reading — Bernardo Severo" description="Explore Bernardo Severo's bookshelves, ratings, and reviews." preloadVillage navigation={false}>
-  <main id="main-content" class="portfolio-page reading-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
-    <div class="reading-shell">
-      <div class="reading-navigation">
-        <SiteNavigation pathname={Astro.url.pathname} />
-      </div>
+<BaseLayout title="Reading — Bernardo Severo" description="Explore Bernardo Severo's bookshelves, ratings, and reviews." preloadVillage>
+  <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
+    <div class="portfolio-shell">
       <ReadingCodex books={codexBooks} />
     </div>
   </main>
 </BaseLayout>
-
-<style>
-  .reading-page { padding-block: 36px; }
-  .reading-page::before { background: var(--portfolio-village) center / cover no-repeat, var(--green-dark); }
-  .reading-page::after { opacity: .25; }
-  .reading-shell { width: min(1050px, 100%); margin-inline: auto; }
-  .reading-navigation { display: flow-root; margin-bottom: 12px; }
-  @media (max-width: 650px) {
-    .reading-page { padding-block: 16px; }
-  }
-</style>

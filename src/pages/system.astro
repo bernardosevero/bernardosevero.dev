@@ -1,30 +1,20 @@
 ---
+import { basePath as base } from '../utils/paths';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
 import WoodFrame from '../components/WoodFrame.astro';
 import SiteNavigation from '../components/SiteNavigation.astro';
-import ReadingCodex from '../components/ReadingCodex.astro';
+import BookTile from '../components/BookTile.astro';
 import BookRating from '../components/BookRating.astro';
-import { getCollection } from 'astro:content';
 import ProjectCard from '../components/ProjectCard.astro';
 import '../styles/portfolio.css';
-
-const base = import.meta.env.BASE_URL.endsWith('/')
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
 
 const colorTokens = [
   '--ink', '--ink-soft', '--parchment', '--parchment-light', '--parchment-edge',
   '--wood-dark', '--wood', '--wood-light', '--green-dark', '--green', '--green-light',
   '--gold', '--ornament',
 ];
-const books = (await getCollection('books', ({ data }) => !data.draft)).map((book) => ({
-  id: book.id,
-  ...book.data,
-  coverSrc: book.data.coverAsset ? `${base}${book.data.coverAsset.slice(1)}` : book.data.coverUrl,
-  reviewHref: book.body?.trim() ? `${base}reading/${book.id}/` : undefined,
-}));
 ---
 
 <BaseLayout
@@ -82,11 +72,6 @@ const books = (await getCollection('books', ({ data }) => !data.draft)).map((boo
           <p>Hover, focus, active, and reduced-motion states belong to the same primitive.</p>
         </article>
         <article>
-          <h3>Site navigation</h3>
-          <SiteNavigation pathname={`${base}projects/`} />
-          <p>The same page-only menu highlights the active section on every portfolio route.</p>
-        </article>
-        <article>
           <h3>Wood frame</h3>
           <WoodFrame class="wood-frame-specimen" parchment={false}>
             <p>Timber surround</p>
@@ -113,6 +98,14 @@ const books = (await getCollection('books', ({ data }) => !data.draft)).map((boo
           <p>Multi-link and read-only states share the same hierarchy with explicit destinations.</p>
         </article>
         <article>
+          <h3>Book tiles</h3>
+          <div class="book-tile-specimens">
+            <BookTile title="White Nights" coverSrc={`${base}images/books/white-nights-penguin.jpg`} />
+            <BookTile title="White Nights" coverSrc={`${base}images/books/white-nights-penguin.jpg`} selected />
+          </div>
+          <p>Default and selected shelf tiles, using the real production component.</p>
+        </article>
+        <article>
           <h3>Book ratings</h3>
           <BookRating rating={5} />
           <BookRating rating={4.5} />
@@ -134,9 +127,10 @@ const books = (await getCollection('books', ({ data }) => !data.draft)).map((boo
       </div>
     </WoodFrame>
 
-    <section class="system-codex" aria-label="Reading Codex specimen">
-      <p class="system-codex-note">Live Reading Codex: select a book, switch shelves, or use the arrow keys on the shelf tabs. Empty shelves and review links use the real collection.</p>
-      <ReadingCodex books={books} id="system-codex" headingLevel="h2" />
+    <section class="navigation-specimen" aria-labelledby="navigation-specimen-heading">
+      <h2 id="navigation-specimen-heading">Site navigation</h2>
+      <p>Production dimensions and selected state. This static specimen does not navigate; actual page menus are links.</p>
+      <SiteNavigation pathname={`${base}projects/`} preview />
     </section>
 
     <footer>
@@ -155,7 +149,7 @@ const books = (await getCollection('books', ({ data }) => !data.draft)).map((boo
 
 <style>
   .system-page {
-    width: min(1120px, calc(100% - 32px));
+    width: min(var(--page-width), calc(100% - 32px));
     margin-inline: auto;
     padding: 48px 0 72px;
   }
@@ -175,31 +169,39 @@ const books = (await getCollection('books', ({ data }) => !data.draft)).map((boo
   .system-kicker { color: var(--gold); font-family: var(--font-heading); text-transform: uppercase; letter-spacing: .12em; }
   .system-header h1 { margin: 12px 0; font-size: clamp(46px, 9vw, 82px); text-transform: uppercase; }
   :global(.system-section) { margin-block: 24px; }
-  :global(.system-section .frame-surface) { padding: clamp(22px, 4vw, 44px); }
-  :global(.system-section h2) { font-size: clamp(32px, 5vw, 48px); text-align: center; text-transform: uppercase; }
+  :global(.system-section > .frame-surface) { padding: clamp(22px, 4vw, 44px); }
+  :global(.system-section > .frame-surface > h2) { font-size: clamp(32px, 5vw, 48px); text-align: center; text-transform: uppercase; }
   :global(.system-section > .frame-surface > .ornament--divider) { margin: 10px 0 28px; }
-  .principle-grid, .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-  .component-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-  article h3 { font-size: 26px; text-transform: uppercase; }
-  article p { margin-top: 8px; }
-  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .principle-grid, .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 20px; }
+  .component-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .component-grid > article > h3 { font-size: 26px; text-transform: uppercase; }
+  .component-grid > article > p { margin: 0; font-size: 23px; }
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px; }
   .swatch { display: grid; grid-template-columns: 46px 1fr; gap: 2px 12px; align-items: center; min-width: 0; }
   .swatch-color { grid-row: span 2; width: 46px; aspect-ratio: 1; background: var(--swatch); border: 3px solid var(--ink); box-shadow: inset 2px 2px #ffffff55; }
   .swatch code, .swatch small { overflow-wrap: anywhere; }
   .swatch small { color: var(--ink-soft); }
   .type-heading { font: 700 38px/1 var(--font-heading); text-transform: uppercase; }
   .type-body { font: 400 30px/1.15 var(--font-body); }
-  .component-grid > article { display: grid; align-content: start; gap: 12px; }
   .project-card-specimens { display: grid; gap: 12px; }
-  .component-grid .rpg-button { width: 100%; }
+  .component-grid > article > .rpg-button { width: 100%; }
+  .component-grid > article { display: grid; align-content: start; gap: 12px; min-width: 0; padding: 20px; border: 1px solid var(--parchment-edge); }
+  .navigation-specimen { margin: 32px 0; color: var(--parchment-light); }
+  .navigation-specimen p { margin: 12px 0 24px; }
+  .book-tile-specimens { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding: 16px 4px; }
+  .system-page { overflow-wrap: anywhere; }
+  .system-page :global(.frame-surface) { height: auto; }
   :global(.wood-frame-specimen) { width: 100%; min-height: 94px; }
   :global(.wood-frame-specimen .frame-surface) { display: grid; place-items: center; border: 2px solid var(--wood-dark); background: #321b1088; color: var(--parchment-light); font-family: var(--font-heading); font-size: 19px; text-align: center; text-transform: uppercase; }
   .ornament-row { display: flex; gap: 24px; align-items: center; min-height: 66px; }
   .ornament-row :global(.ornament--divider) { width: min(260px, 70%); margin: 0; }
   .pixel-icon-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; min-height: 66px; }
   footer { color: var(--parchment-light); text-align: center; }
-  .system-codex { margin-block: 32px; }
-  .system-codex-note { color: var(--parchment-light); margin-bottom: 16px; }
-  @media (max-width: 760px) { .component-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
-  @media (max-width: 520px) { .system-page { padding-top: 28px; } :global(.system-section .frame-surface) { padding: 22px 16px; } }
+  @media (max-width: 760px) { .component-grid { grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); } }
+  @media (max-width: 520px) {
+    .system-page { padding-top: 28px; width: calc(100% - 16px); }
+    :global(.system-section > .frame-surface) { padding: 22px 12px; }
+    .component-grid > article { padding: 12px; }
+    .book-tile-specimens { gap: 16px; }
+  }
 </style>

@@ -101,6 +101,19 @@ Rules:
 
 ## Visual source of truth
 
+### Shared layout regression contract
+
+- `BaseLayout` owns the single top `SiteNavigation` for every content route, including Home, About, and detail pages. Do not add route-local menus, side rails, absolute positioning, or compensating page offsets.
+- Reuse `--page-width`, `--page-top-space`, `--page-section-gap`, `--frame-width`, and `--surface-parchment`. Background overlays belong to `portfolio.css`; routes must not independently adjust their opacity, timber thickness, or outer panel width.
+- `/system/` is a component catalog, not a second copy of a production page. Render small production-component specimens and explicit states; never embed an entire Reading Codex or load editorial collections just to demonstrate a component.
+- Use the static `SiteNavigation` preview in `/system/`. Production navigation must remain real links with exactly one current item; the specimen must not navigate. Keep the return-to-Personal-Log link only on `/system/`.
+- Scope specimen layout to its wrapper and direct children. Do not use broad descendant selectors that restyle nested component headings, surfaces, links, or state indicators.
+- Preserve `tests/design-consistency.spec.ts` as a regression gate. Extend its route matrix for new content routes and its assertions for new shared primitives. Never weaken assertions merely to accept drift; intentional design-contract changes require user direction and matching documentation.
+- For shared-layout changes, verify mobile (320/390px), tablet (760/1024px), and desktop (1586px): equal menu/content geometry, background layers, frame materials, visible link targets, specimen containment, and accessibility. Review screenshots too; DOM checks are not proof of pixel-perfect fidelity.
+- Deployment must depend on successful type checking, production build, and browser tests. Keep this gate in the GitHub Actions workflow.
+
+### Reference review
+
 - Inspect `docs/design/references/` before changing a referenced screen.
 - The five supplied mockups are the primary composition references. Home defines navigation; Projects defines list/detail structure; Reading defines finish; Posts and About define their screens.
 - Preserve hierarchy, density, proportions, timber frames, parchment surfaces, green actions, gold selection cues, and the medieval village atmosphere.

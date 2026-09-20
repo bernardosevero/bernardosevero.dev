@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  pull_request:
 
 permissions:
   contents: read
@@ -11,23 +12,34 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Build and upload Astro site
-        uses: withastro/action@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+      - run: npm test
+      # Playwright builds before testing. Publish that exact verified output.
+      - name: Upload verified site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
