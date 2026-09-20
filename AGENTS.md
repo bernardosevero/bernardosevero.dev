@@ -72,7 +72,7 @@ Rules:
 - Prefer `.astro` components. Add a framework integration only when a concrete interaction cannot be expressed simply with Astro and browser APIs.
 - Keep client JavaScript small and local. Do not hydrate static prose or decoration.
 - Use semantic links for navigation and buttons for actions.
-- Respect the configured GitHub Pages base path. Build internal paths from `import.meta.env.BASE_URL`; never assume deployment at `/`.
+- Production uses Cloudflare Pages at `https://bernardosevero.dev/`. Build internal paths from `import.meta.env.BASE_URL`; preserve support for non-root bases in regression tests.
 - Production assets belong in `public/` or `src/assets/`. References and process notes belong in `docs/`.
 - Never commit secrets, `node_modules/`, `.astro/`, `dist/`, browser binaries, or generated test artifacts.
 
@@ -173,7 +173,7 @@ Before reporting completion:
 - Inspect the affected routes at mobile and desktop widths.
 - Check overflow, wrapping, loading errors, keyboard focus, and reduced motion.
 - Validate new content against `src/content.config.ts`.
-- Confirm that GitHub Pages paths work under `/bernardosevero.dev/`.
+- Confirm production paths work at `/` and non-root regression paths work under `/bernardosevero.dev/`. The latter is a test configuration, not a second deployment.
 - Report what changed, what was verified, and what remains incomplete.
 
 Preserve unrelated user changes. Do not commit, push, deploy, force-push, delete broad paths, or change external services unless the task authorizes it.
