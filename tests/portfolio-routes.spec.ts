@@ -53,12 +53,18 @@ for (const width of [320, 390, 1586]) {
       expect(sameRow || (cvAsset !== null && link!.y >= heading!.y + heading!.height)).toBe(true);
     }
     await expect(page.getByText('Better tools. Kinder humans.')).toHaveCount(0);
+    expect(await page.locator('.specialization-list').evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { display: style.display, marginTop: style.marginTop, columns: style.gridTemplateColumns.split(' ').length };
+    })).toEqual({ display: 'grid', marginTop: '12px', columns: width === 1586 ? 3 : 2 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }
 
 test('Reading selects a book and opens its review', async ({ page }) => {
   await page.goto('./reading/');
+  await expect(page.getByRole('tab', { name: 'finished', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('article', { name: 'Clean Architecture' })).toBeVisible();
   await expect(page.getByText('O livro apresenta um protagonista', { exact: false })).toHaveCount(0);
   await page.getByRole('link', { name: /White Nights/ }).click();
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
@@ -66,6 +72,7 @@ test('Reading selects a book and opens its review', async ({ page }) => {
   await expect(page).toHaveURL(/reading\/fiodor-dostoievski-noites-brancas\/$/);
   await expect(page.getByRole('heading', { level: 1, name: 'White Nights' })).toBeVisible();
   await expect(page.getByText('O livro apresenta um protagonista', { exact: false })).toBeVisible();
+  await expect(page.locator('.review-content blockquote em')).toContainText('Um minuto de inteiro de felicidade');
 });
 
 test('mobile codex keeps navigation, bookshelf, and details separate', async ({ page }) => {
@@ -90,17 +97,24 @@ test('mobile codex keeps navigation, bookshelf, and details separate', async ({ 
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
-test('shelf tabs support keyboard selection, empty states, and remembered books', async ({ page }) => {
+test('shelf tabs support keyboard selection, scrolling, and remembered books', async ({ page }) => {
   await page.goto('./reading/');
   await page.getByRole('link', { name: 'White Nights', exact: true }).click();
   await expect(page.getByRole('article', { name: 'White Nights' }).getByText('4.5 out of 5 stars', { exact: true })).toBeVisible();
   const finished = page.getByRole('tab', { name: 'finished', exact: true });
   await finished.focus();
   await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'reading' })).toBeFocused();
+  await expect(page.getByRole('tab', { name: 'reading' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('article', { name: 'The Alienist' })).toBeVisible();
+  await page.keyboard.press('ArrowRight');
   await expect(page.getByRole('tab', { name: 'wishlist' })).toBeFocused();
   await expect(page.getByRole('tab', { name: 'wishlist' })).toHaveAttribute('aria-selected', 'true');
-  await expect(page.getByRole('tabpanel', { name: 'wishlist' }).getByText('No books on this shelf yet.', { exact: true })).toBeVisible();
-  await expect(page.locator('.codex-detail:visible')).toHaveCount(0);
+  const wishlist = page.getByRole('tabpanel', { name: 'wishlist' });
+  expect(await wishlist.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
+  await wishlist.evaluate((element) => { element.scrollTop = element.scrollHeight; });
+  expect(await wishlist.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+  await page.keyboard.press('ArrowLeft');
   await page.keyboard.press('ArrowLeft');
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
 });
@@ -109,7 +123,7 @@ test('books and reviews remain available without JavaScript', async ({ browser, 
   const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const page = await context.newPage();
   await page.goto('./reading/');
-  await expect(page.locator('.codex-detail')).toHaveCount(3);
+  await expect(page.locator('.codex-detail')).toHaveCount(30);
   await page.getByRole('link', { name: 'White Nights', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
   await page.getByRole('link', { name: 'Read review →' }).click();

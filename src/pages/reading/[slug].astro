@@ -8,21 +8,25 @@ import { getCollection, render } from 'astro:content';
 import '../../styles/portfolio.css';
 
 export async function getStaticPaths() {
-  const books = await getCollection(
-    'books',
-    isVisibleContent,
-  );
+  const [books, reviews] = await Promise.all([
+    getCollection('books'),
+    getCollection('bookReviews'),
+  ]);
+  const booksById = new Map(books.map((book) => [book.id, book]));
 
-  return books
-    .filter((book) => book.body?.trim())
-    .map((book) => ({
-      params: { slug: book.id },
-      props: { book },
-    }));
+  return reviews.flatMap((review) => {
+    const book = booksById.get(review.id);
+    if (!book) throw new Error(`Book review has no catalog entry: ${review.id}`);
+    if (!review.body?.trim() || !isVisibleContent(book)) return [];
+    return [{
+      params: { slug: review.id },
+      props: { book, review },
+    }];
+  });
 }
 
-const { book } = Astro.props;
-const { Content } = await render(book);
+const { book, review } = Astro.props;
+const { Content } = await render(review);
 
 const finishedAt = book.data.finishedAt?.toLocaleDateString('en-US', {
   day: 'numeric',

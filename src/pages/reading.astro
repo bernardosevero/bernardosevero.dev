@@ -7,12 +7,14 @@ import { getCollection } from 'astro:content';
 import '../styles/portfolio.css';
 
 const books = (await getCollection('books', isVisibleContent)).sort((a, b) => a.data.title.localeCompare(b.data.title));
+const reviewIds = new Set((await getCollection('bookReviews'))
+  .filter((review) => review.body?.trim())
+  .map((review) => review.id));
 
 const codexBooks = books.map((book) => ({
-  id: book.id,
   ...book.data,
   coverSrc: book.data.coverAsset ? `${base}${book.data.coverAsset.slice(1)}` : book.data.coverUrl,
-  reviewHref: book.body?.trim() ? `${base}reading/${book.id}/` : undefined,
+  reviewHref: reviewIds.has(book.id) ? `${base}reading/${book.id}/` : undefined,
 }));
 ---
 

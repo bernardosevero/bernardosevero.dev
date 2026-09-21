@@ -1,17 +1,3 @@
----
-title: "White Nights"
-author: "Fyodor Dostoevsky"
-status: finished
-rating: 4.5
-finishedAt: "2026-09-06"
-coverUrl: "https://images1.penguinrandomhouse.com/cover/9780241619780"
-coverAsset: "/images/books/white-nights-penguin.jpg"
-coverSource: catalog
-coverProvenance: "Penguin Random House ISBN 9780241619780 (Penguin Classics)"
-notionId: "3d474cb445b881629c05e1c0862934d8"
-notionLastEditedAt: "2026-09-07T16:42:46.081Z"
-draft: false
----
 O livro apresenta um protagonista - que representa uma persona - chamado O sonhador.
 
 Com este protagonista, o autor brinca com a dualidade entre o sonhar e imaginar, de um lado, e o viver e sentir de forma genuína a experiência da vida do outro. Este dilema tocou a mim de forma profunda  - e acredito que toque qualquer pessoa - pois, frequentemente, estive  na posição do sonhador, sabotando minha felicidade e realização presente em favor de uma hipotética realidade, por muitas vezes, inalcançável.

@@ -39,7 +39,7 @@ The first browser-test run may need `npx playwright install chromium`.
 - [Astro](https://astro.build/) for static pages and content collections.
 - TypeScript for schemas and behavior that should not be mysterious.
 - Vanilla CSS for tokens, shared primitives, and route composition.
-- Markdown/MDX for posts and projects; Markdown for books and page copy.
+- Markdown/MDX for posts and projects; a single JSON book catalog with separate Markdown reviews; Markdown for page copy.
 - [Playwright](https://playwright.dev/) + [axe-core](https://github.com/dequelabs/axe-core) for behavior, overflow, and automated accessibility checks.
 
 ## ✍️ Add content, not components
@@ -51,6 +51,14 @@ Create a safe project draft:
 ```sh
 npm run content:add-project -- --slug reliable-ai-agents --title "Reliable AI Agents"
 ```
+
+Add a book as an unpublished draft in `src/content/books.json`:
+
+```sh
+npm run add:book -- --id author-book-title --title "Book title" --author "Author name" --status wishlist
+```
+
+Write an optional review in `src/content/book-reviews/author-book-title.md`.
 
 Import normalized book data produced from Notion:
 
@@ -65,7 +73,7 @@ The personal agent skills `$add-project` and `$sync-notion-books` automate those
 ```text
 src/
 ├── components/      Reusable RPG interface primitives
-├── content/         Markdown and MDX source material
+├── content/         Markdown, MDX, and the JSON book catalog
 ├── layouts/         Shared document shell
 ├── pages/           Astro routes
 └── styles/          Tokens, foundations, and route composition

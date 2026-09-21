@@ -16,11 +16,17 @@ npm run content:add-project -- --slug my-project --title "My Project"
 
 Use `$sync-notion-books` with the Notion books database URL or identifier available to the connected Notion integration. The skill reads the database, maps its properties into the normalized format in `docs/content.md`, presents changes for review, and runs the importer.
 
-The expected semantic properties are title, author, status, rating, finished date, review, cover, and last-edited time. Exact Notion property names may differ and must be mapped explicitly. Missing optional values remain absent; they are never guessed.
+The expected semantic properties are title, author, status, rating, finished date, ISBN, review, cover, and last-edited time. Exact Notion property names may differ and must be mapped explicitly. Missing optional values remain absent; they are never guessed.
 
-The sync is deliberately one-way from Notion to local Markdown for managed book entries. It does not delete local books, write back to Notion, store credentials, commit, push, or deploy.
+The sync is deliberately one-way from Notion into managed metadata records in `src/content/books.json` and optional Markdown files in `src/content/book-reviews/`. It does not delete local books or reviews, write back to Notion, store credentials, commit, push, or deploy.
 
 When Notion does not supply a cover, the importer preserves an existing local `coverUrl`. Cover discovery must match title and author, verify an ISBN or edition when available, prefer durable publisher or library-catalog URLs, and leave ambiguous matches absent.
+
+## Adding one book
+
+Use `npm run add:book -- --id <slug> --title <title> --author <author> --status <reading|finished|wishlist>` to append a safe draft to the shared JSON catalog. The command also accepts `--isbn`; it never publishes the new entry automatically and refuses to overwrite an existing ID.
+
+An optional review is written separately as `src/content/book-reviews/<slug>.md`; the add command does not invent or scaffold review prose.
 
 ## Updating the skills
 

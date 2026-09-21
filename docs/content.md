@@ -22,9 +22,19 @@ The command fails if the slug exists and creates a draft with prompts for the pr
 
 ## Books
 
-Each book has `title`, `author`, and one of three statuses: `reading`, `finished`, or `wishlist`. Ratings are optional numbers from 0 through 5. The Markdown body is the optional review.
+Book metadata lives in `src/content/books.json`, loaded by Astro's native single-file JSON loader. Each array entry has a unique lowercase kebab-case `id`, `title`, `author`, and one of three statuses: `reading`, `finished`, or `wishlist`. Ratings are optional numbers from 0 through 5. Reviews are separate Markdown files in `src/content/book-reviews/`, named `<book-id>.md`. A review needs no duplicated frontmatter; its filename links it to the catalog record. Astro renders the full Markdown body, and a review link appears only when a nonempty file exists for a visible book.
 
-Notion-managed entries also carry `notionId` and `notionLastEditedAt`. Those fields provide stable identity and conflict context. The importer creates or updates matching entries but never deletes a local file simply because it disappeared from the input.
+Add a draft book with:
+
+```sh
+npm run add:book -- --id author-book-title --title "Book title" --author "Author name" --status wishlist
+```
+
+Pass `--isbn` when the exact edition is known. The command normalizes spaces and hyphens, validates ISBN-10 or ISBN-13 shapes (including an ISBN-10 `X` check character), rejects duplicate IDs, sorts the catalog by title, and always creates `draft: true` with `preview: false`. Edit the new JSON object to add verified metadata and publish it.
+
+To add a review, create `src/content/book-reviews/author-book-title.md` with normal Markdown prose. Do not put the review in a JSON attribute. Reviews for draft books remain unpublished until the matching catalog record is visible.
+
+Notion-managed entries also carry `notionId` and `notionLastEditedAt`. Those fields provide stable identity and conflict context. The importer updates the matching JSON object and writes a supplied nonempty review to its separate Markdown file. It never deletes a local entry or review simply because it disappeared from the input.
 
 The normalized import shape is:
 
@@ -40,13 +50,14 @@ The normalized import shape is:
     "status": "finished",
     "rating": 4,
     "finishedAt": "2026-09-01",
+    "isbn": "9780135398579",
     "coverUrl": "https://example.com/cover.jpg",
-    "review": "Optional Markdown review."
+    "review": "Optional full Markdown review from Notion."
   }
 ]
 ```
 
-The Notion database identifier and credentials stay outside the repository. `title` and `author` preserve the source metadata from Notion, while `englishTitle` and `englishAuthor` provide the canonical English display values written to the site. The three existing managed books have stable-ID fallbacks for compatibility; every new book must supply both English fields. Review the normalized diff before importing.
+The Notion database identifier and credentials stay outside the repository. `title` and `author` preserve the source metadata from Notion, while `englishTitle` and `englishAuthor` provide the canonical English display values written to the site. The three existing managed books have stable-ID fallbacks for compatibility; every new book must supply both English fields. Review the normalized diff before importing. The importer preserves local Markdown reviews and verified covers unless the normalized input explicitly supplies replacements.
 
 For verified fallback covers, prefer a durable catalog URL such as Open Library's ISBN or edition endpoint. Record the edition or ISBN in the normalized cover provenance; do not replace an explicitly supplied cover with a discovered match.
 

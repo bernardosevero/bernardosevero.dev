@@ -47,8 +47,8 @@
 .timeline li > p:last-child { margin-top: 2px; font-size: 20px; line-height: 1.02; }
 
 .sheet-section { margin-top: 10px; }
-.specialization-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 9px; }
-.specialization-list li { display: grid; place-items: center; min-height: 34px; padding: 5px 7px; font-size: 19px; text-align: center; text-transform: none; }
+.tag-list.specialization-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 12px; }
+.tag-list.specialization-list li { display: grid; place-items: center; min-height: 34px; padding: 5px 7px; font-size: 19px; text-align: center; text-transform: none; }
 
 .tool-list { display: flex; flex-wrap: wrap; gap: 16px; margin: 10px 0 0; padding: 0; list-style: none; }
 .tool-list li { display: grid; width: 56px; height: 54px; place-items: center; border: 2px solid var(--parchment-edge); border-radius: 5px; background: var(--parchment); box-shadow: inset 2px 2px var(--parchment-light), 0 2px var(--ornament); }
@@ -80,7 +80,7 @@
   .identity-list dt { font-size: 16px; padding-inline: 9px; }
   .identity-list dd { padding-left: 10px; font-size: 22px; }
   .strength-list li { grid-template-columns: 122px 1fr; font-size: 14px; }
-  .specialization-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tag-list.specialization-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (min-width: 821px) and (max-width: 1200px) {
@@ -112,7 +112,7 @@
   .strength-meter i { height: 14px; }
   .timeline { margin-left: 11px; padding-left: 20px; }
   .timeline li::before { left: -29px; }
-  .specialization-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tag-list.specialization-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .specialization-list li { overflow-wrap: anywhere; }
   .tool-list { justify-content: center; }
   .about-prose { font-size: 21px; }

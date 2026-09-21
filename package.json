@@ -15,6 +15,7 @@
     "preview": "astro preview",
     "test": "playwright test",
     "content:add-project": "node scripts/add-project.mjs",
+    "add:book": "node scripts/add-book.mjs",
     "content:import-books": "node scripts/import-books.mjs",
     "astro": "astro"
   },

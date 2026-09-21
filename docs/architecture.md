@@ -9,7 +9,7 @@ The project is a statically generated Astro portfolio. Content collections provi
 | Routes | `src/pages/` | Astro file-based routing and static output |
 | Document shell | `src/layouts/BaseLayout.astro` | Shared metadata, fonts, favicon, skip link, and top navigation |
 | UI primitives | `src/components/` | Real frames, ornaments, menu, book tiles, and ratings reused across routes |
-| Editorial content | `src/content/` | Human-editable Markdown/MDX validated at build time |
+| Editorial content | `src/content/` | Human-editable Markdown/MDX plus the single-file book catalog, validated at build time |
 | Schemas | `src/content.config.ts` | Prevents malformed posts, projects, books, and page copy |
 | Design tokens | `src/styles/tokens.css` | Shared palette, typography, geometry, and effects |
 | Foundations | `src/styles/global.css` | Base behavior and reusable RPG component classes |
@@ -19,7 +19,7 @@ The project is a statically generated Astro portfolio. Content collections provi
 
 ## Data flow
 
-1. An editor changes a Markdown or MDX entry.
+1. An editor changes a Markdown/MDX entry, a book metadata record in `src/content/books.json`, or a matching Markdown review in `src/content/book-reviews/`.
 2. `src/content.config.ts` validates its frontmatter during development and build.
 3. A route queries the collection at build time.
 4. Astro renders static HTML with no content API required in the browser.
@@ -37,7 +37,7 @@ Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md
 
 ## Current state and next routes
 
-Home, `/system/`, About, Projects, Posts, and Reading are implemented. Posts currently has no published entries; Reading has real covers and reviews. Detail routes are generated from visible collection entries, with book reviews requiring a nonempty body.
+Home, `/system/`, About, Projects, Posts, and Reading are implemented. Posts currently has no published entries; Reading has real covers and reviews. Astro's `file()` loader reads the JSON metadata catalog, while `glob()` loads separate Markdown reviews. A detail route is generated only when a visible book has a nonempty review with the same ID.
 
 ## Compatibility and retired code
 

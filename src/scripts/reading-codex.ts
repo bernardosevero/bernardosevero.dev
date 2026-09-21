@@ -79,7 +79,7 @@ class ReadingCodex extends HTMLElement {
     const fragment = details.find((detail) => `#${detail.id}` === location.hash);
     const initialShelf = fragment?.dataset.status
       ?? shelves.find((shelf) => `#${shelf.id}` === location.hash)?.dataset.shelf
-      ?? details[0]?.dataset.status ?? 'reading';
+      ?? 'finished';
     this.dataset.enhanced = 'true';
     selectShelf(initialShelf, false);
     if (fragment) selectBook(fragment.dataset.detail);

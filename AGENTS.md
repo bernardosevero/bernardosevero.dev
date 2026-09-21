@@ -50,7 +50,8 @@ Astro content collections are the source of truth for editorial material:
 
 - `src/content/posts/` — articles in Markdown or MDX.
 - `src/content/projects/` — project case studies in Markdown or MDX.
-- `src/content/books/` — one Markdown file per book; the body holds the review.
+- `src/content/books.json` — book metadata in one catalog; each entry has a stable `id`.
+- `src/content/book-reviews/` — optional Markdown reviews named after their catalog book ID.
 - `src/content/pages/` — low-frequency page copy such as Home and About.
 - `src/content.config.ts` — schemas and validation contracts.
 
@@ -62,6 +63,7 @@ Rules:
 - A draft must stay out of production indexes and feeds.
 - A project begins with `draft: true`; publishing requires real role, context, decisions, and supportable outcomes.
 - Notion book sync owns only entries carrying `notionId`. It must not delete hand-authored content or rewrite unrelated fields silently.
+- Add books through `npm run add:book`; the command appends a draft and refuses duplicate IDs.
 - Store no Notion token, database secret, or private URL in Git.
 - See `docs/content.md` before adding or importing content.
 
@@ -135,7 +137,7 @@ Rules:
 ## Skills and automation contracts
 
 - `$add-project` scaffolds a draft in `src/content/projects/` through `npm run content:add-project`. It must fail rather than overwrite an existing slug and must never fabricate claims.
-- `$sync-notion-books` reads the configured Notion books database, shows a normalized diff, and imports books through `npm run content:import-books`. It must not delete local entries or store credentials.
+- `$sync-notion-books` reads the configured Notion books database, shows a normalized diff, and imports metadata into `src/content/books.json` and supplied reviews into Markdown through `npm run content:import-books`. It must not delete local entries or store credentials.
 - A skill may prepare local changes, but it may not commit, push, deploy, delete references, or mutate Notion without the user's request.
 - Skills are personal Codex skills stored under the user's Codex skills directory. Their project contract is documented in `docs/skills.md`.
 

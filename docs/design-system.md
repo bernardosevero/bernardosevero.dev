@@ -87,7 +87,7 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 Desktop uses a 3:2 split between shelf and details, with four cover-first columns. Container queries reduce the shelf to three columns on tablets, then two columns with stacked panels on phones. Real edition covers use `object-fit: contain`; metadata is semantic HTML. Selected tiles have gold corner brackets and a diamond, while the active shelf has a gold border and marker. Keyboard focus remains distinct from selection.
 
-Without JavaScript, shelf navigation and book tiles are fragment links and all metadata and review links remain readable. Enhancement displays one shelf and detail at a time, remembers a selection per shelf, supports Arrow Left/Right and Home/End on tabs, and moves focus to the chosen book details. The first populated shelf opens by default. Empty shelves never display stale book details.
+Without JavaScript, shelf navigation and book tiles are fragment links and all metadata and review links remain readable. Each shelf is a named, keyboard-focusable scroll region with a bounded block size. Enhancement displays one shelf and detail at a time, remembers a selection per shelf, supports Arrow Left/Right and Home/End on tabs, and moves focus to the chosen book details. The Finished shelf opens by default. Empty shelves never display stale book details.
 
 `BookRating.astro` renders five outlined stars with full or fractional fills plus an exact accessible value. Missing ratings say “Not rated”; zero remains a valid rating. The system page shows all these states. No ratings or review summaries are inferred.
 

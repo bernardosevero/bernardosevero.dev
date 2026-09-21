@@ -16,7 +16,7 @@ export interface CodexBook {
 }
 interface Props { books: CodexBook[]; id?: string; }
 const { books, id = 'reading-codex' } = Astro.props;
-const shelves = ['reading', 'finished', 'wishlist'] as const;
+const shelves = ['finished', 'reading', 'wishlist'] as const;
 ---
 
 <reading-codex id={id}>
@@ -28,7 +28,7 @@ const shelves = ['reading', 'finished', 'wishlist'] as const;
     <div class="codex-body">
       <div class="codex-library codex-parchment">
         {shelves.map((shelf) => (
-          <section class="codex-shelf" data-shelf={shelf} id={`${id}-${shelf}`} aria-label={`${shelf} books`}>
+          <section class="codex-shelf" data-shelf={shelf} id={`${id}-${shelf}`} aria-label={`${shelf} books`} tabindex="0">
             <h2 class="codex-shelf-title">{shelf}</h2>
             <ul class="codex-grid">
               {books.filter((book) => book.status === shelf).map((book) => (

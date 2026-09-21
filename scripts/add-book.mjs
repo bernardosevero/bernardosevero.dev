@@ -1,0 +1,30 @@
+import { readFile, rename, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+
+const args = new Map();
+for (let index = 2; index < process.argv.length; index += 2) args.set(process.argv[index], process.argv[index + 1]);
+
+const id = args.get('--id');
+const title = args.get('--title')?.trim();
+const author = args.get('--author')?.trim();
+const status = args.get('--status');
+const isbn = args.get('--isbn')?.replace(/[\s-]/g, '').toUpperCase();
+const allowedStatuses = new Set(['reading', 'finished', 'wishlist']);
+
+if (!id || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) throw new Error('Pass a lowercase kebab-case ID with --id.');
+if (!title) throw new Error('Pass the real book title with --title.');
+if (!author) throw new Error('Pass the real author with --author.');
+if (!status || !allowedStatuses.has(status)) throw new Error('Pass --status reading, finished, or wishlist.');
+if (isbn && !/^(?:\d{9}[\dX]|\d{13})$/.test(isbn)) throw new Error('ISBN must be a valid 10- or 13-character identifier.');
+
+const target = resolve('src/content/books.json');
+const temporary = `${target}.${process.pid}.tmp`;
+const books = JSON.parse(await readFile(target, 'utf8'));
+if (!Array.isArray(books)) throw new Error('src/content/books.json must contain an array.');
+if (books.some((book) => book.id === id)) throw new Error(`Book already exists: ${id}`);
+
+books.push({ id, title, author, status, ...(isbn ? { isbn } : {}), draft: true, preview: false });
+books.sort((left, right) => left.title.localeCompare(right.title));
+await writeFile(temporary, `${JSON.stringify(books, null, 2)}\n`, { encoding: 'utf8', flag: 'wx' });
+await rename(temporary, target);
+console.log(`Added draft book ${id} to ${target}.`);

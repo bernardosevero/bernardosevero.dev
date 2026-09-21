@@ -1,5 +1,5 @@
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const date = z.coerce.date();
@@ -45,8 +45,9 @@ const projects = defineCollection({
 });
 
 const books = defineCollection({
-  loader: glob({ base: './src/content/books', pattern: '**/*.md' }),
+  loader: file('./src/content/books.json'),
   schema: z.object({
+    id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     title: z.string(),
     author: z.string(),
     status: z.enum(['reading', 'finished', 'wishlist']),
@@ -57,11 +58,16 @@ const books = defineCollection({
     coverSource: z.enum(['manual', 'catalog']).optional(),
     coverProvenance: z.string().optional(),
     coverOverride: z.boolean().default(false),
+    isbn: z.string().regex(/^(?:\d{9}[\dX]|\d{13})$/).optional(),
     notionId: z.string().optional(),
     notionLastEditedAt: date.optional(),
     draft: z.boolean().default(false),
     preview: z.boolean().default(false),
-  }),
+  }).strict(),
+});
+
+const bookReviews = defineCollection({
+  loader: glob({ base: './src/content/book-reviews', pattern: '**/*.md' }),
 });
 
 const pages = defineCollection({
@@ -92,4 +98,4 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { posts, projects, books, pages };
+export const collections = { posts, projects, books, bookReviews, pages };
