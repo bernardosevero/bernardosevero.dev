@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { cvAsset } from '../src/config/cv';
 
 const routes = [
   { path: 'about/', heading: 'About' },
@@ -33,7 +34,8 @@ test('About exposes the requested professional profile links', async ({ page }) 
   await expect(page.getByRole('heading', { name: 'Experience' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Specializations' })).toBeVisible();
   await expect(page.getByRole('list', { name: 'Working strengths' })).toBeVisible();
-  await expect(page.locator('.social-link .pixel-icon')).toHaveCount(2);
+  await expect(page.locator('[data-professional-profile] .pixel-icon')).toHaveCount(2);
+  await expect(page.locator('.social-link .pixel-icon')).toHaveCount(cvAsset ? 3 : 2);
 });
 
 for (const width of [320, 390, 1586]) {
@@ -47,7 +49,8 @@ for (const width of [320, 390, 1586]) {
     const heading = await page.getByRole('heading', { name: 'About me', exact: true }).boundingBox();
     for (const name of [/LinkedIn/, /GitHub/]) {
       const link = await page.getByRole('link', { name }).boundingBox();
-      expect(Math.abs((heading!.y + heading!.height / 2) - (link!.y + link!.height / 2))).toBeLessThan(2);
+      const sameRow = Math.abs((heading!.y + heading!.height / 2) - (link!.y + link!.height / 2)) < 2;
+      expect(sameRow || (cvAsset !== null && link!.y >= heading!.y + heading!.height)).toBe(true);
     }
     await expect(page.getByText('Better tools. Kinder humans.')).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

@@ -1,0 +1,13 @@
+---
+import { cvAsset } from '../config/cv';
+import { basePath } from '../utils/paths';
+import PixelIcon from './PixelIcon.astro';
+import '../styles/about.css';
+---
+
+{cvAsset && (
+  <a class="social-link" href={`${basePath}${cvAsset.path}`} download={cvAsset.downloadName} aria-label="Download CV (PDF)" title="Download CV (PDF)">
+    <PixelIcon name="download" size={31} />
+    <span class="sr-only">Download CV (PDF)</span>
+  </a>
+)}

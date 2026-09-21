@@ -1,6 +1,6 @@
 ---
 interface Props {
-  name: 'briefcase' | 'star' | 'wrench' | 'book' | 'linkedin' | 'github' | 'vscode' | 'docker' | 'cloud';
+  name: 'briefcase' | 'star' | 'wrench' | 'book' | 'linkedin' | 'github' | 'vscode' | 'docker' | 'cloud' | 'download';
   size?: number;
 }
 
@@ -9,6 +9,12 @@ const { name, size = 28 } = Astro.props;
 
 <svg class="pixel-icon" style={`--pixel-icon-size: ${size}px`} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
   <g stroke-linejoin="round">
+  {name === 'download' && <>
+    <path fill="#d8af61" stroke="#352014" stroke-width="2" d="M6 2h13l7 7v21H6Z" />
+    <path fill="#f8d77f" stroke="#352014" stroke-width="2" d="M19 2v7h7" />
+    <text x="16" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#352014">CV</text>
+    <path fill="#56341e" d="M14 20h4v3h3l-5 5-5-5h3Z" />
+  </>}
   {name === 'briefcase' && <>
     <path fill="#d8af61" stroke="#352014" stroke-width="2" d="M11 8V4h10v4h-3V7h-4v1Z" />
     <path fill="#56341e" stroke="#352014" stroke-width="2" d="M3 9h26v19H3Z" />

@@ -107,6 +107,10 @@ The homepage and `/about/` share `src/layouts/CharacterSheet.astro`, backed by t
 
 `PixelIcon.astro` contains multicolor SVG artwork for the character sheet, tool tiles, and professional profile links. Tool marks retain recognizable colors; the briefcase, star, wrench, and book share dark walnut outlines, bronze shading, and gold highlights drawn from the About reference. The AWS illustration is a cloud symbol with an orange smile, not an official logo. Artwork is independent of CSS geometry; CSS controls its size and surrounding tile. Decorative instances are hidden from assistive technology; icon-only controls must provide an accessible name and a visible tooltip or nearby label. The live inventory shows both icon families.
 
+### CV download
+
+The optional `CvDownloadLink.astro` reuses `.social-link` from `about.css` and follows LinkedIn and GitHub in the shared Character Sheet. It owns native download semantics and an explicit accessible PDF label, independently of external profile navigation. The contact heading row wraps when the actions need more space. Its walnut-and-gold document icon belongs to `PixelIcon.astro`. System renders the same action and its keyboard focus behavior when a public CV is configured, or the icon alone when it is absent. This small addition preserves the approved About composition; the narrow heading row may reflow to a second line. See `docs/content.md` for enabling and replacing the PDF.
+
 ### Tags and status labels
 
 `.tag-list` groups technologies and topics; `.status-badge` labels metadata. Both use the legible body pixel font rather than the display face. They are real semantic list or text content and are demonstrated on `/system/`. The Codex's status field and star rating belong to its detail panel.

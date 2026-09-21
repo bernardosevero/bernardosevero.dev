@@ -3,6 +3,8 @@ import { basePath as base } from '../utils/paths';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
+import CvDownloadLink from '../components/CvDownloadLink.astro';
+import { cvAsset } from '../config/cv';
 import WoodFrame from '../components/WoodFrame.astro';
 import SiteNavigation from '../components/SiteNavigation.astro';
 import BookTile from '../components/BookTile.astro';
@@ -88,6 +90,11 @@ const colorTokens = [
           <div class="pixel-icon-row" aria-hidden="true"><PixelIcon name="vscode" /><PixelIcon name="github" /><PixelIcon name="docker" /><PixelIcon name="cloud" /><PixelIcon name="linkedin" /></div>
           <div class="pixel-icon-row" aria-hidden="true"><PixelIcon name="briefcase" /><PixelIcon name="star" /><PixelIcon name="wrench" /><PixelIcon name="book" /></div>
           <p>Tool marks keep their distinct colors. Section artwork shares walnut outlines, bronze shading, and gold highlights. Links retain accessible names.</p>
+        </article>
+        <article>
+          <h3>CV download</h3>
+          {cvAsset ? <CvDownloadLink /> : <PixelIcon name="download" />}
+          <p>{cvAsset ? 'The document icon carries a visible CV label and download arrow. Tab to inspect its focus state; hover and press to inspect its shared profile-link states.' : 'Document icon with a visible CV label and download arrow. The action stays hidden until the public CV PDF is supplied.'}</p>
         </article>
         <article>
           <h3>Project cards</h3>

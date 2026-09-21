@@ -4,6 +4,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import WoodFrame from '../components/WoodFrame.astro';
 import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
+import CvDownloadLink from '../components/CvDownloadLink.astro';
+import { cvAsset } from '../config/cv';
 import { Image } from 'astro:assets';
 import wizardPortrait from '../assets/bernardo-wizard.png';
 import { getEntry, render } from 'astro:content';
@@ -96,7 +98,7 @@ const socialIcons = {
         <section class="about-copy" aria-labelledby="about-me-heading">
           <div class="about-heading-row">
             <h2 id="about-me-heading" class="section-heading"><PixelIcon name="book" size={30} />About me</h2>
-            <nav id="contact" class="contact-links" aria-label="Professional profiles">
+            <nav id="contact" class="contact-links" aria-label={cvAsset ? 'Professional profiles and CV' : 'Professional profiles'}>
               <div>
                 {about.data.links.map(({ label, url }) => (
                   <a class="social-link" href={url} target="_blank" rel="noreferrer" data-professional-profile={label.toLowerCase()} aria-label={`${label} (opens in a new tab)`} title={label}>
@@ -104,6 +106,7 @@ const socialIcons = {
                     <span class="sr-only">{label}</span>
                   </a>
                 ))}
+                <CvDownloadLink />
               </div>
             </nav>
           </div>
