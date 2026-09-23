@@ -1,11 +1,11 @@
 ---
-title: "Full-stack courses for Alura"
-summary: "Created and delivered Alura's three-course full-stack learning path with React, Node.js, and Express."
+title: "Full-stack development courses for beginners"
+summary: "Created and delivered a three-course full-stack learning path for the greatest online courses platform in Latin America with React and Node.js. Reached 12,300+ students with an average rating of 9.2/10.
+"
 role: "Freelance Instructor"
 technologies:
   - React
   - Node.js
-  - Express
 outcomes:
   - "Published a 28-hour Alura formation spanning three courses."
 featured: true
@@ -26,6 +26,6 @@ contribution: "Created and delivered the full-stack course sequence as a freelan
 lessons: []
 ---
 
-Alura's full-stack formation guides learners through one application from its React interface to its Node.js and Express API.
+Full-stack formation guides learners through one application from its React interface to its Node.js and Express API.
 
 The sequence starts with frontend foundations, continues with a CRUD API, and closes by connecting the two sides into a complete application. The published formation and lesson repositories provide direct evidence of the work without relying on private course materials.
