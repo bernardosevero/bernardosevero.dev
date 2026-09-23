@@ -32,16 +32,6 @@ const colorTokens = [
     </header>
 
     <WoodFrame class="system-section">
-      <h2>Principles</h2>
-      <Ornament variant="divider" />
-      <div class="principle-grid">
-        <article><h3>Readable first</h3><p>The RPG world creates memory; professional evidence creates trust.</p></article>
-        <article><h3>Crafted, not flattened</h3><p>Interface controls remain semantic HTML and CSS, never a screenshot with hotspots.</p></article>
-        <article><h3>One source of truth</h3><p>These specimens render the same tokens and components used by the product.</p></article>
-      </div>
-    </WoodFrame>
-
-    <WoodFrame class="system-section">
       <h2>Color tokens</h2>
       <Ornament variant="divider" />
       <div class="swatch-grid">
@@ -101,6 +91,11 @@ const colorTokens = [
           <p>LinkedIn, GitHub, and CV download share the profile-link styles. Tab to inspect focus; hover and press to inspect interaction states.</p>
           {!cvAsset && <p>The CV action stays hidden until the public PDF is supplied; only its icon is shown here.</p>}
         </article>
+        <article class="navigation-specimen" aria-labelledby="navigation-specimen-heading">
+          <h3 id="navigation-specimen-heading">Site navigation</h3>
+          <p>Production dimensions and selected state. This static specimen does not navigate; actual page menus are links.</p>
+          <SiteNavigation pathname={`${base}projects/`} preview />
+        </article>
         <article>
           <h3>Project cards</h3>
           <div class="project-card-specimens">
@@ -139,15 +134,6 @@ const colorTokens = [
       </div>
     </WoodFrame>
 
-    <section class="navigation-specimen" aria-labelledby="navigation-specimen-heading">
-      <h2 id="navigation-specimen-heading">Site navigation</h2>
-      <p>Production dimensions and selected state. This static specimen does not navigate; actual page menus are links.</p>
-      <SiteNavigation pathname={`${base}projects/`} preview />
-    </section>
-
-    <footer>
-      <p>Implementation rules, token ownership, and contribution checks live in <code>docs/design-system.md</code>.</p>
-    </footer>
   </main>
 </BaseLayout>
 
@@ -184,7 +170,7 @@ const colorTokens = [
   :global(.system-section > .frame-surface) { padding: clamp(22px, 4vw, 44px); }
   :global(.system-section > .frame-surface > h2) { font-size: clamp(32px, 5vw, 48px); text-align: center; text-transform: uppercase; }
   :global(.system-section > .frame-surface > .ornament--divider) { margin: 10px 0 28px; }
-  .principle-grid, .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 20px; }
+  .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 20px; }
   .component-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
   .component-grid > article > h3 { font-size: 26px; text-transform: uppercase; }
   .component-grid > article > p { margin: 0; font-size: 23px; }
@@ -198,8 +184,8 @@ const colorTokens = [
   .project-card-specimens { display: grid; gap: 12px; }
   .component-grid > article > .rpg-button { width: 100%; }
   .component-grid > article { display: grid; align-content: start; gap: 12px; min-width: 0; padding: 20px; border: 1px solid var(--parchment-edge); }
-  .navigation-specimen { margin: 32px 0; color: var(--parchment-light); }
-  .navigation-specimen p { margin: 12px 0 24px; }
+  .navigation-specimen { color: inherit; }
+  .navigation-specimen p { margin: 0; }
   .book-tile-specimens { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding: 16px 4px; }
   .system-page { overflow-wrap: anywhere; }
   .system-page :global(.frame-surface) { height: auto; }
