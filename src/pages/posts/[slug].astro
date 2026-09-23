@@ -31,6 +31,7 @@ const { Content } = await render(post);
 
   .article-content {
     margin: 28px auto 0;
+    overflow-wrap: anywhere;
     font-size: clamp(26px, 3vw, 31px);
     line-height: 1.25;
   }
@@ -39,6 +40,13 @@ const { Content } = await render(post);
     margin: 32px 0 16px;
     font-size: 34px;
     text-align: center;
+  }
+
+  .article-content :global(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
   }
 
   .article-content :global(blockquote) {

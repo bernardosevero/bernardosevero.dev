@@ -21,7 +21,7 @@ for (const width of [320, 390, 760, 1024, 1586]) {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     let baseline: unknown;
     let projectNavigation: Awaited<ReturnType<typeof navigationAppearance>> | undefined;
-    for (const route of ['', 'about/', 'projects/', 'posts/', 'reading/', 'projects/unified-troubleshooting-platform/', 'reading/fiodor-dostoievski-noites-brancas/']) {
+    for (const route of ['', 'about/', 'projects/', 'posts/', 'posts/building-my-portfolio-with-a-design-system-and-llms/', 'reading/', 'projects/unified-troubleshooting-platform/', 'reading/fiodor-dostoievski-noites-brancas/']) {
       await page.goto(`./${route}`);
       await page.evaluate(() => document.fonts.ready);
       await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(1);
