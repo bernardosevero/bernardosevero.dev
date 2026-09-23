@@ -66,8 +66,10 @@ for (const width of [320, 390, 760, 1024, 1586]) {
     expect(await navigationAppearance(page.locator('.navigation-specimen .site-navigation'))).toEqual(projectNavigation);
     await expect(page.getByRole('link', { name: /Return to the Personal Log/ })).toHaveCount(1);
     await expect(page.locator('.book-tile-specimens .codex-tile')).toHaveCount(2);
-    const cvSpecimen = page.locator('.component-grid > article').filter({ has: page.getByRole('heading', { name: 'CV download', exact: true }) });
-    await expect(cvSpecimen.locator('.pixel-icon')).toHaveCount(1);
+    const cvSpecimen = page.locator('.component-grid > article').filter({ has: page.getByRole('heading', { name: 'CTA icons', exact: true }) });
+    await expect(cvSpecimen.locator('.pixel-icon')).toHaveCount(3);
+    await expect(cvSpecimen.getByRole('link', { name: 'LinkedIn (opens in a new tab)' })).toHaveAttribute('href', 'https://www.linkedin.com/in/bernardosevero/');
+    await expect(cvSpecimen.getByRole('link', { name: 'GitHub (opens in a new tab)' })).toHaveAttribute('href', 'https://github.com/bernardosevero');
     await expect(cvSpecimen.getByRole('link', { name: 'Download CV (PDF)' })).toHaveCount(cvAsset ? 1 : 0);
     await expect(page.locator('.book-tile-specimens .codex-tile[aria-current="true"]')).toHaveCount(1);
     const specimenProblems = await page.locator('.component-grid > article').evaluateAll((specimens) => specimens.flatMap((specimen, index) => {

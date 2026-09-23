@@ -87,14 +87,19 @@ const colorTokens = [
         </article>
         <article>
           <h3>Pixel icons</h3>
-          <div class="pixel-icon-row" aria-hidden="true"><PixelIcon name="vscode" /><PixelIcon name="github" /><PixelIcon name="docker" /><PixelIcon name="cloud" /><PixelIcon name="linkedin" /></div>
+          <div class="pixel-icon-row" aria-hidden="true"><PixelIcon name="vscode" /><PixelIcon name="docker" /><PixelIcon name="cloud" /></div>
           <div class="pixel-icon-row" aria-hidden="true"><PixelIcon name="briefcase" /><PixelIcon name="star" /><PixelIcon name="wrench" /><PixelIcon name="book" /></div>
           <p>Tool marks keep their distinct colors. Section artwork shares walnut outlines, bronze shading, and gold highlights. Links retain accessible names.</p>
         </article>
         <article>
-          <h3>CV download</h3>
-          {cvAsset ? <CvDownloadLink /> : <PixelIcon name="download" />}
-          <p>{cvAsset ? 'The document icon carries a visible CV label and download arrow. Tab to inspect its focus state; hover and press to inspect its shared profile-link states.' : 'Document icon with a visible CV label and download arrow. The action stays hidden until the public CV PDF is supplied.'}</p>
+          <h3>CTA icons</h3>
+          <div class="pixel-icon-row">
+            <a class="social-link" href="https://www.linkedin.com/in/bernardosevero/" target="_blank" rel="noreferrer" aria-label="LinkedIn (opens in a new tab)" title="LinkedIn"><PixelIcon name="linkedin" size={31} /></a>
+            <a class="social-link" href="https://github.com/bernardosevero" target="_blank" rel="noreferrer" aria-label="GitHub (opens in a new tab)" title="GitHub"><PixelIcon name="github" size={31} /></a>
+            {cvAsset ? <CvDownloadLink /> : <PixelIcon name="download" />}
+          </div>
+          <p>LinkedIn, GitHub, and CV download share the profile-link styles. Tab to inspect focus; hover and press to inspect interaction states.</p>
+          {!cvAsset && <p>The CV action stays hidden until the public PDF is supplied; only its icon is shown here.</p>}
         </article>
         <article>
           <h3>Project cards</h3>
