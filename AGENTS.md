@@ -165,6 +165,7 @@ For any code or configuration change:
 
 ```sh
 npm run check
+npm run format:check
 npm run build
 ```
 
