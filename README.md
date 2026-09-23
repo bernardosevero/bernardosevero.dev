@@ -41,6 +41,7 @@ The first browser-test run may need `npx playwright install chromium`.
 - Vanilla CSS for tokens, shared primitives, and route composition.
 - Markdown/MDX for posts and projects; a single JSON book catalog with separate Markdown reviews; Markdown for page copy.
 - [Playwright](https://playwright.dev/) + [axe-core](https://github.com/dequelabs/axe-core) for behavior, overflow, and automated accessibility checks.
+- [PostHog](https://posthog.com/) for product analytics.
 
 ## ✍️ Add content, not components
 
@@ -84,16 +85,5 @@ Start with [AGENTS.md](AGENTS.md) for the project's rules and [architecture.md](
 ## 🚀 Deployment
 
 Pushes to `main` run type checking, production builds, and browser tests before deploying the verified output to Cloudflare Pages. The production target is [bernardosevero.dev](https://bernardosevero.dev/).
-
-Follow [the deployment guide](docs/deployment.md) to create the Pages project, configure GitHub secrets, and connect the domain. The default build uses `/`; `SITE_URL` and `BASE_PATH` retain compatibility with the former GitHub Pages location.
-
-## 🧭 Project status
-
-- ✅ Real Astro/CSS Home screen
-- ✅ Responsive and keyboard-aware menu dialogs
-- ✅ Typed content foundations
-- ✅ Live design-system route
-- 🛠️ Posts, About, Projects, and Reading screens
-- 🐉 Final content, SEO pass, and custom domain: future quests
 
 Made with parchment, pixels, and a healthy suspicion of unnecessary JavaScript. 🌿
