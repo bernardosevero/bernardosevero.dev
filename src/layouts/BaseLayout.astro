@@ -22,10 +22,6 @@ const {
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const socialImageUrl = new URL(`${base}images/social-card-v2.jpg`, Astro.site);
 const socialImageAlt = 'Bernardo Severo, Software Engineer, on a parchment sign in a welcoming pixel-art medieval village.';
-const relativePath = Astro.url.pathname.startsWith(base)
-  ? Astro.url.pathname.slice(base.length)
-  : Astro.url.pathname.replace(/^\/+/, '');
-const showSiteNavigation = !['system', 'system/'].includes(relativePath);
 ---
 
 <!doctype html>
@@ -64,7 +60,7 @@ const showSiteNavigation = !['system', 'system/'].includes(relativePath);
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    {showSiteNavigation && <div class="base-navigation"><SiteNavigation pathname={Astro.url.pathname} /></div>}
+    <div class="base-navigation"><SiteNavigation pathname={Astro.url.pathname} /></div>
     <slot />
   </body>
 </html>

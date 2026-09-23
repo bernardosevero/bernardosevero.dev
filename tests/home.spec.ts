@@ -22,7 +22,7 @@ test('homepage opens the character sheet with keyboard-accessible navigation', a
 
 test('every menu item reaches its implemented route', async ({ page }) => {
   await page.goto('./');
-  for (const [name, path] of [['Posts', 'posts/'], ['Projects', 'projects/'], ['Books', 'reading/']]) {
+  for (const [name, path] of [['Posts', 'posts/'], ['Projects', 'projects/'], ['Books', 'reading/'], ['System', 'system/']]) {
     const link = page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name, exact: true });
     await expect(link).toHaveAttribute('href', `${basePath}${path}`);
     await link.click();

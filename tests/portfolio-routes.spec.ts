@@ -21,7 +21,7 @@ for (const route of routes) {
     await page.evaluate(() => document.fonts.ready);
     await expect(page.getByRole('heading', { level: 1, name: route.heading })).toBeVisible();
     const menu = page.getByRole('navigation', { name: 'Main navigation' });
-    await expect(menu.getByRole('link')).toHaveCount(4);
+    await expect(menu.getByRole('link')).toHaveCount(5);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(failures).toEqual([]);
   });

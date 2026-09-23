@@ -22,16 +22,17 @@ const colorTokens = [
 <BaseLayout
   title="Design System — Bernardo Severo"
   description="The live visual language and reusable interface primitives behind Bernardo Severo's RPG portfolio."
+  preloadVillage
 >
-  <main id="main-content" class="system-page" tabindex="-1">
-    <header class="system-header">
-      <a href={base}>← Return to the Personal Log</a>
-      <p class="system-kicker">Field guide · v0.1</p>
-      <h1>Design System</h1>
-      <p>The live inventory for the portfolio’s parchment, timber, type, ornaments, and interaction states.</p>
-    </header>
-
-    <WoodFrame class="system-section">
+  <main id="main-content" class="portfolio-page system-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
+    <WoodFrame parchment={false} class="system-frame">
+      <header class="system-header system-surface">
+        <Ornament variant="sprig" />
+        <h1>Design System</h1>
+        <Ornament variant="sprig" />
+      </header>
+      <div class="system-body">
+    <section class="system-section system-surface">
       <h2>Color tokens</h2>
       <Ornament variant="divider" />
       <div class="swatch-grid">
@@ -43,18 +44,18 @@ const colorTokens = [
           </article>
         ))}
       </div>
-    </WoodFrame>
+    </section>
 
-    <WoodFrame class="system-section">
+    <section class="system-section system-surface">
       <h2>Typography</h2>
       <Ornament variant="divider" />
       <div class="type-grid">
         <article><p class="type-heading">Quest headings</p><code>Pixelify Sans · 700</code></article>
         <article><p class="type-body">Readable notes, metadata, and longer stories.</p><code>VT323 · 400</code></article>
       </div>
-    </WoodFrame>
+    </section>
 
-    <WoodFrame class="system-section">
+    <section class="system-section system-surface">
       <h2>Components and states</h2>
       <Ornament variant="divider" />
       <div class="component-grid">
@@ -132,6 +133,8 @@ const colorTokens = [
           <p>The active filter uses a gold fill and pressed state; filtering always leaves content readable without JavaScript.</p>
         </article>
       </div>
+    </section>
+      </div>
     </WoodFrame>
 
   </main>
@@ -157,19 +160,26 @@ const colorTokens = [
   }
 
   .system-header {
-    max-width: 780px;
-    margin: 0 auto 38px;
-    color: var(--parchment-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(12px, 3vw, 28px);
+    color: var(--ink);
     text-align: center;
-    text-shadow: 2px 2px var(--green-dark);
   }
-  .system-header a { color: var(--parchment-light); }
-  .system-kicker { color: var(--gold); font-family: var(--font-heading); text-transform: uppercase; letter-spacing: .12em; }
-  .system-header h1 { margin: 12px 0; font-size: clamp(46px, 9vw, 82px); text-transform: uppercase; }
-  :global(.system-section) { margin-block: 24px; }
-  :global(.system-section > .frame-surface) { padding: clamp(22px, 4vw, 44px); }
-  :global(.system-section > .frame-surface > h2) { font-size: clamp(32px, 5vw, 48px); text-align: center; text-transform: uppercase; }
-  :global(.system-section > .frame-surface > .ornament--divider) { margin: 10px 0 28px; }
+  :global(.system-frame > .frame-surface) { padding: 0; }
+  .system-surface {
+    border: 2px solid var(--parchment-edge);
+    background: var(--surface-parchment);
+    box-shadow: inset 0 0 0 4px #f9e5b180, inset 0 0 20px #b5824260, 0 0 0 2px var(--wood-dark);
+  }
+  .system-header { padding: clamp(20px, 4vw, 36px); margin-bottom: 12px; }
+  .system-header h1 { margin: 0; font-size: clamp(42px, 7vw, 72px); line-height: .95; text-transform: uppercase; }
+  .system-header :global(.ornament--sprig) { flex: 0 0 38px; }
+  .system-body { display: grid; gap: 12px; }
+  .system-section { padding: clamp(22px, 4vw, 44px); }
+  .system-section > h2 { font-size: clamp(32px, 5vw, 48px); text-align: center; text-transform: uppercase; }
+  .system-section > :global(.ornament--divider) { margin: 10px 0 28px; }
   .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 20px; }
   .component-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
   .component-grid > article > h3 { font-size: 26px; text-transform: uppercase; }
@@ -198,7 +208,7 @@ const colorTokens = [
   @media (max-width: 760px) { .component-grid { grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); } }
   @media (max-width: 520px) {
     .system-page { padding-top: 28px; width: calc(100% - 16px); }
-    :global(.system-section > .frame-surface) { padding: 22px 12px; }
+    .system-section { padding: 22px 12px; }
     .component-grid > article { padding: 12px; }
     .book-tile-specimens { gap: 16px; }
   }

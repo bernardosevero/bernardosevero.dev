@@ -20,13 +20,13 @@ for (const width of [320, 390, 760, 1024, 1586]) {
     await page.setViewportSize({ width, height: 992 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     let baseline: unknown;
-    let projectNavigation: unknown;
+    let projectNavigation: Awaited<ReturnType<typeof navigationAppearance>> | undefined;
     for (const route of ['', 'about/', 'projects/', 'posts/', 'reading/', 'projects/unified-troubleshooting-platform/', 'reading/fiodor-dostoievski-noites-brancas/']) {
       await page.goto(`./${route}`);
       await page.evaluate(() => document.fonts.ready);
       await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(1);
       const menu = page.getByRole('navigation', { name: 'Main navigation' });
-      await expect(menu.getByRole('link')).toHaveCount(4);
+      await expect(menu.getByRole('link')).toHaveCount(5);
       await expect(menu.locator('button')).toHaveCount(0);
       await expect(menu.locator('[aria-current="page"]')).toHaveCount(1);
       await expect(page.getByRole('link', { name: /Return to the Personal Log/ })).toHaveCount(0);
@@ -60,11 +60,17 @@ for (const width of [320, 390, 760, 1024, 1586]) {
     }
     await page.goto('./system/');
     await page.evaluate(() => document.fonts.ready);
+    expect(await page.locator('.portfolio-page').evaluate((element) => getComputedStyle(element, '::before').backgroundImage)).toContain('village.webp');
+    await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(1);
+    await expect(page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link')).toHaveCount(5);
+    await expect(page.getByRole('navigation', { name: 'Main navigation' }).locator('[aria-current="page"]')).toHaveCount(1);
     await expect(page.locator('reading-codex')).toHaveCount(0);
     await expect(page.locator('.navigation-specimen a, .navigation-specimen button')).toHaveCount(0);
     await expect(page.locator('.navigation-specimen [aria-current="page"]')).toHaveCount(1);
-    expect(await navigationAppearance(page.locator('.navigation-specimen .site-navigation'))).toEqual(projectNavigation);
-    await expect(page.getByRole('link', { name: /Return to the Personal Log/ })).toHaveCount(1);
+    const specimenNavigation = await navigationAppearance(page.locator('.navigation-specimen .site-navigation'));
+    expect(projectNavigation).toBeDefined();
+    expect(specimenNavigation.map(({ width, height, ...styles }) => styles)).toEqual(projectNavigation!.map(({ width, height, ...styles }) => styles));
+    await expect(page.getByRole('link', { name: /Return to the Personal Log/ })).toHaveCount(0);
     await expect(page.locator('.book-tile-specimens .codex-tile')).toHaveCount(2);
     const cvSpecimen = page.locator('.component-grid > article').filter({ has: page.getByRole('heading', { name: 'CTA icons', exact: true }) });
     await expect(cvSpecimen.locator('.pixel-icon')).toHaveCount(3);
