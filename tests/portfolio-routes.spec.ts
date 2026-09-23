@@ -5,8 +5,7 @@ import { cvAsset } from '../src/config/cv';
 const routes = [
   { path: 'about/', heading: 'About' },
   { path: 'projects/', heading: 'Projects' },
-  { path: 'projects/unified-troubleshooting-platform/', heading: 'Unified troubleshooting platform' },
-  { path: 'projects/event-driven-invoicing/', heading: 'Event-driven invoicing system' },
+  { path: 'projects/full-stack-courses-alura/', heading: 'Full-stack development courses for beginners' },
   { path: 'posts/', heading: 'Posts' },
   { path: 'reading/', heading: 'Reading' },
   { path: 'reading/fiodor-dostoievski-noites-brancas/', heading: 'White Nights' },
@@ -26,6 +25,22 @@ for (const route of routes) {
     expect(failures).toEqual([]);
   });
 }
+
+test('authored names keep their casing while page titles remain decorative', async ({ page }) => {
+  for (const [route, selector] of [
+    ['about/', '.timeline h3'],
+    ['projects/', '.project-card h2'],
+    ['reading/', '.codex-detail:visible h2'],
+  ]) {
+    await page.goto(`./${route}`);
+    const name = page.locator(selector).first();
+    await expect(name).toBeVisible();
+    expect(await name.evaluate((element) => getComputedStyle(element).textTransform)).toBe('none');
+    expect(await page.locator('h1').first().evaluate((element) => getComputedStyle(element).textTransform)).toBe('uppercase');
+  }
+  await page.goto('./about/');
+  await expect(page.locator('.timeline h3').first()).toHaveText('SAP Concur');
+});
 
 test('About exposes the requested professional profile links', async ({ page }) => {
   await page.goto('./about/');
@@ -152,9 +167,9 @@ test('Projects list uses repository cards without case-study actions', async ({ 
   await page.goto('./projects/');
   await expect(page.getByRole('link', { name: 'View case study' })).toHaveCount(0);
   await expect(page.locator('.project-list a[href*="/projects/"]')).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Unified troubleshooting platform' })).toBeVisible();
-  await expect(page.getByText('Consolidated fragmented troubleshooting tools', { exact: false })).toBeVisible();
-  const aluraLinks = page.getByRole('list', { name: 'Full-stack courses for Alura links' });
+  await expect(page.getByRole('heading', { name: 'Full-stack development courses for beginners' })).toBeVisible();
+  await expect(page.getByText('Created and delivered a three-course full-stack learning path', { exact: false })).toBeVisible();
+  const aluraLinks = page.getByRole('list', { name: 'Full-stack development courses for beginners links' });
   await expect(aluraLinks.getByRole('link', { name: /View Alura formation/ })).toHaveAttribute('href', 'https://www.alura.com.br/formacao-full-stack-react-node-js');
   await expect(aluraLinks.getByRole('link', { name: /Frontend repository/ })).toHaveAttribute('href', 'https://github.com/bernardosevero/alura-books-aulas');
   await expect(aluraLinks.getByRole('link', { name: /API repository/ })).toHaveAttribute('href', 'https://github.com/bernardosevero/alura-books-server-aulas');
@@ -171,7 +186,7 @@ for (const width of [390, 1586]) {
   test(`portfolio pages fit and pass automated accessibility checks at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 992 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    for (const path of ['about/', 'projects/', 'projects/unified-troubleshooting-platform/', 'posts/', 'reading/', 'reading/fiodor-dostoievski-noites-brancas/']) {
+    for (const path of ['about/', 'projects/', 'projects/full-stack-courses-alura/', 'posts/', 'reading/', 'reading/fiodor-dostoievski-noites-brancas/']) {
       await page.goto(`./${path}`);
       await page.evaluate(() => document.fonts.ready);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

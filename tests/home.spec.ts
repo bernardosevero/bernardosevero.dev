@@ -113,7 +113,7 @@ test('design system renders live tokens and shared components', async ({ page })
   await expect(page.getByRole('heading', { level: 1, name: 'Design System' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Continue quest' })).toBeVisible();
   await expect(page.locator('[data-token="--parchment"] [data-token-value]')).toHaveText('#ecd59c');
-  await expect(page.getByRole('link', { name: /Return to the Personal Log/ })).toHaveAttribute('href', basePath);
+  await expect(page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'About' })).toHaveAttribute('href', basePath);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   const accessibility = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
   expect(accessibility.violations).toEqual([]);

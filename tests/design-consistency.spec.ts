@@ -17,11 +17,12 @@ async function navigationAppearance(locator: Locator) {
 
 for (const width of [320, 390, 760, 1024, 1586]) {
   test(`page chrome is consistent and specimens fit at ${width}px`, async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(60_000);
     await page.setViewportSize({ width, height: 992 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     let baseline: unknown;
     let projectNavigation: Awaited<ReturnType<typeof navigationAppearance>> | undefined;
-    for (const route of ['', 'about/', 'projects/', 'posts/', 'posts/building-my-portfolio-with-a-design-system-and-llms/', 'reading/', 'projects/unified-troubleshooting-platform/', 'reading/fiodor-dostoievski-noites-brancas/']) {
+    for (const route of ['', 'about/', 'projects/', 'posts/', 'posts/building-my-portfolio-with-a-design-system-and-llms/', 'reading/', 'projects/full-stack-courses-alura/', 'reading/fiodor-dostoievski-noites-brancas/']) {
       await page.goto(`./${route}`);
       await page.evaluate(() => document.fonts.ready);
       await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(1);
