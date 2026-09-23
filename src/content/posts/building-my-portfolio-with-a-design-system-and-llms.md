@@ -69,6 +69,7 @@ For deployment, I bought the domain through Cloudflare and used **Cloudflare Pag
 - Markdown/MDX for posts, projects, and book reviews
 - A single JSON catalog for books
 - [Playwright](https://playwright.dev/) + [axe-core](https://github.com/dequelabs/axe-core) for behavior, overflow, and automated accessibility checks
+- [PostHog](https://posthog.com) for analytics
 
 Feel free to check out the code for the MVP on GitHub:
 
