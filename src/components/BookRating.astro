@@ -1,27 +1,60 @@
 ---
-interface Props { rating?: number; }
+interface Props {
+  rating?: number;
+}
 const { rating } = Astro.props;
 ---
+
 <span class="book-rating">
-  {rating === undefined ? <span>Not rated</span> : <>
-    <span class="sr-only">{rating} out of 5 stars</span>
-    <span class="book-rating__stars" aria-hidden="true">
-      {Array.from({ length: 5 }, (_, index) => (
-        <svg viewBox="0 0 32 32" class="book-rating__star">
-          <path class="book-rating__outline" d="m16 2 4 8 9 2-6 7 1 10-8-5-8 5 1-10-6-7 9-2Z" />
-          <path class="book-rating__fill" style={`clip-path: inset(0 ${100 - Math.max(0, Math.min(1, rating - index)) * 100}% 0 0)`} d="m16 2 4 8 9 2-6 7 1 10-8-5-8 5 1-10-6-7 9-2Z" />
-        </svg>
-      ))}
-    </span>
-  </>}
+  {rating === undefined ? (
+    <span>Not rated</span>
+  ) : (
+    <>
+      <span class="sr-only">{rating} out of 5 stars</span>
+      <span class="book-rating__stars" aria-hidden="true">
+        {Array.from({ length: 5 }, (_, index) => (
+          <svg viewBox="0 0 32 32" class="book-rating__star">
+            <path class="book-rating__outline" d="m16 2 4 8 9 2-6 7 1 10-8-5-8 5 1-10-6-7 9-2Z" />
+            <path
+              class="book-rating__fill"
+              style={`clip-path: inset(0 ${100 - Math.max(0, Math.min(1, rating - index)) * 100}% 0 0)`}
+              d="m16 2 4 8 9 2-6 7 1 10-8-5-8 5 1-10-6-7 9-2Z"
+            />
+          </svg>
+        ))}
+      </span>
+    </>
+  )}
 </span>
 <style>
-  .book-rating { display: inline-flex; align-items: center; font-size: 22px; }
-  .book-rating__stars { display: flex; gap: 4px; }
-  .book-rating__star { width: 30px; height: 30px; overflow: visible; }
-  .book-rating__outline { fill: var(--parchment); stroke: var(--ink); stroke-width: 2; }
-  .book-rating__fill { fill: var(--gold); stroke: var(--ink); stroke-width: 2; }
+  .book-rating {
+    display: inline-flex;
+    align-items: center;
+    font-size: 22px;
+  }
+  .book-rating__stars {
+    display: flex;
+    gap: 4px;
+  }
+  .book-rating__star {
+    width: 30px;
+    height: 30px;
+    overflow: visible;
+  }
+  .book-rating__outline {
+    fill: var(--parchment);
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
+  .book-rating__fill {
+    fill: var(--gold);
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
   @container (max-width: 650px) {
-    .book-rating__star { width: 26px; height: 26px; }
+    .book-rating__star {
+      width: 26px;
+      height: 26px;
+    }
   }
 </style>

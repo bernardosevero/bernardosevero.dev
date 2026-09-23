@@ -1,4 +1,6 @@
-interface EditorialEntry { data: { draft: boolean; preview: boolean }; }
+interface EditorialEntry {
+  data: { draft: boolean; preview: boolean };
+}
 
 /** Draft previews are visible only in development, never in production output. */
 export function isVisibleContent(

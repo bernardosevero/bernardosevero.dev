@@ -1,0 +1,17 @@
+# Build output and dependencies
+dist
+.astro
+node_modules
+
+# Generated / lockfiles
+package-lock.json
+
+# Static assets
+public
+
+# Authored prose and data (owned by content tooling, not the formatter)
+src/content
+*.md
+
+# Vendored PostHog bootstrap snippet — keep verbatim, do not reformat
+src/components/posthog.astro

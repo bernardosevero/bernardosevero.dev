@@ -56,10 +56,18 @@ class ReadingCodex extends HTMLElement {
         selectShelf(tab.dataset.shelfLink!);
       });
       tab.addEventListener('keydown', (event) => {
-        if (event.key === ' ') { event.preventDefault(); selectShelf(tab.dataset.shelfLink!); return; }
-        const destination = event.key === 'ArrowRight' ? (index + 1) % tabs.length
-          : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length
-          : event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : undefined;
+        if (event.key === ' ') {
+          event.preventDefault();
+          selectShelf(tab.dataset.shelfLink!);
+          return;
+        }
+        const moves: Record<string, number> = {
+          ArrowRight: (index + 1) % tabs.length,
+          ArrowLeft: (index + tabs.length - 1) % tabs.length,
+          Home: 0,
+          End: tabs.length - 1,
+        };
+        const destination = moves[event.key];
         if (destination === undefined) return;
         event.preventDefault();
         tabs[destination].focus();
@@ -70,16 +78,19 @@ class ReadingCodex extends HTMLElement {
       shelf.setAttribute('role', 'tabpanel');
       shelf.setAttribute('aria-labelledby', `${this.id}-tab-${shelf.dataset.shelf}`);
     });
-    tiles.forEach((tile) => tile.addEventListener('click', (event) => {
-      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-      event.preventDefault();
-      selectBook(tile.dataset.book, true);
-    }));
+    tiles.forEach((tile) =>
+      tile.addEventListener('click', (event) => {
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        selectBook(tile.dataset.book, true);
+      }),
+    );
     // Native fragments keep every shelf and book readable without JavaScript.
     const fragment = details.find((detail) => `#${detail.id}` === location.hash);
-    const initialShelf = fragment?.dataset.status
-      ?? shelves.find((shelf) => `#${shelf.id}` === location.hash)?.dataset.shelf
-      ?? 'finished';
+    const initialShelf =
+      fragment?.dataset.status ??
+      shelves.find((shelf) => `#${shelf.id}` === location.hash)?.dataset.shelf ??
+      'finished';
     this.dataset.enhanced = 'true';
     selectShelf(initialShelf, false);
     if (fragment) selectBook(fragment.dataset.detail);

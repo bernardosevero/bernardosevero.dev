@@ -32,10 +32,14 @@ const projects = defineCollection({
     publishedAt: date.optional(),
     repositoryUrl: z.url().optional(),
     liveUrl: z.url().optional(),
-    links: z.array(z.object({
-    label: z.string(),
-    url: z.url(),
-    })).default([]),
+    links: z
+      .array(
+        z.object({
+          label: z.string(),
+          url: z.url(),
+        }),
+      )
+      .default([]),
     problem: z.string(),
     constraints: z.array(z.string()).default([]),
     decisions: z.array(z.string()).default([]),
@@ -46,24 +50,29 @@ const projects = defineCollection({
 
 const books = defineCollection({
   loader: file('./src/content/books.json'),
-  schema: z.object({
-    id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
-    title: z.string(),
-    author: z.string(),
-    status: z.enum(['reading', 'finished', 'wishlist']),
-    rating: z.number().min(0).max(5).optional(),
-    finishedAt: date.optional(),
-    coverUrl: z.url().optional(),
-    coverAsset: z.string().startsWith('/').optional(),
-    coverSource: z.enum(['manual', 'catalog']).optional(),
-    coverProvenance: z.string().optional(),
-    coverOverride: z.boolean().default(false),
-    isbn: z.string().regex(/^(?:\d{9}[\dX]|\d{13})$/).optional(),
-    notionId: z.string().optional(),
-    notionLastEditedAt: date.optional(),
-    draft: z.boolean().default(false),
-    preview: z.boolean().default(false),
-  }).strict(),
+  schema: z
+    .object({
+      id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+      title: z.string(),
+      author: z.string(),
+      status: z.enum(['reading', 'finished', 'wishlist']),
+      rating: z.number().min(0).max(5).optional(),
+      finishedAt: date.optional(),
+      coverUrl: z.url().optional(),
+      coverAsset: z.string().startsWith('/').optional(),
+      coverSource: z.enum(['manual', 'catalog']).optional(),
+      coverProvenance: z.string().optional(),
+      coverOverride: z.boolean().default(false),
+      isbn: z
+        .string()
+        .regex(/^(?:\d{9}[\dX]|\d{13})$/)
+        .optional(),
+      notionId: z.string().optional(),
+      notionLastEditedAt: date.optional(),
+      draft: z.boolean().default(false),
+      preview: z.boolean().default(false),
+    })
+    .strict(),
 });
 
 const bookReviews = defineCollection({
@@ -79,22 +88,28 @@ const pages = defineCollection({
     base: z.string(),
     focus: z.array(z.string()),
     description: z.string(),
-    strengths: z.array(z.object({
-      label: z.string(),
-      level: z.number().int().min(1).max(10),
-    })),
-    experience: z.array(z.object({
-      company: z.string(),
-      role: z.string(),
-      period: z.string(),
-      description: z.string(),
-    })),
+    strengths: z.array(
+      z.object({
+        label: z.string(),
+        level: z.number().int().min(1).max(10),
+      }),
+    ),
+    experience: z.array(
+      z.object({
+        company: z.string(),
+        role: z.string(),
+        period: z.string(),
+        description: z.string(),
+      }),
+    ),
     specializations: z.array(z.string()),
     tools: z.array(z.string()),
-    links: z.array(z.object({
-      label: z.string(),
-      url: z.url(),
-    })),
+    links: z.array(
+      z.object({
+        label: z.string(),
+        url: z.url(),
+      }),
+    ),
   }),
 });
 

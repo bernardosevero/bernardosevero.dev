@@ -1,17 +1,13 @@
 ---
 import { isVisibleContent } from '../../utils/content';
-import { basePath as base } from '../../utils/paths';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PortfolioPage from '../../layouts/PortfolioPage.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
 import { getCollection, render } from 'astro:content';
 import '../../styles/portfolio.css';
 
 export async function getStaticPaths() {
-  const posts = await getCollection(
-    'posts',
-    isVisibleContent,
-  );
+  const posts = await getCollection('posts', isVisibleContent);
 
   return posts.map((post) => ({
     params: { slug: post.id },
@@ -21,9 +17,38 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-
 ---
-<BaseLayout title={`${post.data.title} — Bernardo Severo`} description={post.data.description} preloadVillage><main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1"><article class="portfolio-shell"><WoodFrame class="portfolio-frame article"><header><p class="page-kicker">{post.data.readingMinutes} min read</p><h1 class="page-title">{post.data.title}</h1><p class="page-intro">{post.data.description}</p><p class="meta article-date">Published {post.data.publishedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p><Ornament variant="divider" /></header><ul class="tag-list">{post.data.topics.map((topic) => <li>{topic}</li>)}</ul><div class="article-content"><Content /></div></WoodFrame></article></main></BaseLayout>
+
+<PortfolioPage
+  title={`${post.data.title} — Bernardo Severo`}
+  description={post.data.description}
+  shellTag="article"
+>
+  <WoodFrame class="portfolio-frame article">
+    <header>
+      <p class="page-kicker">{post.data.readingMinutes} min read</p>
+      <h1 class="page-title">{post.data.title}</h1>
+      <p class="page-intro">{post.data.description}</p>
+      <p class="meta article-date">
+        Published{' '}
+        {post.data.publishedAt.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        })}
+      </p>
+      <Ornament variant="divider" />
+    </header>
+    <ul class="tag-list">
+      {post.data.topics.map((topic) => (
+        <li>{topic}</li>
+      ))}
+    </ul>
+    <div class="article-content">
+      <Content />
+    </div>
+  </WoodFrame>
+</PortfolioPage>
 <style>
   .article-date {
     text-align: center;

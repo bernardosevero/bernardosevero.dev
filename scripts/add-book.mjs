@@ -2,7 +2,8 @@ import { readFile, rename, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const args = new Map();
-for (let index = 2; index < process.argv.length; index += 2) args.set(process.argv[index], process.argv[index + 1]);
+for (let index = 2; index < process.argv.length; index += 2)
+  args.set(process.argv[index], process.argv[index + 1]);
 
 const id = args.get('--id');
 const title = args.get('--title')?.trim();
@@ -11,11 +12,14 @@ const status = args.get('--status');
 const isbn = args.get('--isbn')?.replace(/[\s-]/g, '').toUpperCase();
 const allowedStatuses = new Set(['reading', 'finished', 'wishlist']);
 
-if (!id || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) throw new Error('Pass a lowercase kebab-case ID with --id.');
+if (!id || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id))
+  throw new Error('Pass a lowercase kebab-case ID with --id.');
 if (!title) throw new Error('Pass the real book title with --title.');
 if (!author) throw new Error('Pass the real author with --author.');
-if (!status || !allowedStatuses.has(status)) throw new Error('Pass --status reading, finished, or wishlist.');
-if (isbn && !/^(?:\d{9}[\dX]|\d{13})$/.test(isbn)) throw new Error('ISBN must be a valid 10- or 13-character identifier.');
+if (!status || !allowedStatuses.has(status))
+  throw new Error('Pass --status reading, finished, or wishlist.');
+if (isbn && !/^(?:\d{9}[\dX]|\d{13})$/.test(isbn))
+  throw new Error('ISBN must be a valid 10- or 13-character identifier.');
 
 const target = resolve('src/content/books.json');
 const temporary = `${target}.${process.pid}.tmp`;

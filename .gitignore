@@ -17,3 +17,6 @@ playwright-report/
 *.log
 .DS_Store
 Thumbs.db
+
+# Serena tool cache
+.serena/

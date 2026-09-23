@@ -21,7 +21,8 @@ const {
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const socialImageUrl = new URL(`${base}images/social-card-v2.jpg`, Astro.site);
-const socialImageAlt = 'Bernardo Severo, Software Engineer, on a parchment sign in a welcoming pixel-art medieval village.';
+const socialImageAlt =
+  'Bernardo Severo, Software Engineer, on a parchment sign in a welcoming pixel-art medieval village.';
 ---
 
 <!doctype html>
@@ -55,12 +56,18 @@ const socialImageAlt = 'Bernardo Severo, Software Engineer, on a parchment sign 
     <meta name="twitter:image:alt" content={socialImageAlt} />
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
     <PostHog />
-    {preloadVillage && <link rel="preload" href={`${base}images/village.webp`} as="image" fetchpriority="high" />}
+    {preloadVillage && (
+      <link rel="preload" href={`${base}images/village.webp`} as="image" fetchpriority="high" />
+    )}
     <title>{title}</title>
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <div class="base-navigation"><SiteNavigation pathname={Astro.url.pathname} /></div>
+    <a class="skip-link" href="#main-content">
+      Skip to content
+    </a>
+    <div class="base-navigation">
+      <SiteNavigation pathname={Astro.url.pathname} />
+    </div>
     <slot />
   </body>
 </html>
@@ -71,9 +78,14 @@ const socialImageAlt = 'Bernardo Severo, Software Engineer, on a parchment sign 
     margin: var(--page-top-space) auto 0;
   }
 
-  .base-navigation + :global(.portfolio-page) { padding-top: var(--page-section-gap); min-height: 0; }
+  .base-navigation + :global(.portfolio-page) {
+    padding-top: var(--page-section-gap);
+    min-height: 0;
+  }
 
   @media (max-width: 560px) {
-    .base-navigation { width: calc(100% - 16px); }
+    .base-navigation {
+      width: calc(100% - 16px);
+    }
   }
 </style>

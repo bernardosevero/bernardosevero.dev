@@ -35,10 +35,27 @@ const activeItem = getActiveNavigationItem(pathname, base);
 </WoodFrame>
 
 <style>
-  :global(.site-navigation) { width: 100%; margin: 0; container-type: inline-size; }
-  :global(.site-navigation .frame-surface) { padding: 12px; border: 2px solid #2a190f; background: #5b3422; }
-  .site-navigation__list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
-  .site-navigation__link { min-height: 54px; padding: 8px 10px; font-size: clamp(18px, 2.2vw, 26px); text-decoration: none; }
+  :global(.site-navigation) {
+    width: 100%;
+    margin: 0;
+    container-type: inline-size;
+  }
+  :global(.site-navigation .frame-surface) {
+    padding: 12px;
+    border: 2px solid #2a190f;
+    background: #5b3422;
+  }
+  .site-navigation__list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .site-navigation__link {
+    min-height: 54px;
+    padding: 8px 10px;
+    font-size: clamp(18px, 2.2vw, 26px);
+    text-decoration: none;
+  }
   .site-navigation__link[data-active='true'] {
     border-color: #754815;
     background: linear-gradient(#71c17f, #49a76b);
@@ -54,17 +71,28 @@ const activeItem = getActiveNavigationItem(pathname, base);
     transform: rotate(45deg);
     border: 2px solid #8b5515;
     background: #ffc84b;
-    box-shadow: inset 2px 2px #fff0a0, inset -2px -2px #d89220, 0 0 0 2px #4b2e11;
+    box-shadow:
+      inset 2px 2px #fff0a0,
+      inset -2px -2px #d89220,
+      0 0 0 2px #4b2e11;
     opacity: 0;
   }
-  .site-navigation__link[data-active='true'] .site-navigation__gem { opacity: 1; }
+  .site-navigation__link[data-active='true'] .site-navigation__gem {
+    opacity: 1;
+  }
 
   @container (max-width: 760px) {
-    .site-navigation__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .site-navigation__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 520px) {
-    :global(.site-navigation .frame-surface) { padding: 8px; }
-    .site-navigation__gem { left: -10px; }
+    :global(.site-navigation .frame-surface) {
+      padding: 8px;
+    }
+    .site-navigation__gem {
+      left: -10px;
+    }
   }
 </style>

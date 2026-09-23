@@ -17,8 +17,9 @@ test('draft previews never publish and require opt-in in development', () => {
   for (const development of [false, true]) {
     for (const draft of [false, true]) {
       for (const preview of [false, true]) {
-        expect(isVisibleContent({ data: { draft, preview } }, development))
-          .toBe(!draft || (development && preview));
+        expect(isVisibleContent({ data: { draft, preview } }, development)).toBe(
+          !draft || (development && preview),
+        );
       }
     }
   }

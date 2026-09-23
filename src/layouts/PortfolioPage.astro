@@ -1,0 +1,31 @@
+---
+import { basePath as base } from '../utils/paths';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Extra classes appended to the <main> element (e.g. "about-page"). */
+  mainClass?: string;
+  /** Element used for the centered content shell. */
+  shellTag?: 'div' | 'article';
+  /** Extra classes appended to the content shell (e.g. "about-shell"). */
+  shellClass?: string;
+}
+
+const { title, description, mainClass, shellTag = 'div', shellClass } = Astro.props;
+const Shell = shellTag;
+---
+
+<BaseLayout title={title} description={description} preloadVillage>
+  <main
+    id="main-content"
+    class:list={['portfolio-page', mainClass]}
+    style={`--portfolio-village: url('${base}images/village.webp')`}
+    tabindex="-1"
+  >
+    <Shell class:list={['portfolio-shell', shellClass]}>
+      <slot />
+    </Shell>
+  </main>
+</BaseLayout>

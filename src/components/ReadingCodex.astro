@@ -14,7 +14,10 @@ export interface CodexBook {
   rating?: number;
   reviewHref?: string;
 }
-interface Props { books: CodexBook[]; id?: string; }
+interface Props {
+  books: CodexBook[];
+  id?: string;
+}
 const { books, id = 'reading-codex' } = Astro.props;
 const shelves = ['finished', 'reading', 'wishlist'] as const;
 ---
@@ -22,47 +25,97 @@ const shelves = ['finished', 'reading', 'wishlist'] as const;
 <reading-codex id={id}>
   <WoodFrame parchment={false} class="codex-frame">
     <header class="codex-banner codex-parchment">
-      <div class="codex-title"><Ornament variant="sprig" /><h1>Reading</h1><Ornament variant="sprig" /></div>
+      <div class="codex-title">
+        <Ornament variant="sprig" />
+        <h1>Reading</h1>
+        <Ornament variant="sprig" />
+      </div>
       <p class="codex-subtitle">Codex</p>
     </header>
     <div class="codex-body">
       <div class="codex-library codex-parchment">
         {shelves.map((shelf) => (
-          <section class="codex-shelf" data-shelf={shelf} id={`${id}-${shelf}`} aria-label={`${shelf} books`} tabindex="0">
+          <section
+            class="codex-shelf"
+            data-shelf={shelf}
+            id={`${id}-${shelf}`}
+            aria-label={`${shelf} books`}
+            tabindex="0"
+          >
             <h2 class="codex-shelf-title">{shelf}</h2>
             <ul class="codex-grid">
-              {books.filter((book) => book.status === shelf).map((book) => (
-                <li>
-                  <BookTile title={book.title} coverSrc={book.coverSrc} href={`#${id}-book-${book.id}`} bookId={book.id} />
-                </li>
-              ))}
+              {books
+                .filter((book) => book.status === shelf)
+                .map((book) => (
+                  <li>
+                    <BookTile
+                      title={book.title}
+                      coverSrc={book.coverSrc}
+                      href={`#${id}-book-${book.id}`}
+                      bookId={book.id}
+                    />
+                  </li>
+                ))}
             </ul>
-            {!books.some((book) => book.status === shelf) && <p class="codex-empty">No books on this shelf yet.</p>}
+            {!books.some((book) => book.status === shelf) && (
+              <p class="codex-empty">No books on this shelf yet.</p>
+            )}
           </section>
         ))}
       </div>
       <div class="codex-details codex-parchment" aria-label="Book details">
         {books.map((book) => (
-          <article class="codex-detail" id={`${id}-book-${book.id}`} data-detail={book.id} data-status={book.status} tabindex="-1" aria-labelledby={`${id}-title-${book.id}`}>
+          <article
+            class="codex-detail"
+            id={`${id}-book-${book.id}`}
+            data-detail={book.id}
+            data-status={book.status}
+            tabindex="-1"
+            aria-labelledby={`${id}-title-${book.id}`}
+          >
             <div class="codex-detail__cover">
-              {book.coverSrc ? <img src={book.coverSrc} alt={`Cover of ${book.title}`} width="240" height="360" /> : <span class="codex-cover-missing">Cover unavailable</span>}
+              {book.coverSrc ? (
+                <img src={book.coverSrc} alt={`Cover of ${book.title}`} width="240" height="360" />
+              ) : (
+                <span class="codex-cover-missing">Cover unavailable</span>
+              )}
             </div>
             <h2 id={`${id}-title-${book.id}`}>{book.title}</h2>
             <p class="codex-author">{book.author}</p>
             <Ornament variant="divider" />
             <dl class="codex-facts">
-              <div><dt>Status</dt><dd><span class="codex-status">{book.status}</span></dd></div>
-              <div><dt>Rating</dt><dd><BookRating rating={book.rating} /></dd></div>
+              <div>
+                <dt>Status</dt>
+                <dd>
+                  <span class="codex-status">{book.status}</span>
+                </dd>
+              </div>
+              <div>
+                <dt>Rating</dt>
+                <dd>
+                  <BookRating rating={book.rating} />
+                </dd>
+              </div>
             </dl>
             <Ornament variant="divider" />
-            {book.reviewHref && <a class="codex-review" href={book.reviewHref}>Read review →</a>}
+            {book.reviewHref && (
+              <a class="codex-review" href={book.reviewHref}>
+                Read review →
+              </a>
+            )}
           </article>
         ))}
-        <p class="codex-detail-empty" hidden data-empty-detail>Select a populated shelf to explore a book.</p>
+        <p class="codex-detail-empty" hidden data-empty-detail>
+          Select a populated shelf to explore a book.
+        </p>
       </div>
     </div>
     <nav class="codex-tabs" aria-label="Bookshelves">
-      {shelves.map((shelf) => <a class="rpg-button codex-tab" href={`#${id}-${shelf}`} data-shelf-link={shelf}>{shelf}</a>)}
+      {shelves.map((shelf) => (
+        <a class="rpg-button codex-tab" href={`#${id}-${shelf}`} data-shelf-link={shelf}>
+          {shelf}
+        </a>
+      ))}
     </nav>
     <p class="sr-only" aria-live="polite" data-announcement></p>
   </WoodFrame>

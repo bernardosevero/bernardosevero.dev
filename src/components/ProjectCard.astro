@@ -9,7 +9,6 @@ interface Props {
 const { title, summary, links = [], preview = false } = Astro.props;
 
 function isPublicProjectUrl(value: string) {
-
   try {
     const url = new URL(value);
     return url.protocol === 'https:' && ['github.com', 'www.alura.com.br'].includes(url.hostname);
@@ -31,7 +30,13 @@ function getProjectDestinationType(value: string) {
   <p>{summary}</p>
   {verifiedLinks.length > 0 && (
     <ul class="project-card__links" aria-label={`${title} links`}>
-      {verifiedLinks.map((link) => <li><a href={link.url} data-project-destination={getProjectDestinationType(link.url)}>{link.label} <span aria-hidden="true">↗</span></a></li>)}
+      {verifiedLinks.map((link) => (
+        <li>
+          <a href={link.url} data-project-destination={getProjectDestinationType(link.url)}>
+            {link.label} <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+      ))}
     </ul>
   )}
 </article>
@@ -86,10 +91,17 @@ function getProjectDestinationType(value: string) {
     text-transform: uppercase;
   }
 
-  .project-card__links a:hover { color: var(--green); }
-  .project-card__links a:focus-visible { outline: 4px solid var(--gold); outline-offset: 4px; }
+  .project-card__links a:hover {
+    color: var(--green);
+  }
+  .project-card__links a:focus-visible {
+    outline: 4px solid var(--gold);
+    outline-offset: 4px;
+  }
 
   @media (max-width: 520px) {
-    .project-card__links { display: grid; }
+    .project-card__links {
+      display: grid;
+    }
   }
 </style>

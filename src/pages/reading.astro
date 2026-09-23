@@ -1,15 +1,19 @@
 ---
 import { isVisibleContent } from '../utils/content';
 import { basePath as base } from '../utils/paths';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import PortfolioPage from '../layouts/PortfolioPage.astro';
 import ReadingCodex from '../components/ReadingCodex.astro';
 import { getCollection } from 'astro:content';
 import '../styles/portfolio.css';
 
-const books = (await getCollection('books', isVisibleContent)).sort((a, b) => a.data.title.localeCompare(b.data.title));
-const reviewIds = new Set((await getCollection('bookReviews'))
-  .filter((review) => review.body?.trim())
-  .map((review) => review.id));
+const books = (await getCollection('books', isVisibleContent)).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
+const reviewIds = new Set(
+  (await getCollection('bookReviews'))
+    .filter((review) => review.body?.trim())
+    .map((review) => review.id),
+);
 
 const codexBooks = books.map((book) => ({
   ...book.data,
@@ -18,10 +22,9 @@ const codexBooks = books.map((book) => ({
 }));
 ---
 
-<BaseLayout title="Reading — Bernardo Severo" description="Explore Bernardo Severo's bookshelves, ratings, and reviews." preloadVillage>
-  <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1">
-    <div class="portfolio-shell">
-      <ReadingCodex books={codexBooks} />
-    </div>
-  </main>
-</BaseLayout>
+<PortfolioPage
+  title="Reading — Bernardo Severo"
+  description="Explore Bernardo Severo's bookshelves, ratings, and reviews."
+>
+  <ReadingCodex books={codexBooks} />
+</PortfolioPage>

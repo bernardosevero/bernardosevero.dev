@@ -1,7 +1,6 @@
 ---
 import { isVisibleContent } from '../../utils/content';
-import { basePath as base } from '../../utils/paths';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PortfolioPage from '../../layouts/PortfolioPage.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
 import { getCollection, render } from 'astro:content';
@@ -18,10 +17,12 @@ export async function getStaticPaths() {
     const book = booksById.get(review.id);
     if (!book) throw new Error(`Book review has no catalog entry: ${review.id}`);
     if (!review.body?.trim() || !isVisibleContent(book)) return [];
-    return [{
-      params: { slug: review.id },
-      props: { book, review },
-    }];
+    return [
+      {
+        params: { slug: review.id },
+        props: { book, review },
+      },
+    ];
   });
 }
 
@@ -35,37 +36,31 @@ const finishedAt = book.data.finishedAt?.toLocaleDateString('en-US', {
   year: 'numeric',
 });
 ---
-<BaseLayout
+
+<PortfolioPage
   title={`${book.data.title} — Reading — Bernardo Severo`}
   description={`${book.data.title} by ${book.data.author}, read by Bernardo Severo.`}
-  preloadVillage
+  shellTag="article"
 >
-  <main
-    id="main-content"
-    class="portfolio-page"
-    style={`--portfolio-village: url('${base}images/village.webp')`}
-    tabindex="-1"
-  >
-    <article class="portfolio-shell">
-      <WoodFrame class="portfolio-frame review-frame">
-        <header>
-          <p class="page-kicker">Personal review</p>
-          <h1 class="page-title">{book.data.title}</h1>
-          <p class="page-intro">{book.data.author}</p>
-          <div class="review-meta" aria-label="Book details">
-            <span class="status-badge">{book.data.status}</span>
-            {book.data.rating !== undefined && <span class="status-badge">Rating: {book.data.rating} / 5</span>}
-            {finishedAt && <span class="status-badge">Finished {finishedAt}</span>}
-          </div>
-          <Ornament variant="divider" />
-        </header>
-        <div class="review-content">
-          <Content />
-        </div>
-      </WoodFrame>
-    </article>
-  </main>
-</BaseLayout>
+  <WoodFrame class="portfolio-frame review-frame">
+    <header>
+      <p class="page-kicker">Personal review</p>
+      <h1 class="page-title">{book.data.title}</h1>
+      <p class="page-intro">{book.data.author}</p>
+      <div class="review-meta" aria-label="Book details">
+        <span class="status-badge">{book.data.status}</span>
+        {book.data.rating !== undefined && (
+          <span class="status-badge">Rating: {book.data.rating} / 5</span>
+        )}
+        {finishedAt && <span class="status-badge">Finished {finishedAt}</span>}
+      </div>
+      <Ornament variant="divider" />
+    </header>
+    <div class="review-content">
+      <Content />
+    </div>
+  </WoodFrame>
+</PortfolioPage>
 
 <style>
   .review-meta {

@@ -11,6 +11,8 @@
     "dev": "astro dev",
     "stop": "astro dev stop",
     "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "build": "astro build",
     "preview": "astro preview",
     "test": "playwright test",
@@ -30,6 +32,8 @@
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
     "@types/node": "^24.13.6",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.0.1",
     "typescript": "^6.0.3"
   }
 }

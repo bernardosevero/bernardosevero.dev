@@ -1,22 +1,97 @@
 ---
 import { isVisibleContent } from '../../utils/content';
 import { basePath as base } from '../../utils/paths';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PortfolioPage from '../../layouts/PortfolioPage.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
 import { getCollection } from 'astro:content';
 import '../../styles/portfolio.css';
-const posts = (await getCollection('posts', isVisibleContent)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+const posts = (await getCollection('posts', isVisibleContent)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
 const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
 ---
-<BaseLayout title="Posts — Bernardo Severo" description="Engineering notes and lessons from Bernardo Severo." preloadVillage>
-  <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1"><div class="portfolio-shell"><WoodFrame class="portfolio-frame"><header><p class="page-kicker">Journal</p><h1 class="page-title">Posts</h1><p class="page-intro">Notes on engineering, useful products, and the work behind them.</p><Ornament variant="divider" /></header>
-  {posts.length ? <><nav class="topic-nav" aria-label="Post topics"><button class="topic-filter" type="button" data-topic="all" data-active="true" aria-pressed="true">All</button>{topics.map((topic) => <button class="topic-filter" type="button" data-topic={topic.toLowerCase()} aria-pressed="false">{topic}</button>)}</nav><p class="sr-only" data-filter-status aria-live="polite"></p><ol class="post-list">{posts.map((post) => <li data-topics={post.data.topics.map((topic) => topic.toLowerCase()).join('|')}><article><p class="meta">{post.data.preview && <span class="status-badge">Draft preview</span>} {post.data.publishedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} · {post.data.readingMinutes} min read</p><div class="post-title-row"><ul class="tag-list">{post.data.topics.map((topic) => <li>{topic}</li>)}</ul><h2><a href={`${base}posts/${post.id}/`}>{post.data.title}</a></h2></div><p>{post.data.description}</p></article></li>)}</ol></> : <section class="empty-state"><h2 class="page-heading">The journal is waiting for its first entry</h2><p>No posts are published yet. When a note is ready to share, it will appear here with its topic and reading time.</p></section>}
-  </WoodFrame></div></main>
-</BaseLayout>
+
+<PortfolioPage
+  title="Posts — Bernardo Severo"
+  description="Engineering notes and lessons from Bernardo Severo."
+>
+  <WoodFrame class="portfolio-frame">
+    <header>
+      <p class="page-kicker">Journal</p>
+      <h1 class="page-title">Posts</h1>
+      <p class="page-intro">Notes on engineering, useful products, and the work behind them.</p>
+      <Ornament variant="divider" />
+    </header>
+    {posts.length ? (
+      <>
+        <nav class="topic-nav" aria-label="Post topics">
+          <button
+            class="topic-filter"
+            type="button"
+            data-topic="all"
+            data-active="true"
+            aria-pressed="true"
+          >
+            All
+          </button>
+          {topics.map((topic) => (
+            <button
+              class="topic-filter"
+              type="button"
+              data-topic={topic.toLowerCase()}
+              aria-pressed="false"
+            >
+              {topic}
+            </button>
+          ))}
+        </nav>
+        <p class="sr-only" data-filter-status aria-live="polite" />
+        <ol class="post-list">
+          {posts.map((post) => (
+            <li data-topics={post.data.topics.map((topic) => topic.toLowerCase()).join('|')}>
+              <article>
+                <p class="meta">
+                  {post.data.preview && <span class="status-badge">Draft preview</span>}{' '}
+                  {post.data.publishedAt.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}{' '}
+                  · {post.data.readingMinutes} min read
+                </p>
+                <div class="post-title-row">
+                  <ul class="tag-list">
+                    {post.data.topics.map((topic) => (
+                      <li>{topic}</li>
+                    ))}
+                  </ul>
+                  <h2>
+                    <a href={`${base}posts/${post.id}/`}>{post.data.title}</a>
+                  </h2>
+                </div>
+                <p>{post.data.description}</p>
+              </article>
+            </li>
+          ))}
+        </ol>
+      </>
+    ) : (
+      <section class="empty-state">
+        <h2 class="page-heading">The journal is waiting for its first entry</h2>
+        <p>
+          No posts are published yet. When a note is ready to share, it will appear here with its
+          topic and reading time.
+        </p>
+      </section>
+    )}
+  </WoodFrame>
+</PortfolioPage>
 <script>
   const controls = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-topic]'));
-  const entries = Array.from(document.querySelectorAll<HTMLElement>('.post-list > li[data-topics]'));
+  const entries = Array.from(
+    document.querySelectorAll<HTMLElement>('.post-list > li[data-topics]'),
+  );
   const status = document.querySelector<HTMLElement>('[data-filter-status]');
   for (const control of controls) {
     control.addEventListener('click', () => {
@@ -32,9 +107,11 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
         item.dataset.active = String(active);
         item.setAttribute('aria-pressed', String(active));
       }
-      if (status) status.textContent = topic === 'all'
-        ? `Showing all ${visibleCount} posts.`
-        : `Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'} tagged ${control.textContent?.trim() ?? topic}.`;
+      if (status)
+        status.textContent =
+          topic === 'all'
+            ? `Showing all ${visibleCount} posts.`
+            : `Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'} tagged ${control.textContent?.trim() ?? topic}.`;
       window.posthog?.capture('post_topic_filtered', {
         topic,
         visible_post_count: visibleCount,

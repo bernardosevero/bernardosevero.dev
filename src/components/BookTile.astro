@@ -1,42 +1,111 @@
 ---
-interface Props { title: string; coverSrc?: string; href?: string; bookId?: string; selected?: boolean; }
+interface Props {
+  title: string;
+  coverSrc?: string;
+  href?: string;
+  bookId?: string;
+  selected?: boolean;
+}
 const { title, coverSrc, href, bookId, selected = false } = Astro.props;
 const Tag = href ? 'a' : 'div';
 ---
+
 <Tag class="codex-tile" href={href} data-book={bookId} aria-current={selected ? 'true' : undefined}>
   <span class="codex-tile__cover">
-    {coverSrc ? <img src={coverSrc} alt="" width="120" height="180" /> : <span class="codex-cover-missing">Cover unavailable</span>}
+    {coverSrc ? (
+      <img src={coverSrc} alt="" width="120" height="180" />
+    ) : (
+      <span class="codex-cover-missing">Cover unavailable</span>
+    )}
   </span>
   <span class="codex-tile__title">{title}</span>
-  <span class="codex-selected-mark" aria-hidden="true">◆</span>
+  <span class="codex-selected-mark" aria-hidden="true">
+    ◆
+  </span>
 </Tag>
 
 <style>
-.codex-tile { position: relative; display: grid; justify-items: center; align-content: start; gap: 10px; height: 100%; padding: 10px 6px 8px; border: 2px solid #b5824260; background: #b5824218; border-radius: 4px; color: var(--ink); text-decoration: none; }
-.codex-tile:hover { background: #f9e5b190; border-color: var(--parchment-edge); }
-.codex-tile[aria-current] { border-color: transparent; background: #f9e5b180; }
-.codex-tile[aria-current]::before {
-  content: ''; position: absolute; inset: -4px; pointer-events: none;
-  background:
-    linear-gradient(var(--gold), var(--gold)) left top / 16px 3px,
-    linear-gradient(var(--gold), var(--gold)) left top / 3px 16px,
-    linear-gradient(var(--gold), var(--gold)) right top / 16px 3px,
-    linear-gradient(var(--gold), var(--gold)) right top / 3px 16px,
-    linear-gradient(var(--gold), var(--gold)) left bottom / 16px 3px,
-    linear-gradient(var(--gold), var(--gold)) left bottom / 3px 16px,
-    linear-gradient(var(--gold), var(--gold)) right bottom / 16px 3px,
-    linear-gradient(var(--gold), var(--gold)) right bottom / 3px 16px;
-  background-repeat: no-repeat;
-  filter: drop-shadow(1px 1px 0 var(--ink)) drop-shadow(-1px -1px 0 var(--ink));
-}
-.codex-selected-mark { display: none; position: absolute; top: -18px; color: var(--gold); -webkit-text-stroke: 1px var(--ink); font-size: 24px; line-height: 1; }
-.codex-tile[aria-current] .codex-selected-mark { display: block; }
-.codex-tile__cover { display: grid; place-items: center; width: min(100%, 84px); aspect-ratio: 2 / 3; }
-.codex-tile__cover img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(3px 4px 0 #49271950); }
-.codex-tile__title { font-size: 20px; line-height: 1; text-align: center; overflow-wrap: anywhere; }
-.codex-cover-missing { font-size: 18px; text-align: center; padding: 8px; border: 2px dashed var(--parchment-edge); }
-@container (max-width: 650px) {
-  .codex-tile { padding-inline: 4px; }
-  .codex-tile__title { font-size: 19px; }
-}
+  .codex-tile {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 10px;
+    height: 100%;
+    padding: 10px 6px 8px;
+    border: 2px solid #b5824260;
+    background: #b5824218;
+    border-radius: 4px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .codex-tile:hover {
+    background: #f9e5b190;
+    border-color: var(--parchment-edge);
+  }
+  .codex-tile[aria-current] {
+    border-color: transparent;
+    background: #f9e5b180;
+  }
+  .codex-tile[aria-current]::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--gold), var(--gold)) left top / 16px 3px,
+      linear-gradient(var(--gold), var(--gold)) left top / 3px 16px,
+      linear-gradient(var(--gold), var(--gold)) right top / 16px 3px,
+      linear-gradient(var(--gold), var(--gold)) right top / 3px 16px,
+      linear-gradient(var(--gold), var(--gold)) left bottom / 16px 3px,
+      linear-gradient(var(--gold), var(--gold)) left bottom / 3px 16px,
+      linear-gradient(var(--gold), var(--gold)) right bottom / 16px 3px,
+      linear-gradient(var(--gold), var(--gold)) right bottom / 3px 16px;
+    background-repeat: no-repeat;
+    filter: drop-shadow(1px 1px 0 var(--ink)) drop-shadow(-1px -1px 0 var(--ink));
+  }
+  .codex-selected-mark {
+    display: none;
+    position: absolute;
+    top: -18px;
+    color: var(--gold);
+    -webkit-text-stroke: 1px var(--ink);
+    font-size: 24px;
+    line-height: 1;
+  }
+  .codex-tile[aria-current] .codex-selected-mark {
+    display: block;
+  }
+  .codex-tile__cover {
+    display: grid;
+    place-items: center;
+    width: min(100%, 84px);
+    aspect-ratio: 2 / 3;
+  }
+  .codex-tile__cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(3px 4px 0 #49271950);
+  }
+  .codex-tile__title {
+    font-size: 20px;
+    line-height: 1;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+  .codex-cover-missing {
+    font-size: 18px;
+    text-align: center;
+    padding: 8px;
+    border: 2px dashed var(--parchment-edge);
+  }
+  @container (max-width: 650px) {
+    .codex-tile {
+      padding-inline: 4px;
+    }
+    .codex-tile__title {
+      font-size: 19px;
+    }
+  }
 </style>

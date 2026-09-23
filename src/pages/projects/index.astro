@@ -1,21 +1,51 @@
 ---
 import { isVisibleContent } from '../../utils/content';
-import { basePath as base } from '../../utils/paths';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PortfolioPage from '../../layouts/PortfolioPage.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 import '../../styles/portfolio.css';
-const projects = (await getCollection('projects', isVisibleContent)).sort((a, b) => Number(b.data.featured) - Number(a.data.featured));
 
+const projects = (await getCollection('projects', isVisibleContent)).sort(
+  (a, b) => Number(b.data.featured) - Number(a.data.featured),
+);
 ---
-<BaseLayout title="Projects — Bernardo Severo" description="Selected engineering projects by Bernardo Severo." preloadVillage>
-  <main id="main-content" class="portfolio-page" style={`--portfolio-village: url('${base}images/village.webp')`} tabindex="-1"><div class="portfolio-shell">
-    <WoodFrame class="portfolio-frame"><header><p class="page-kicker">Quest Log</p><h1 class="page-title">Projects</h1><p class="page-intro">Real engineering work, described with only public and supportable detail.</p><Ornament variant="divider" /></header>
-    {projects.length ? <ol class="project-list">{projects.map((project) => <li><ProjectCard title={project.data.title} summary={project.data.summary} links={project.data.links} preview={project.data.preview} /></li>)}</ol> : <section class="empty-state"><h2 class="page-heading">No published projects yet</h2><p>Projects appear here once their public details can be shared.</p></section>}
-    </WoodFrame></div></main>
-</BaseLayout>
+
+<PortfolioPage
+  title="Projects — Bernardo Severo"
+  description="Selected engineering projects by Bernardo Severo."
+>
+  <WoodFrame class="portfolio-frame">
+    <header>
+      <p class="page-kicker">Quest Log</p>
+      <h1 class="page-title">Projects</h1>
+      <p class="page-intro">
+        Real engineering work, described with only public and supportable detail.
+      </p>
+      <Ornament variant="divider" />
+    </header>
+    {projects.length ? (
+      <ol class="project-list">
+        {projects.map((project) => (
+          <li>
+            <ProjectCard
+              title={project.data.title}
+              summary={project.data.summary}
+              links={project.data.links}
+              preview={project.data.preview}
+            />
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <section class="empty-state">
+        <h2 class="page-heading">No published projects yet</h2>
+        <p>Projects appear here once their public details can be shared.</p>
+      </section>
+    )}
+  </WoodFrame>
+</PortfolioPage>
 <style>
   .project-list {
     display: grid;
@@ -24,5 +54,4 @@ const projects = (await getCollection('projects', isVisibleContent)).sort((a, b)
     padding: 0;
     list-style: none;
   }
-
 </style>
