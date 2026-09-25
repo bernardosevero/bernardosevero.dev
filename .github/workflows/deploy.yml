@@ -28,12 +28,23 @@ jobs:
     env:
       SITE_URL: ${{ matrix.site }}
       BASE_PATH: ${{ matrix.base }}
+      # Public client values, so repository variables rather than secrets.
+      PUBLIC_POSTHOG_KEY: ${{ vars.PUBLIC_POSTHOG_KEY }}
+      PUBLIC_POSTHOG_HOST: ${{ vars.PUBLIC_POSTHOG_HOST }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
+      # Production silently loses analytics without these, so fail before building.
+      - name: Require analytics settings for production
+        if: matrix.target == 'cloudflare' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          if [ -z "$PUBLIC_POSTHOG_KEY" ] || [ -z "$PUBLIC_POSTHOG_HOST" ]; then
+            echo "::error::Set the PUBLIC_POSTHOG_KEY and PUBLIC_POSTHOG_HOST repository variables."
+            exit 1
+          fi
       - run: npm ci
       - run: npm run format:check
       - run: npm run lint:css
