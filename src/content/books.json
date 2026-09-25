@@ -77,10 +77,11 @@
     "draft": false
   },
   {
-    "id": "fiodor-dostoievski-noites-brancas",
+    "id": "fyodor-dostoevsky-white-nights",
     "title": "White Nights",
     "author": "Fyodor Dostoevsky",
     "status": "finished",
+    "reviewLanguage": "pt-BR",
     "isbn": "9780241619780",
     "rating": 4.5,
     "finishedAt": "2026-09-06",
@@ -92,7 +93,7 @@
     "draft": false
   },
   {
-    "id": "franz-kafka-a-metamorfose",
+    "id": "franz-kafka-the-metamorphosis",
     "title": "The Metamorphosis",
     "author": "Franz Kafka",
     "status": "finished",
@@ -156,7 +157,7 @@
     "draft": false
   },
   {
-    "id": "liev-tolstoi-a-morte-de-ivan-ilitch",
+    "id": "leo-tolstoy-the-death-of-ivan-ilyich",
     "title": "The Death of Ivan Ilyich",
     "author": "Leo Tolstoy",
     "status": "finished",

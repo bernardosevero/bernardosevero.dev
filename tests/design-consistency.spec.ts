@@ -51,7 +51,7 @@ for (const width of [320, 390, 760, 1024, 1586]) {
       'posts/building-my-portfolio-with-a-design-system-and-llms/',
       'reading/',
       'projects/full-stack-courses-alura/',
-      'reading/fiodor-dostoievski-noites-brancas/',
+      'reading/fyodor-dostoevsky-white-nights/',
     ]) {
       await page.goto(`./${route}`);
       await page.evaluate(() => document.fonts.ready);

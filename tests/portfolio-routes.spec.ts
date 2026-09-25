@@ -11,7 +11,7 @@ const routes = [
   },
   { path: 'posts/', heading: 'Posts' },
   { path: 'reading/', heading: 'Reading' },
-  { path: 'reading/fiodor-dostoievski-noites-brancas/', heading: 'White Nights' },
+  { path: 'reading/fyodor-dostoevsky-white-nights/', heading: 'White Nights' },
 ];
 
 for (const route of routes) {
@@ -123,8 +123,10 @@ test('Reading selects a book and opens its review', async ({ page }) => {
   await page.getByRole('link', { name: /White Nights/ }).click();
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
   await page.getByRole('link', { name: 'Read review →' }).click();
-  await expect(page).toHaveURL(/reading\/fiodor-dostoievski-noites-brancas\/$/);
+  await expect(page).toHaveURL(/reading\/fyodor-dostoevsky-white-nights\/$/);
   await expect(page.getByRole('heading', { level: 1, name: 'White Nights' })).toBeVisible();
+  await expect(page.getByText('Portuguese (Brazil)')).toContainText('🇧🇷');
+  await expect(page.locator('.review-content')).toHaveAttribute('lang', 'pt-BR');
   await expect(page.getByText('O livro apresenta um protagonista', { exact: false })).toBeVisible();
   await expect(page.locator('.review-content blockquote em')).toContainText(
     'Um minuto de inteiro de felicidade',
@@ -307,7 +309,7 @@ for (const width of [390, 1586]) {
       'projects/full-stack-courses-alura/',
       'posts/',
       'reading/',
-      'reading/fiodor-dostoievski-noites-brancas/',
+      'reading/fyodor-dostoevsky-white-nights/',
     ]) {
       await page.goto(`./${path}`);
       await page.evaluate(() => document.fonts.ready);

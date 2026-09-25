@@ -55,6 +55,7 @@ const books = defineCollection({
       title: z.string(),
       author: z.string(),
       status: z.enum(['reading', 'finished', 'wishlist']),
+      reviewLanguage: z.enum(['en', 'pt-BR']).optional(),
       rating: z.number().min(0).max(5).optional(),
       finishedAt: date.optional(),
       coverUrl: z.url().optional(),

@@ -26,6 +26,8 @@ The command fails if the slug exists and creates a draft with prompts for the pr
 
 Book metadata lives in `src/content/books.json`, loaded by Astro's native single-file JSON loader. Each array entry has a unique lowercase kebab-case `id`, `title`, `author`, and one of three statuses: `reading`, `finished`, or `wishlist`. Ratings are optional numbers from 0 through 5. Reviews are separate Markdown files in `src/content/book-reviews/`, named `<book-id>.md`. A review needs no duplicated frontmatter; its filename links it to the catalog record. Astro renders the full Markdown body, and a review link appears only when a nonempty file exists for a visible book.
 
+Set `reviewLanguage` to `pt-BR` for a Portuguese review. The review page then shows a Brazilian flag and language label, and marks the review text for assistive technology. English reviews may use `en` or omit the field.
+
 Add a draft book with:
 
 ```sh

@@ -47,6 +47,9 @@ const finishedAt = book.data.finishedAt
       <p class="page-intro">{book.data.author}</p>
       <div class="review-meta" aria-label="Book details">
         <span class="status-badge">{book.data.status}</span>
+        {book.data.reviewLanguage === 'pt-BR' && (
+          <span class="status-badge">🇧🇷 Portuguese (Brazil)</span>
+        )}
         {book.data.rating !== undefined && (
           <span class="status-badge">Rating: {book.data.rating} / 5</span>
         )}
@@ -54,7 +57,7 @@ const finishedAt = book.data.finishedAt
       </div>
       <Ornament variant="divider" />
     </header>
-    <div class="review-content">
+    <div class="review-content" lang={book.data.reviewLanguage}>
       <Content />
     </div>
   </WoodFrame>
