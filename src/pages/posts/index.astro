@@ -1,5 +1,6 @@
 ---
 import { isVisibleContent } from '../../utils/content';
+import { formatCalendarDate } from '../../utils/format';
 import { basePath as base } from '../../utils/paths';
 import PortfolioPage from '../../layouts/PortfolioPage.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
@@ -52,12 +53,8 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
             <li data-topics={post.data.topics.map((topic) => topic.toLowerCase()).join('|')}>
               <article>
                 <p class="meta">
-                  {post.data.publishedAt.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}{' '}
-                  · {post.data.readingMinutes} min read
+                  {formatCalendarDate(post.data.publishedAt, 'short')} · {post.data.readingMinutes}{' '}
+                  min read
                 </p>
                 <div class="post-title-row">
                   <ul class="tag-list">
@@ -87,6 +84,8 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
   </WoodFrame>
 </PortfolioPage>
 <script>
+  import { formatCount } from '../../utils/format';
+
   const controls = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-topic]'));
   const entries = Array.from(
     document.querySelectorAll<HTMLElement>('.post-list > li[data-topics]'),
@@ -107,12 +106,12 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
         item.setAttribute('aria-pressed', String(active));
       }
       if (status) {
+        const postCount = formatCount(visibleCount, 'post');
         if (topic === 'all') {
-          status.textContent = `Showing all ${visibleCount} posts.`;
+          status.textContent = `Showing ${postCount} across all topics.`;
         } else {
-          const postLabel = visibleCount === 1 ? 'post' : 'posts';
           const topicLabel = control.textContent?.trim() ?? topic;
-          status.textContent = `Showing ${visibleCount} ${postLabel} tagged ${topicLabel}.`;
+          status.textContent = `Showing ${postCount} tagged ${topicLabel}.`;
         }
       }
       window.posthog?.capture('post_topic_filtered', {

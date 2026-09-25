@@ -39,7 +39,7 @@ npm test
 
 Defaults use the custom domain and `/` base.
 
-Copy `.env.example` to `.env` when setting up a new checkout. Astro loads `SITE_URL` and `BASE_PATH` from this file; shell and CI values take precedence. The Cloudflare account ID and API token are deployment-only values, never public browser variables. The local `.env` is ignored by Git and does not configure GitHub Actions secrets automatically.
+Copy `.env.example` to `.env` when setting up a new checkout. Astro loads `SITE_URL` and `BASE_PATH` from this file; shell and CI values take precedence. Leave the PostHog values empty unless you want analytics from that build. The Cloudflare account ID and API token are deployment-only values, never public browser variables. The local `.env` is ignored by Git and does not configure GitHub Actions secrets automatically.
 
 ### Non-root compatibility
 

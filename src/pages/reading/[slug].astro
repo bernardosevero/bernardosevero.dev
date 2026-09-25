@@ -1,5 +1,6 @@
 ---
 import { isVisibleContent } from '../../utils/content';
+import { formatCalendarDate } from '../../utils/format';
 import PortfolioPage from '../../layouts/PortfolioPage.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
@@ -29,12 +30,9 @@ export async function getStaticPaths() {
 const { book, review } = Astro.props;
 const { Content } = await render(review);
 
-const finishedAt = book.data.finishedAt?.toLocaleDateString('en-US', {
-  day: 'numeric',
-  month: 'long',
-  timeZone: 'UTC',
-  year: 'numeric',
-});
+const finishedAt = book.data.finishedAt
+  ? formatCalendarDate(book.data.finishedAt, 'long')
+  : undefined;
 ---
 
 <PortfolioPage

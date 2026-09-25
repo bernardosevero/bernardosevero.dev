@@ -1,8 +1,9 @@
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { parseArgs } from 'node:util';
 
-const inputFlag = process.argv.indexOf('--input');
-const inputPath = inputFlag >= 0 ? process.argv[inputFlag + 1] : undefined;
+const { values } = parseArgs({ options: { input: { type: 'string' } } });
+const inputPath = values.input;
 if (!inputPath) throw new Error('Pass a normalized JSON file with --input.');
 
 const incoming = JSON.parse(await readFile(resolve(inputPath), 'utf8'));

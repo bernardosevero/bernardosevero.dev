@@ -1,15 +1,23 @@
 import { readFile, rename, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { parseArgs } from 'node:util';
 
-const args = new Map();
-for (let index = 2; index < process.argv.length; index += 2)
-  args.set(process.argv[index], process.argv[index + 1]);
+// Strict parsing rejects unknown flags and missing values instead of ignoring them.
+const { values } = parseArgs({
+  options: {
+    id: { type: 'string' },
+    title: { type: 'string' },
+    author: { type: 'string' },
+    status: { type: 'string' },
+    isbn: { type: 'string' },
+  },
+});
 
-const id = args.get('--id');
-const title = args.get('--title')?.trim();
-const author = args.get('--author')?.trim();
-const status = args.get('--status');
-const isbn = args.get('--isbn')?.replace(/[\s-]/g, '').toUpperCase();
+const id = values.id;
+const title = values.title?.trim();
+const author = values.author?.trim();
+const status = values.status;
+const isbn = values.isbn?.replace(/[\s-]/g, '').toUpperCase();
 const allowedStatuses = new Set(['reading', 'finished', 'wishlist']);
 
 if (!id || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id))

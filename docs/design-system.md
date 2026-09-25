@@ -115,7 +115,7 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 ### Site navigation
 
-`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's four page destinations: About, Projects, Posts, and Books. It uses real anchors, derives the active section from the current route, and renders on every public content route. All content pages, including Home, About, and Books, use the same top bar from `BaseLayout`. Navigation stays in normal flow with a token-based gap before content. Container queries use four columns when the menu has room and two columns in narrow containers. There is one navigation layout, without a redundant bar/rail variant. Its 54px minimum link height is preserved at mobile sizes. The documentation-only `preview` mode renders static spans with identical production classes, so its specimen never navigates away.
+`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's five destinations: About, Projects, Posts, Books, and System. It uses real anchors, derives the active section from the current route by matching each item's path (About is the fallback), and renders on every public content route. All content pages, including Home, About, and Books, use the same top bar from `BaseLayout`. Navigation stays in normal flow with a token-based gap before content. Container queries use five columns when the menu has room and two columns in narrow containers. There is one navigation layout, without a redundant bar/rail variant. Its 54px minimum link height is preserved at mobile sizes. The documentation-only `preview` mode renders static spans with identical production classes, so its specimen never navigates away.
 
 ### Reading Codex
 
@@ -127,7 +127,7 @@ Without JavaScript, shelf navigation and book tiles are fragment links and all m
 
 `BookRating.astro` renders five outlined stars with full or fractional fills plus an exact accessible value. Missing ratings say “Not rated”; zero remains a valid rating. The system page shows all these states. No ratings or review summaries are inferred.
 
-Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green actions in a timber frame, four columns on desktop and two on mobile. It sits in normal document flow above the Codex so its actual height determines the content spacing.
+Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green actions in a timber frame, five columns on desktop and two on mobile. It sits in normal document flow above the Codex so its actual height determines the content spacing.
 
 ### Project card
 
@@ -175,10 +175,10 @@ Write queries in range syntax (`width <= 520px`, `width > 820px`) so adjacent ra
 | Viewport | `<= 560px` | Outer shell: page and navigation side gutters shrink to 8px |
 | Viewport | `<= 640px` | Case-study fact and content grids stack |
 | Viewport | `<= 760px` | `/system/` specimen grid switches to auto-fit columns |
-| Viewport | `> 820px`, `<= 1080px`, `<= 1200px` | Character Sheet: desktop spacing, compact two columns, then one stacked column |
+| Viewport | `> 820px`, `<= 1200px`, `<= 1080px` | Character Sheet: desktop spacing, one stacked column, then compact identity and tag sizing |
 | Container | `<= 850px`, `<= 650px` | Reading Codex: three-column shelf, then two columns with stacked panels |
 | Container | `<= 650px` | `BookTile` and `BookRating` compact sizing inside the Codex |
-| Container | `<= 760px` | `SiteNavigation` switches from four to two columns |
+| Container | `<= 760px` | `SiteNavigation` switches from five to two columns |
 
 Prefer container queries for components whose width depends on their parent. Add a new value only when content breaks between the existing ones, and record it here.
 

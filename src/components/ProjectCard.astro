@@ -7,20 +7,22 @@ interface Props {
 
 const { title, summary, links = [] } = Astro.props;
 
-function isPublicProjectUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === 'https:' && ['github.com', 'www.alura.com.br'].includes(url.hostname);
-  } catch {
-    return false;
-  }
+// Verified public hosts and the analytics destination type each one reports.
+const destinationTypes = new Map([
+  ['github.com', 'source_repository'],
+  ['www.alura.com.br', 'published_formation'],
+]);
+
+function getDestinationType(value: string): string | undefined {
+  const url = URL.parse(value);
+  if (url?.protocol !== 'https:') return undefined;
+  return destinationTypes.get(url.hostname);
 }
 
-const verifiedLinks = links.filter((link) => isPublicProjectUrl(link.url));
-
-function getProjectDestinationType(value: string) {
-  return new URL(value).hostname === 'github.com' ? 'source_repository' : 'published_formation';
-}
+const verifiedLinks = links.flatMap((link) => {
+  const destinationType = getDestinationType(link.url);
+  return destinationType ? [{ ...link, destinationType }] : [];
+});
 ---
 
 <article class="project-card">
@@ -30,7 +32,7 @@ function getProjectDestinationType(value: string) {
     <ul class="project-card__links" aria-label={`${title} links`}>
       {verifiedLinks.map((link) => (
         <li>
-          <a href={link.url} data-project-destination={getProjectDestinationType(link.url)}>
+          <a href={link.url} data-project-destination={link.destinationType}>
             {link.label} <span aria-hidden="true">↗</span>
           </a>
         </li>

@@ -289,7 +289,7 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
   .system-page {
     width: min(var(--page-width), calc(100% - 32px));
     margin-inline: auto;
-    padding: 48px 0 72px;
+    padding: var(--page-section-gap) 0 72px;
     overflow-wrap: anywhere;
   }
 
@@ -439,12 +439,6 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
     padding: 20px;
     border: 1px solid var(--parchment-edge);
   }
-  .navigation-specimen {
-    color: inherit;
-  }
-  .navigation-specimen p {
-    margin: 0;
-  }
   .book-tile-specimens {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -486,10 +480,6 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
     align-items: center;
     min-height: 66px;
   }
-  footer {
-    color: var(--parchment-light);
-    text-align: center;
-  }
   @media (width <= 760px) {
     .component-grid {
       grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
@@ -497,7 +487,6 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
   }
   @media (width <= 520px) {
     .system-page {
-      padding-top: 28px;
       width: calc(100% - 16px);
     }
     .system-section {

@@ -31,16 +31,18 @@ const { Content } = await render(project);
         <dt>Role</dt>
         <dd>{project.data.role}</dd>
       </div>
-      <div>
-        <dt>Technologies</dt>
-        <dd>
-          <ul class="tag-list">
-            {project.data.technologies.map((technology) => (
-              <li>{technology}</li>
-            ))}
-          </ul>
-        </dd>
-      </div>
+      {project.data.technologies.length > 0 && (
+        <div>
+          <dt>Technologies</dt>
+          <dd>
+            <ul class="tag-list">
+              {project.data.technologies.map((technology) => (
+                <li>{technology}</li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+      )}
     </dl>
     <div class="case-grid">
       <section>
@@ -50,33 +52,49 @@ const { Content } = await render(project);
         <p>{project.data.contribution}</p>
       </section>
       <section>
-        <h2 class="page-heading">Decisions</h2>
-        <ul>
-          {project.data.decisions.map((decision) => (
-            <li>{decision}</li>
-          ))}
-        </ul>
-        <h2 class="page-heading">Outcomes</h2>
-        <ul>
-          {project.data.outcomes.map((outcome) => (
-            <li>{outcome}</li>
-          ))}
-        </ul>
+        {project.data.decisions.length > 0 && (
+          <>
+            <h2 class="page-heading">Decisions</h2>
+            <ul>
+              {project.data.decisions.map((decision) => (
+                <li>{decision}</li>
+              ))}
+            </ul>
+          </>
+        )}
+        {project.data.outcomes.length > 0 && (
+          <>
+            <h2 class="page-heading">Outcomes</h2>
+            <ul>
+              {project.data.outcomes.map((outcome) => (
+                <li>{outcome}</li>
+              ))}
+            </ul>
+          </>
+        )}
       </section>
     </div>
     <section>
-      <h2 class="page-heading">Constraints</h2>
-      <ul>
-        {project.data.constraints.map((constraint) => (
-          <li>{constraint}</li>
-        ))}
-      </ul>
-      <h2 class="page-heading">Lessons</h2>
-      <ul>
-        {project.data.lessons.map((lesson) => (
-          <li>{lesson}</li>
-        ))}
-      </ul>
+      {project.data.constraints.length > 0 && (
+        <>
+          <h2 class="page-heading">Constraints</h2>
+          <ul>
+            {project.data.constraints.map((constraint) => (
+              <li>{constraint}</li>
+            ))}
+          </ul>
+        </>
+      )}
+      {project.data.lessons.length > 0 && (
+        <>
+          <h2 class="page-heading">Lessons</h2>
+          <ul>
+            {project.data.lessons.map((lesson) => (
+              <li>{lesson}</li>
+            ))}
+          </ul>
+        </>
+      )}
     </section>
     <section class="case-note">
       <Content />

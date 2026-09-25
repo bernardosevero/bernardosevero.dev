@@ -327,13 +327,6 @@
 }
 
 @media (width <= 1080px) {
-  .sheet-grid {
-    grid-template-columns: minmax(285px, 0.85fr) minmax(330px, 1.15fr);
-    gap: 0 20px;
-  }
-  .identity-panel {
-    padding-right: 18px;
-  }
   .identity-list div {
     grid-template-columns: 94px 1fr;
   }
@@ -421,9 +414,6 @@
   }
   .tool-list {
     justify-content: center;
-  }
-  .about-prose {
-    font-size: var(--text-sm);
   }
   .contact-links > div {
     gap: 6px;

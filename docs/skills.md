@@ -31,3 +31,5 @@ An optional review is written separately as `src/content/book-reviews/<slug>.md`
 ## Updating the skills
 
 When a content schema or script changes, update the corresponding personal skill and this document in the same task. Validate personal skills with the `quick_validate.py` utility from the Codex skill-creator package.
+
+The content scripts parse flags strictly with Node's `parseArgs`: an unknown flag or a flag without a value fails instead of being silently ignored, and `--flag=value` is accepted. Skills must pass only the documented flags.

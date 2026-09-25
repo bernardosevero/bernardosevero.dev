@@ -1,99 +1,138 @@
+import { formatCount } from '../utils/format';
+
+// Keep in sync with the stacked-panel container query in reading-codex.css.
+const STACKED_LAYOUT_MAX_WIDTH = 650;
+const DEFAULT_SHELF = 'finished';
+
+function getTabDestination(key: string, index: number, tabCount: number): number | undefined {
+  if (tabCount === 0 || index < 0 || index >= tabCount) return undefined;
+
+  switch (key) {
+    case 'ArrowRight':
+      return (index + 1) % tabCount;
+    case 'ArrowLeft':
+      return (index + tabCount - 1) % tabCount;
+    case 'Home':
+      return 0;
+    case 'End':
+      return tabCount - 1;
+    default:
+      return undefined;
+  }
+}
+
+// ReadingCodex.astro renders this markup. Failing before any enhancement leaves the
+// no-JavaScript fragment links usable instead of a half-enhanced widget.
+function requireElement(root: ParentNode, selector: string): HTMLElement {
+  const element = root.querySelector<HTMLElement>(selector);
+  if (!element) throw new Error(`Reading Codex markup is missing ${selector}.`);
+  return element;
+}
+
+function requireAttribute(element: Element, name: string): string {
+  const value = element.getAttribute(name);
+  if (value === null) throw new Error(`Reading Codex <${element.localName}> is missing ${name}.`);
+  return value;
+}
+
 class ReadingCodex extends HTMLElement {
   connectedCallback() {
     if (this.dataset.enhanced) return;
-    const shelves = [...this.querySelectorAll<HTMLElement>('[data-shelf]')];
-    const tabs = [...this.querySelectorAll<HTMLAnchorElement>('[data-shelf-link]')];
-    const tiles = [...this.querySelectorAll<HTMLAnchorElement>('[data-book]')];
-    const details = [...this.querySelectorAll<HTMLElement>('[data-detail]')];
-    const empty = this.querySelector<HTMLElement>('[data-empty-detail]')!;
-    const announcement = this.querySelector<HTMLElement>('[data-announcement]')!;
-    const remembered = new Map<string, string>();
+    const tabList = requireElement(this, '.codex-tabs');
+    const emptyDetail = requireElement(this, '[data-empty-detail]');
+    const announcement = requireElement(this, '[data-announcement]');
+    const shelves = [...this.querySelectorAll<HTMLElement>('[data-shelf]')].map((element) => ({
+      element,
+      shelf: requireAttribute(element, 'data-shelf'),
+    }));
+    const tabs = [...this.querySelectorAll<HTMLElement>('[data-shelf-link]')].map((element) => ({
+      element,
+      shelf: requireAttribute(element, 'data-shelf-link'),
+    }));
+    const tiles = [...this.querySelectorAll<HTMLElement>('[data-book]')].map((element) => ({
+      element,
+      bookId: requireAttribute(element, 'data-book'),
+    }));
+    const details = [...this.querySelectorAll<HTMLElement>('[data-detail]')].map((element) => ({
+      element,
+      bookId: requireAttribute(element, 'data-detail'),
+      shelf: requireAttribute(element, 'data-status'),
+    }));
+    const rememberedBooks = new Map<string, string>();
 
-    const selectBook = (bookId?: string, focus = false) => {
-      const selected = details.find((detail) => detail.dataset.detail === bookId);
-      for (const detail of details) detail.hidden = detail !== selected;
+    const selectBook = (bookId: string | undefined, userInitiated = false) => {
+      const selected = details.find((detail) => detail.bookId === bookId);
+      for (const detail of details) detail.element.hidden = detail !== selected;
       for (const tile of tiles) {
-        if (tile.dataset.book === bookId) tile.setAttribute('aria-current', 'true');
-        else tile.removeAttribute('aria-current');
+        if (tile.bookId === bookId) tile.element.setAttribute('aria-current', 'true');
+        else tile.element.removeAttribute('aria-current');
       }
-      empty.hidden = Boolean(selected);
-      if (selected) {
-        remembered.set(selected.dataset.status!, bookId!);
-        if (focus) {
-          window.posthog?.capture('reading_book_selected', {
-            book_status: selected.dataset.status,
-          });
-          selected.focus({ preventScroll: true });
-        }
-        if (focus && this.clientWidth <= 650) selected.scrollIntoView({ block: 'nearest' });
+      emptyDetail.hidden = selected !== undefined;
+      if (!selected) return;
+      rememberedBooks.set(selected.shelf, selected.bookId);
+      if (!userInitiated) return;
+      window.posthog?.capture('reading_book_selected', { book_status: selected.shelf });
+      selected.element.focus({ preventScroll: true });
+      if (this.clientWidth <= STACKED_LAYOUT_MAX_WIDTH) {
+        selected.element.scrollIntoView({ block: 'nearest' });
       }
     };
     const selectShelf = (shelf: string, announce = true) => {
-      for (const section of shelves) section.hidden = section.dataset.shelf !== shelf;
+      for (const section of shelves) section.element.hidden = section.shelf !== shelf;
       for (const tab of tabs) {
-        const active = tab.dataset.shelfLink === shelf;
-        tab.setAttribute('aria-selected', String(active));
-        tab.tabIndex = active ? 0 : -1;
+        const active = tab.shelf === shelf;
+        tab.element.setAttribute('aria-selected', String(active));
+        tab.element.tabIndex = active ? 0 : -1;
       }
-      const available = details.filter((detail) => detail.dataset.status === shelf);
-      selectBook(remembered.get(shelf) ?? available[0]?.dataset.detail);
-      if (announce) {
-        announcement.textContent = `${shelf}: ${available.length} books`;
-        window.posthog?.capture('reading_shelf_selected', {
-          shelf,
-          available_book_count: available.length,
-        });
-      }
+      const available = details.filter((detail) => detail.shelf === shelf);
+      selectBook(rememberedBooks.get(shelf) ?? available[0]?.bookId);
+      if (!announce) return;
+      announcement.textContent = `${shelf}: ${formatCount(available.length, 'book')}`;
+      window.posthog?.capture('reading_shelf_selected', {
+        shelf,
+        available_book_count: available.length,
+      });
     };
 
-    this.querySelector('.codex-tabs')!.setAttribute('role', 'tablist');
+    tabList.setAttribute('role', 'tablist');
     tabs.forEach((tab, index) => {
-      tab.setAttribute('role', 'tab');
-      tab.id = `${this.id}-tab-${tab.dataset.shelfLink}`;
-      tab.setAttribute('aria-controls', `${this.id}-${tab.dataset.shelfLink}`);
-      tab.addEventListener('click', (event) => {
+      tab.element.setAttribute('role', 'tab');
+      tab.element.id = `${this.id}-tab-${tab.shelf}`;
+      tab.element.setAttribute('aria-controls', `${this.id}-${tab.shelf}`);
+      tab.element.addEventListener('click', (event) => {
         event.preventDefault();
-        selectShelf(tab.dataset.shelfLink!);
+        selectShelf(tab.shelf);
       });
-      tab.addEventListener('keydown', (event) => {
+      tab.element.addEventListener('keydown', (event) => {
         if (event.key === ' ') {
           event.preventDefault();
-          selectShelf(tab.dataset.shelfLink!);
+          selectShelf(tab.shelf);
           return;
         }
-        const moves: Record<string, number> = {
-          ArrowRight: (index + 1) % tabs.length,
-          ArrowLeft: (index + tabs.length - 1) % tabs.length,
-          Home: 0,
-          End: tabs.length - 1,
-        };
-        const destination = moves[event.key];
+        const destination = getTabDestination(event.key, index, tabs.length);
         if (destination === undefined) return;
         event.preventDefault();
-        tabs[destination].focus();
-        selectShelf(tabs[destination].dataset.shelfLink!);
+        tabs[destination].element.focus();
+        selectShelf(tabs[destination].shelf);
       });
     });
-    shelves.forEach((shelf) => {
-      shelf.setAttribute('role', 'tabpanel');
-      shelf.setAttribute('aria-labelledby', `${this.id}-tab-${shelf.dataset.shelf}`);
-    });
-    tiles.forEach((tile) =>
-      tile.addEventListener('click', (event) => {
+    for (const section of shelves) {
+      section.element.setAttribute('role', 'tabpanel');
+      section.element.setAttribute('aria-labelledby', `${this.id}-tab-${section.shelf}`);
+    }
+    for (const tile of tiles) {
+      tile.element.addEventListener('click', (event) => {
         if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
-        selectBook(tile.dataset.book, true);
-      }),
-    );
+        selectBook(tile.bookId, true);
+      });
+    }
     // Native fragments keep every shelf and book readable without JavaScript.
-    const fragment = details.find((detail) => `#${detail.id}` === location.hash);
-    const initialShelf =
-      fragment?.dataset.status ??
-      shelves.find((shelf) => `#${shelf.id}` === location.hash)?.dataset.shelf ??
-      'finished';
+    const fragmentDetail = details.find((detail) => `#${detail.element.id}` === location.hash);
+    const fragmentShelf = shelves.find((section) => `#${section.element.id}` === location.hash);
     this.dataset.enhanced = 'true';
-    selectShelf(initialShelf, false);
-    if (fragment) selectBook(fragment.dataset.detail);
+    selectShelf(fragmentDetail?.shelf ?? fragmentShelf?.shelf ?? DEFAULT_SHELF, false);
+    if (fragmentDetail) selectBook(fragmentDetail.bookId);
   }
 }
 if (!customElements.get('reading-codex')) customElements.define('reading-codex', ReadingCodex);

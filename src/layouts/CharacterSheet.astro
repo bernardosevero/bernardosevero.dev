@@ -5,6 +5,7 @@ import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
 import CvDownloadLink from '../components/CvDownloadLink.astro';
 import { cvAsset } from '../config/cv';
+import { profileLinkIcons, toolIcons } from '../config/character-sheet';
 import { Image } from 'astro:assets';
 import wizardPortrait from '../assets/bernardo-wizard.png';
 import { getEntry, render } from 'astro:content';
@@ -15,18 +16,6 @@ const about = await getEntry('pages', 'about');
 if (!about || about.data.kind !== 'about')
   throw new Error('The About content entry is missing or invalid.');
 const { Content } = await render(about);
-
-const toolIcons = {
-  'VS Code': 'vscode',
-  GitHub: 'github',
-  Docker: 'docker',
-  AWS: 'cloud',
-} as const;
-
-const socialIcons = {
-  LinkedIn: 'linkedin',
-  GitHub: 'github',
-} as const;
 ---
 
 <PortfolioPage
@@ -136,7 +125,7 @@ const socialIcons = {
         <ul class="tool-list">
           {about.data.tools.map((tool) => (
             <li title={tool}>
-              <PixelIcon name={toolIcons[tool as keyof typeof toolIcons]} size={34} />
+              <PixelIcon name={toolIcons[tool]} size={34} />
               <span class="sr-only">{tool}</span>
             </li>
           ))}
@@ -166,7 +155,7 @@ const socialIcons = {
                 aria-label={`${label} (opens in a new tab)`}
                 title={label}
               >
-                <PixelIcon name={socialIcons[label as keyof typeof socialIcons]} size={31} />
+                <PixelIcon name={profileLinkIcons[label]} size={31} />
                 <span class="sr-only">{label}</span>
               </a>
             ))}
