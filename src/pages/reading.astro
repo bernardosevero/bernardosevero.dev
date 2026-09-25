@@ -17,7 +17,7 @@ const reviewIds = new Set(
 
 const codexBooks = books.map((book) => ({
   ...book.data,
-  coverSrc: book.data.coverAsset ? `${base}${book.data.coverAsset.slice(1)}` : book.data.coverUrl,
+  coverSrc: book.data.coverUrl,
   reviewHref: reviewIds.has(book.id) ? `${base}reading/${book.id}/` : undefined,
 }));
 ---

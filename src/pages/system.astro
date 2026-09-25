@@ -45,6 +45,7 @@ const typeScale = [
   { token: '--text-4xl', size: '3.75rem · 60px' },
   { token: '--text-5xl', size: '4.5rem · 72px' },
 ];
+const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/9780241619780';
 ---
 
 <BaseLayout
@@ -223,15 +224,8 @@ const typeScale = [
             <article>
               <h3>Book tiles</h3>
               <div class="book-tile-specimens">
-                <BookTile
-                  title="White Nights"
-                  coverSrc={`${base}images/books/white-nights-penguin.jpg`}
-                />
-                <BookTile
-                  title="White Nights"
-                  coverSrc={`${base}images/books/white-nights-penguin.jpg`}
-                  selected
-                />
+                <BookTile title="White Nights" coverSrc={specimenCoverUrl} />
+                <BookTile title="White Nights" coverSrc={specimenCoverUrl} selected />
               </div>
               <p>Default and selected shelf tiles, using the real production component.</p>
             </article>

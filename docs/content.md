@@ -63,7 +63,7 @@ The normalized import shape is:
 
 The Notion database identifier and credentials stay outside the repository. `title` and `author` preserve the source metadata from Notion, while `englishTitle` and `englishAuthor` provide the canonical English display values written to the site. The three existing managed books have stable-ID fallbacks for compatibility; every new book must supply both English fields. Review the normalized diff before importing. The importer preserves local Markdown reviews and verified covers unless the normalized input explicitly supplies replacements.
 
-For verified fallback covers, prefer a durable catalog URL such as Open Library's ISBN or edition endpoint. Record the edition or ISBN in the normalized cover provenance; do not replace an explicitly supplied cover with a discovered match.
+Book covers load directly from each entry's `coverUrl`; do not save copies in the project. For verified fallback covers, prefer a durable catalog URL such as Open Library's ISBN or edition endpoint. Record the edition or ISBN in the normalized cover provenance; do not replace an explicitly supplied cover with a discovered match.
 
 ## Pages
 

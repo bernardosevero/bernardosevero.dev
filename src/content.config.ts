@@ -57,7 +57,6 @@ const books = defineCollection({
       rating: z.number().min(0).max(5).optional(),
       finishedAt: date.optional(),
       coverUrl: z.url().optional(),
-      coverAsset: z.string().startsWith('/').optional(),
       coverSource: z.enum(['manual', 'catalog']).optional(),
       coverProvenance: z.string().optional(),
       coverOverride: z.boolean().default(false),
