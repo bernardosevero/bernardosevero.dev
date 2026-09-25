@@ -1,14 +1,16 @@
-import { access, mkdir, writeFile } from 'node:fs/promises';
-import { constants } from 'node:fs';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { parseArgs } from 'node:util';
 
-const args = new Map();
-for (let index = 2; index < process.argv.length; index += 2) {
-  args.set(process.argv[index], process.argv[index + 1]);
-}
+// Strict parsing rejects unknown flags and missing values instead of ignoring them.
+const { values } = parseArgs({
+  options: {
+    slug: { type: 'string' },
+    title: { type: 'string' },
+  },
+});
 
-const slug = args.get('--slug');
-const title = args.get('--title');
+const { slug, title } = values;
 
 if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
   throw new Error('Pass a lowercase kebab-case slug with --slug.');
@@ -19,13 +21,6 @@ const targetDirectory = resolve('src/content/projects');
 const target = resolve(targetDirectory, `${slug}.md`);
 if (!target.startsWith(`${targetDirectory}\\`) && !target.startsWith(`${targetDirectory}/`)) {
   throw new Error('The project path escaped the content directory.');
-}
-
-try {
-  await access(target, constants.F_OK);
-  throw new Error(`Project already exists: ${target}`);
-} catch (error) {
-  if (error?.code !== 'ENOENT') throw error;
 }
 
 const yamlString = (value) => JSON.stringify(value.trim());
@@ -62,5 +57,13 @@ Close with the lesson that another builder or recruiter should remember.
 `;
 
 await mkdir(targetDirectory, { recursive: true });
-await writeFile(target, template, { encoding: 'utf8', flag: 'wx' });
+try {
+  // The exclusive flag makes the existence check and the write one atomic step.
+  await writeFile(target, template, { encoding: 'utf8', flag: 'wx' });
+} catch (error) {
+  if (error?.code === 'EEXIST') {
+    throw new Error(`Project already exists: ${target}`, { cause: error });
+  }
+  throw error;
+}
 console.log(`Created ${target}`);
