@@ -279,6 +279,12 @@ test('Projects list uses repository cards without case-study actions', async ({ 
   );
 });
 
+test('case studies omit list sections that have no items', async ({ page }) => {
+  await page.goto('./projects/full-stack-courses-alura/');
+  await expect(page.getByRole('heading', { level: 2, name: 'Problem' })).toBeVisible();
+  await expect(page.locator('.case-study ul:empty')).toHaveCount(0);
+});
+
 test('Project card specimens expose linked and read-only states', async ({ page }) => {
   await page.goto('./system/');
   await expect(page.getByRole('link', { name: /Source repository/ })).toHaveAttribute(
