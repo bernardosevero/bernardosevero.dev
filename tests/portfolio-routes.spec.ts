@@ -14,6 +14,7 @@ const routes = [
   { path: 'reading/fyodor-dostoevsky-white-nights/', heading: 'White Nights' },
 ];
 
+// Reading covers are remote; navigation checks wait for local HTML and assert page behavior separately.
 for (const route of routes) {
   test(`${route.path} has a real page, no loading failures, and an accessible heading`, async ({
     page,
@@ -23,7 +24,7 @@ for (const route of routes) {
     page.on('response', (response) => {
       if (response.status() >= 400) failures.push(response.url());
     });
-    await page.goto(`./${route.path}`);
+    await page.goto(`./${route.path}`, { waitUntil: 'domcontentloaded' });
     await page.evaluate(() => document.fonts.ready);
     await expect(page.getByRole('heading', { level: 1, name: route.heading })).toBeVisible();
     const menu = page.getByRole('navigation', { name: 'Main navigation' });
@@ -41,7 +42,7 @@ test('authored names keep their casing while page titles remain decorative', asy
     ['projects/', '.project-card h2'],
     ['reading/', '.codex-detail:visible h2'],
   ]) {
-    await page.goto(`./${route}`);
+    await page.goto(`./${route}`, { waitUntil: 'domcontentloaded' });
     const name = page.locator(selector).first();
     await expect(name).toBeVisible();
     expect(await name.evaluate((element) => getComputedStyle(element).textTransform)).toBe('none');
@@ -111,7 +112,7 @@ for (const width of [320, 390, 1586]) {
 }
 
 test('Reading selects a book and opens its review', async ({ page }) => {
-  await page.goto('./reading/');
+  await page.goto('./reading/', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('tab', { name: 'finished', exact: true })).toHaveAttribute(
     'aria-selected',
     'true',
@@ -135,7 +136,7 @@ test('Reading selects a book and opens its review', async ({ page }) => {
 
 test('mobile codex keeps navigation, bookshelf, and details separate', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('./reading/');
+  await page.goto('./reading/', { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => document.fonts.ready);
 
   const navigation = await page.locator('.base-navigation').boundingBox();
@@ -159,7 +160,7 @@ test('mobile codex keeps navigation, bookshelf, and details separate', async ({ 
 });
 
 test('shelf tabs support keyboard selection, scrolling, and remembered books', async ({ page }) => {
-  await page.goto('./reading/');
+  await page.goto('./reading/', { waitUntil: 'domcontentloaded' });
   await page.getByRole('link', { name: 'White Nights', exact: true }).click();
   await expect(
     page
@@ -193,14 +194,16 @@ test('shelf tabs support keyboard selection, scrolling, and remembered books', a
 });
 
 test('codex fragment links open the linked shelf and book', async ({ page }) => {
-  await page.goto('./reading/#reading-codex-book-machado-de-assis-the-alienist');
+  await page.goto('./reading/#reading-codex-book-machado-de-assis-the-alienist', {
+    waitUntil: 'domcontentloaded',
+  });
   await expect(page.getByRole('tab', { name: 'reading', exact: true })).toHaveAttribute(
     'aria-selected',
     'true',
   );
   await expect(page.getByRole('article', { name: 'The Alienist' })).toBeVisible();
   await page.goto('./');
-  await page.goto('./reading/#reading-codex-wishlist');
+  await page.goto('./reading/#reading-codex-wishlist', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('tab', { name: 'wishlist', exact: true })).toHaveAttribute(
     'aria-selected',
     'true',
@@ -222,7 +225,7 @@ test('post topic filters announce correctly pluralized results', async ({ page }
 test('books and reviews remain available without JavaScript', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const page = await context.newPage();
-  await page.goto('./reading/');
+  await page.goto('./reading/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('.codex-detail')).toHaveCount(30);
   await page.getByRole('link', { name: 'White Nights', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
@@ -235,7 +238,7 @@ for (const width of [320, 390, 760, 1586]) {
   test(`Reading Codex fits at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 992 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('./reading/');
+    await page.goto('./reading/', { waitUntil: 'domcontentloaded' });
     await page.evaluate(() => document.fonts.ready);
     for (const title of ['The Death of Ivan Ilyich', 'The Metamorphosis', 'White Nights']) {
       await page.getByRole('link', { name: title, exact: true }).click();
@@ -311,7 +314,7 @@ for (const width of [390, 1586]) {
       'reading/',
       'reading/fyodor-dostoevsky-white-nights/',
     ]) {
-      await page.goto(`./${path}`);
+      await page.goto(`./${path}`, { waitUntil: 'domcontentloaded' });
       await page.evaluate(() => document.fonts.ready);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
         true,

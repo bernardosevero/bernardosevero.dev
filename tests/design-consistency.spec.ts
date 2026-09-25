@@ -53,7 +53,8 @@ for (const width of [320, 390, 760, 1024, 1586]) {
       'projects/full-stack-courses-alura/',
       'reading/fyodor-dostoevsky-white-nights/',
     ]) {
-      await page.goto(`./${route}`);
+      // Reading covers are remote and must not delay checks of the local page chrome.
+      await page.goto(`./${route}`, { waitUntil: 'domcontentloaded' });
       await page.evaluate(() => document.fonts.ready);
       await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(1);
       const menu = page.getByRole('navigation', { name: 'Main navigation' });
