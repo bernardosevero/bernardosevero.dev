@@ -27,7 +27,7 @@ reading-codex {
 }
 .codex-title :is(h1, h2) {
   margin: 0;
-  font: 700 clamp(34px, 4.5cqi, 48px)/1 var(--font-heading);
+  font: 700 clamp(2.125rem, 4.5cqi, 3rem)/1 var(--font-heading);
   text-transform: uppercase;
 }
 .codex-subtitle {
@@ -36,7 +36,7 @@ reading-codex {
   justify-content: center;
   gap: 16px;
   color: var(--ink-soft);
-  font: 700 24px/1.1 var(--font-heading);
+  font: 700 1.5rem/1.1 var(--font-heading);
   text-transform: uppercase;
   letter-spacing: 3px;
 }
@@ -69,7 +69,7 @@ reading-codex {
 }
 .codex-shelf-title {
   margin: 0 0 16px;
-  font-size: 28px;
+  font-size: 1.75rem;
   text-transform: uppercase;
 }
 reading-codex[data-enhanced] .codex-shelf-title {
@@ -99,7 +99,7 @@ reading-codex[data-enhanced] .codex-shelf-title {
   outline-offset: 8px;
 }
 .codex-detail__cover .codex-cover-missing {
-  font-size: 18px;
+  font-size: 1.125rem;
   text-align: center;
   padding: 8px;
   border: 2px dashed var(--parchment-edge);
@@ -119,14 +119,14 @@ reading-codex[data-enhanced] .codex-shelf-title {
 }
 .codex-detail h2 {
   margin: 0;
-  font: 700 30px/1 var(--font-heading);
+  font: 700 1.875rem/1 var(--font-heading);
   text-align: center;
   overflow-wrap: anywhere;
 }
 .codex-author {
   margin: 4px 0 0;
   color: var(--ink-soft);
-  font-size: 28px;
+  font-size: 1.75rem;
   text-align: center;
 }
 .codex-detail .ornament--divider {
@@ -149,7 +149,7 @@ reading-codex[data-enhanced] .codex-shelf-title {
   gap: 12px;
 }
 .codex-facts dt {
-  font: 700 22px/1 var(--font-heading);
+  font: 700 1.375rem/1 var(--font-heading);
   text-transform: uppercase;
   color: var(--ink-soft);
   letter-spacing: 1px;
@@ -168,13 +168,13 @@ reading-codex[data-enhanced] .codex-shelf-title {
     2px 2px var(--wood-shadow);
   text-align: center;
   text-transform: capitalize;
-  font-size: 26px;
+  font-size: 1.625rem;
   line-height: 1;
 }
 .codex-review {
   display: block;
   color: var(--green-dark);
-  font-size: 24px;
+  font-size: 1.5rem;
   text-underline-offset: 4px;
 }
 .codex-tabs {
@@ -187,7 +187,7 @@ reading-codex[data-enhanced] .codex-shelf-title {
   width: 200px;
   min-height: 46px;
   padding: 8px 12px;
-  font-size: 24px;
+  font-size: 1.5rem;
   color: var(--green-dark);
   text-shadow: none;
   text-decoration: none;
@@ -209,7 +209,7 @@ reading-codex[data-enhanced] .codex-shelf-title {
 .codex-empty,
 .codex-detail-empty {
   margin: 16px 0;
-  font-size: 24px;
+  font-size: 1.5rem;
   color: var(--ink-soft);
 }
 reading-codex [hidden] {
@@ -219,7 +219,7 @@ reading-codex:not([data-enhanced]) .codex-shelf + .codex-shelf,
 reading-codex:not([data-enhanced]) .codex-detail + .codex-detail {
   margin-top: 28px;
 }
-@container (max-width: 850px) {
+@container (width <= 850px) {
   .codex-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -235,14 +235,14 @@ reading-codex:not([data-enhanced]) .codex-detail + .codex-detail {
     gap: 8px;
   }
   .codex-facts dt {
-    font-size: 19px;
+    font-size: 1.1875rem;
   }
   .codex-status {
     min-width: 0;
     width: 100%;
   }
 }
-@container (max-width: 650px) {
+@container (width <= 650px) {
   .codex-body {
     grid-template-columns: 1fr;
     min-height: 0;
@@ -271,7 +271,7 @@ reading-codex:not([data-enhanced]) .codex-detail + .codex-detail {
     height: 180px;
   }
   .codex-detail h2 {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
   .codex-tabs {
     gap: 12px;
@@ -281,7 +281,7 @@ reading-codex:not([data-enhanced]) .codex-detail + .codex-detail {
     width: auto;
     flex: 1;
     min-width: 0;
-    font-size: 18px;
+    font-size: 1.125rem;
     padding: 8px 4px;
   }
   .codex-tab[aria-selected='true']::after {

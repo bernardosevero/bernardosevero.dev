@@ -30,7 +30,7 @@ const { rating } = Astro.props;
   .book-rating {
     display: inline-flex;
     align-items: center;
-    font-size: 22px;
+    font-size: 1.375rem;
   }
   .book-rating__stars {
     display: flex;
@@ -51,7 +51,7 @@ const { rating } = Astro.props;
     stroke: var(--ink);
     stroke-width: 2;
   }
-  @container (max-width: 650px) {
+  @container (width <= 650px) {
     .book-rating__star {
       width: 26px;
       height: 26px;

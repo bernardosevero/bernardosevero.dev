@@ -23,7 +23,7 @@ The project is a statically generated Astro portfolio. Content collections provi
 2. `src/content.config.ts` validates its frontmatter during development and build.
 3. A route queries the collection at build time.
 4. Astro renders static HTML with no content API required in the browser.
-5. GitHub Actions checks formatting and types, builds through Playwright, tests, and uploads the verified root-path `dist/` to Cloudflare Pages after both root and GitHub Pages compatibility suites pass. Pull requests validate without deploying.
+5. GitHub Actions checks formatting, CSS lint, and types, builds through Playwright, tests, and uploads the verified root-path `dist/` to Cloudflare Pages after both root and GitHub Pages compatibility suites pass. Pull requests validate without deploying.
 
 Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md`. Base-path normalization lives in `src/utils/paths.ts`; `src/utils/content.ts` excludes drafts in every environment. There is no draft-preview mode. The design-system page imports production components and reads CSS token values from the browser.
 

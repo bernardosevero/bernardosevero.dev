@@ -111,7 +111,7 @@ const { Content } = await render(project);
 
   .case-study h2 {
     margin: 20px 0 7px;
-    font-size: 28px;
+    font-size: 1.75rem;
   }
 
   .case-study li {
@@ -125,7 +125,7 @@ const { Content } = await render(project);
     color: var(--ink-soft);
   }
 
-  @media (max-width: 640px) {
+  @media (width <= 640px) {
     .case-facts,
     .case-grid {
       grid-template-columns: 1fr;

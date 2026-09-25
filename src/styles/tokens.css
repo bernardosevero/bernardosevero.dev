@@ -1,4 +1,4 @@
-@layer reset, tokens, base, components, utilities, overrides;
+@layer reset, tokens, base, components, utilities;
 
 @layer tokens {
   :root {
@@ -14,6 +14,7 @@
       radial-gradient(ellipse at 100% 0%, #fff4c84d, transparent 42%),
       repeating-linear-gradient(0deg, #9b754b04 0 2px, transparent 2px 4px), var(--parchment);
     --ornament: #a7884f;
+    --backdrop: #45634c;
     --wood-dark: #321b10;
     --wood-shadow: #492719;
     --wood: #704129;
@@ -21,7 +22,12 @@
     --green-dark: #173e2d;
     --green: #429365;
     --green-light: #9ec578;
+    --green-highlight: #bbd787;
+    --green-shade: #2e704d;
+    --on-green: #fff0cb;
+    --button-shadow: #493e20;
     --gold: #f8c454;
+    --gold-highlight: #fff0a0;
     --font-heading: 'Pixelify Sans', 'Courier New', monospace;
     --font-body: 'VT323', 'Courier New', monospace;
     --page-width: 1160px;
