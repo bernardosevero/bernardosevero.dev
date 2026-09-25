@@ -1,3 +1,5 @@
+import { formatCount } from '../utils/format';
+
 class ReadingCodex extends HTMLElement {
   connectedCallback() {
     if (this.dataset.enhanced) return;
@@ -38,7 +40,7 @@ class ReadingCodex extends HTMLElement {
       const available = details.filter((detail) => detail.dataset.status === shelf);
       selectBook(remembered.get(shelf) ?? available[0]?.dataset.detail);
       if (announce) {
-        announcement.textContent = `${shelf}: ${available.length} books`;
+        announcement.textContent = `${shelf}: ${formatCount(available.length, 'book')}`;
         window.posthog?.capture('reading_shelf_selected', {
           shelf,
           available_book_count: available.length,

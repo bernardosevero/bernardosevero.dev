@@ -1,5 +1,6 @@
 ---
 import { isVisibleContent } from '../../utils/content';
+import { formatCalendarDate } from '../../utils/format';
 import PortfolioPage from '../../layouts/PortfolioPage.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
@@ -29,14 +30,7 @@ const { Content } = await render(post);
       <p class="page-kicker">{post.data.readingMinutes} min read</p>
       <h1 class="page-title">{post.data.title}</h1>
       <p class="page-intro">{post.data.description}</p>
-      <p class="meta article-date">
-        Published{' '}
-        {post.data.publishedAt.toLocaleDateString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-        })}
-      </p>
+      <p class="meta article-date">Published {formatCalendarDate(post.data.publishedAt, 'long')}</p>
       <Ornament variant="divider" />
     </header>
     <ul class="tag-list">

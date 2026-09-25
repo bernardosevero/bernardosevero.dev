@@ -170,6 +170,7 @@ test('shelf tabs support keyboard selection, scrolling, and remembered books', a
   await expect(page.getByRole('tab', { name: 'reading' })).toBeFocused();
   await expect(page.getByRole('tab', { name: 'reading' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByRole('article', { name: 'The Alienist' })).toBeVisible();
+  await expect(page.locator('[data-announcement]')).toHaveText('reading: 1 book');
   await page.keyboard.press('ArrowRight');
   await expect(page.getByRole('tab', { name: 'wishlist' })).toBeFocused();
   await expect(page.getByRole('tab', { name: 'wishlist' })).toHaveAttribute(
@@ -187,6 +188,17 @@ test('shelf tabs support keyboard selection, scrolling, and remembered books', a
   await page.keyboard.press('ArrowLeft');
   await page.keyboard.press('ArrowLeft');
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
+});
+
+test('post topic filters announce correctly pluralized results', async ({ page }) => {
+  await page.goto('./posts/');
+  const status = page.locator('[data-filter-status]');
+  const topic = page.getByRole('button', { name: 'AI', exact: true });
+  await topic.click();
+  await expect(topic).toHaveAttribute('aria-pressed', 'true');
+  await expect(status).toHaveText('Showing 1 post tagged AI.');
+  await page.getByRole('button', { name: 'All', exact: true }).click();
+  await expect(status).toHaveText('Showing 1 post across all topics.');
 });
 
 test('books and reviews remain available without JavaScript', async ({ browser, baseURL }) => {
