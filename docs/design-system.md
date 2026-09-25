@@ -175,10 +175,10 @@ Write queries in range syntax (`width <= 520px`, `width > 820px`) so adjacent ra
 | Viewport | `<= 560px` | Outer shell: page and navigation side gutters shrink to 8px |
 | Viewport | `<= 640px` | Case-study fact and content grids stack |
 | Viewport | `<= 760px` | `/system/` specimen grid switches to auto-fit columns |
-| Viewport | `> 820px`, `<= 1080px`, `<= 1200px` | Character Sheet: desktop spacing, compact two columns, then one stacked column |
+| Viewport | `> 820px`, `<= 1200px`, `<= 1080px` | Character Sheet: desktop spacing, one stacked column, then compact identity and tag sizing |
 | Container | `<= 850px`, `<= 650px` | Reading Codex: three-column shelf, then two columns with stacked panels |
 | Container | `<= 650px` | `BookTile` and `BookRating` compact sizing inside the Codex |
-| Container | `<= 760px` | `SiteNavigation` switches from four to two columns |
+| Container | `<= 760px` | `SiteNavigation` switches from five to two columns |
 
 Prefer container queries for components whose width depends on their parent. Add a new value only when content breaks between the existing ones, and record it here.
 
