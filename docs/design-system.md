@@ -36,14 +36,16 @@ Preserve hierarchy, density, proportions, timber, parchment, green actions, gold
 
 | Layer | Location | Owns |
 | --- | --- | --- |
-| Tokens | `src/styles/tokens.css` | Palette, typography families, shared page spacing, frame geometry, shared effects |
+| Tokens | `src/styles/tokens.css` | Palette, typography families, type scale, shared page spacing, frame geometry, shared effects |
 | Foundations and primitives | `src/styles/global.css` | Reset, document defaults, focus, wood frames, parchment, RPG buttons, ornaments, reduced-motion behavior |
 | Components | Component-local `<style>` | A reusable component's internal layout and variants |
 | Routes | `src/styles/*.css` or route-local `<style>` | Cross-component page composition and responsive changes |
 
-The cascade order is declared as `reset, tokens, base, components, utilities, overrides`. Do not create a new layer without a concrete conflict it resolves.
+`tokens.css` declares the cascade order `reset, tokens, base, components, utilities`. `global.css` places its reset, document defaults, shared primitives, and `.sr-only` utility in those layers. Component-local `<style>` blocks and route stylesheets stay unlayered, so they refine shared primitives without specificity contests. Do not create a new layer without a concrete conflict it resolves.
 
 Reuse existing tokens before adding values. Name stable roles semantically and materials descriptively. Keep page composition out of shared primitives; prefer Grid/Flexbox, reserve absolute positioning for decoration and overlays, and document any accessibility or third-party `!important` override.
+
+`npm run lint:css` runs Stylelint with `stylelint-config-standard` over CSS files and Astro `<style>` blocks. Class names follow kebab-case BEM (`block__element--modifier`); Prettier owns whitespace. Fix findings instead of adding disable comments.
 
 ## Foundation tokens
 
@@ -52,8 +54,13 @@ Reuse existing tokens before adding values. Name stable roles semantically and m
 - `--ink`, `--ink-soft` — primary and secondary text on parchment.
 - `--parchment`, `--parchment-light`, `--parchment-edge` — readable surfaces and aged edges.
 - `--wood-dark`, `--wood-shadow`, `--wood`, `--wood-light` — structural frames and depth.
+- `--backdrop` — village-green fallback behind the page scenery.
 - `--green-dark`, `--green`, `--green-light` — primary actions and village continuity.
+- `--green-highlight`, `--green-shade` — top and bottom bevels of green controls.
+- `--on-green` — light text on green controls.
+- `--button-shadow` — drop shadow beneath raised controls.
 - `--gold` — focus, selection, and scarce emphasis.
+- `--gold-highlight` — bevel highlight on gold markers and gems.
 - `--ornament` — dividers and quiet decoration.
 
 Gold is not body-copy color. Green does not carry state by itself. Every status also needs text, shape, position, or an accessible label.
@@ -64,6 +71,27 @@ Gold is not body-copy color. Green does not carry state by itself. Every status 
 - `--font-body`: VT323 400 for body copy, metadata, descriptions, and controls where legible.
 
 Both fonts are self-hosted through Fontsource. Pixel typography is thematic, not permission to use cramped sizes. Long articles should target a readable line length and may use a future text-optimized token if testing shows it is needed.
+
+#### Type scale
+
+Every font size uses a `--text-*` token. Steps follow the 4px rhythm through 32px, then widen for display headings:
+
+| Token | Size | Typical use |
+| --- | --- | --- |
+| `--text-2xs` | 1rem · 16px | Character Sheet strength and identity labels |
+| `--text-xs` | 1.125rem · 18px | Navigation minimum, book tile titles, timeline periods, project links |
+| `--text-sm` | 1.25rem · 20px | Tags and badges, timeline copy, About prose, phone-size headings |
+| `--text-md` | 1.5rem · 24px | Metadata, topic filters, Codex fact labels, heading and intro minimums |
+| `--text-lg` | 1.75rem · 28px | Body copy (`body` default), card and post title minimums |
+| `--text-xl` | 2rem · 32px | RPG buttons, article subheads, section heading and intro maximums |
+| `--text-2xl` | 2.5rem · 40px | Page and sheet title minimums, card and post title maximums |
+| `--text-3xl` | 3rem · 48px | Codex title and desktop sheet title maximums |
+| `--text-4xl` | 3.75rem · 60px | Character Sheet title maximum |
+| `--text-5xl` | 4.5rem · 72px | Page title maximum |
+
+Fluid headings use two tokens as `clamp()` bounds, for example `clamp(var(--text-md), 3vw, var(--text-xl))`. The tokens are in `rem`, so text follows the visitor's browser font-size preference; layout geometry, borders, and pixel-art details stay in `px`. `npm run lint:css` rejects raw font sizes. Add a step only when no existing step works, and record it here and in the `/system/` type-scale specimen.
+
+When a label column must fit text, size it from the content (for example a shared `max-content` column with `subgrid`) instead of a fixed pixel width tuned to one font size.
 
 ### Space and geometry
 
@@ -139,6 +167,21 @@ Layouts reflow at content-driven breakpoints:
 
 Current regression widths are 320, 390, 760, 768, 1024, and 1586 pixels.
 
+Write queries in range syntax (`width <= 520px`, `width > 820px`) so adjacent ranges cannot leave fractional-pixel gaps. Native CSS cannot put custom properties in media queries, so reuse these values instead of inventing nearby ones:
+
+| Query | Value | Role |
+| --- | --- | --- |
+| Viewport | `<= 520px` | Phone density: tighter panel padding, smaller headings and icons |
+| Viewport | `<= 560px` | Outer shell: page and navigation side gutters shrink to 8px |
+| Viewport | `<= 640px` | Case-study fact and content grids stack |
+| Viewport | `<= 760px` | `/system/` specimen grid switches to auto-fit columns |
+| Viewport | `> 820px`, `<= 1080px`, `<= 1200px` | Character Sheet: desktop spacing, compact two columns, then one stacked column |
+| Container | `<= 850px`, `<= 650px` | Reading Codex: three-column shelf, then two columns with stacked panels |
+| Container | `<= 650px` | `BookTile` and `BookRating` compact sizing inside the Codex |
+| Container | `<= 760px` | `SiteNavigation` switches from four to two columns |
+
+Prefer container queries for components whose width depends on their parent. Add a new value only when content breaks between the existing ones, and record it here.
+
 ## Accessibility states
 
 Target WCAG 2.2 AA. Every interactive primitive needs default, hover, focus-visible, active, and disabled behavior when supported. Automated axe checks supplement manual review.
@@ -164,11 +207,11 @@ The public route must import real production components and read computed CSS va
 1. Update its implementation and tokens.
 2. Update the live specimen for every shared component, variant, token, or interaction-state change. Route-only composition needs no specimen unless it changes a shared rule.
 3. Update this document if the ownership or rule changes.
-4. Run formatting, type, build, browser, accessibility, and responsive checks.
+4. Run formatting, CSS lint, type, build, browser, accessibility, and responsive checks.
 
 ## Shared page geometry and specimen isolation
 
-`tests/design-consistency.spec.ts` enforces the shared geometry, material styles, background layers, keyboard-accessible navigation, and isolated specimen layout at 320, 390, 760, 1024, and 1586 pixels. Extend its route matrix for new content routes and its assertions for new shared primitives. Never weaken assertions to accept drift; intentional contract changes require user direction and matching documentation. GitHub Actions gates deployment on formatting, type checking, production builds, and browser tests; screenshot review remains required for visual changes.
+`tests/design-consistency.spec.ts` enforces the shared geometry, material styles, background layers, keyboard-accessible navigation, and isolated specimen layout at 320, 390, 760, 1024, and 1586 pixels. Extend its route matrix for new content routes and its assertions for new shared primitives. Never weaken assertions to accept drift; intentional contract changes require user direction and matching documentation. GitHub Actions gates deployment on formatting, CSS linting, type checking, production builds, and browser tests; screenshot review remains required for visual changes.
 
 All content routes share `--page-width` (1160px), `--page-top-space`, and `--page-section-gap`. `BaseLayout` owns the top navigation; `portfolio.css` owns the common backdrop and content shell. About's former side navigation is intentionally replaced by this shared bar. Books has no background opacity or width override. Codex frames inherit the global timber thickness, and their parchment uses `--surface-parchment`, the same material as `WoodFrame`.
 

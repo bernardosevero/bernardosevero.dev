@@ -15,7 +15,7 @@ Live checks confirmed HTTP 200 for Home, Projects, Posts, Reading, and the main 
 3. In the GitHub repository, open **Settings > Secrets and variables > Actions** and add these repository secrets:
    - `CLOUDFLARE_ACCOUNT_ID`: the account ID from the Cloudflare dashboard.
    - `CLOUDFLARE_API_TOKEN`: the token from step 2. Never put it in source files or chat.
-4. When authorized to publish, commit and push the deployment changes to `main`. The **Deploy to Cloudflare Pages** workflow checks formatting and types and runs the browser suite against both the root deployment and the legacy GitHub Pages base path. Playwright runs the production build before each suite. Only the verified root build is uploaded, and deployment waits for both test jobs to pass. Pull requests and manual runs on other branches cannot publish production.
+4. When authorized to publish, commit and push the deployment changes to `main`. The **Deploy to Cloudflare Pages** workflow checks formatting, CSS lint, and types and runs the browser suite against both the root deployment and the legacy GitHub Pages base path. Playwright runs the production build before each suite. Only the verified root build is uploaded, and deployment waits for both test jobs to pass. Pull requests and manual runs on other branches cannot publish production.
 5. After the first successful deployment, open the Pages project, select **Custom domains > Set up a custom domain**, and enter `bernardosevero.dev`. Let Cloudflare configure the required DNS record and wait for the domain and certificate to become active. Add the domain through Pages; creating a DNS record alone is insufficient.
 6. Configure a Cloudflare Bulk Redirect from `www.bernardosevero.dev` to `https://bernardosevero.dev` with status **301**, **Preserve query string**, **Subpath matching**, and **Preserve path suffix** enabled. Enable a rule using that list and create a proxied **A** record named `www` pointing to the redirect-only placeholder `192.0.2.1`. Verify HTTP and HTTPS redirects, navigation, images, and a direct visit to `/reading/`.
 
@@ -32,6 +32,7 @@ npm ci
 npx playwright install chromium
 npm run check
 npm run format:check
+npm run lint:css
 npm run build
 npm test
 ```

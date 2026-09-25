@@ -70,7 +70,7 @@ const Tag = href ? 'a' : 'div';
     top: -18px;
     color: var(--gold);
     -webkit-text-stroke: 1px var(--ink);
-    font-size: 24px;
+    font-size: var(--text-md);
     line-height: 1;
   }
   .codex-tile[aria-current] .codex-selected-mark {
@@ -89,23 +89,23 @@ const Tag = href ? 'a' : 'div';
     filter: drop-shadow(3px 4px 0 #49271950);
   }
   .codex-tile__title {
-    font-size: 20px;
+    font-size: var(--text-sm);
     line-height: 1;
     text-align: center;
     overflow-wrap: anywhere;
   }
   .codex-cover-missing {
-    font-size: 18px;
+    font-size: var(--text-xs);
     text-align: center;
     padding: 8px;
     border: 2px dashed var(--parchment-edge);
   }
-  @container (max-width: 650px) {
+  @container (width <= 650px) {
     .codex-tile {
       padding-inline: 4px;
     }
     .codex-tile__title {
-      font-size: 19px;
+      font-size: var(--text-sm);
     }
   }
 </style>

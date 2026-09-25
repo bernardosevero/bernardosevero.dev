@@ -168,6 +168,18 @@ for (const width of [320, 390, 760, 1024, 1586]) {
     await expect(page.locator('.book-tile-specimens .codex-tile[aria-current="true"]')).toHaveCount(
       1,
     );
+    const typeScale = page.getByRole('list', { name: 'Font-size tokens' });
+    const sampleSizes = await typeScale
+      .locator('.type-scale-sample')
+      .evaluateAll((samples) =>
+        samples.map((sample) => parseFloat(getComputedStyle(sample).fontSize)),
+      );
+    expect(sampleSizes).toHaveLength(10);
+    expect(
+      sampleSizes.every((size, index) => index === 0 || size > sampleSizes[index - 1]),
+      'Type scale steps must increase in size',
+    ).toBe(true);
+    expect(await typeScale.evaluate((list) => list.scrollWidth <= list.clientWidth + 1)).toBe(true);
     const specimenProblems = await page
       .locator('.component-grid > article')
       .evaluateAll((specimens) =>

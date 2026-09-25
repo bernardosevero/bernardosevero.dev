@@ -11,7 +11,7 @@
   background:
     linear-gradient(#173e2d75, #173e2d75),
     var(--portfolio-village) center / cover no-repeat,
-    #45634c;
+    var(--backdrop);
 }
 
 .portfolio-page::after {
@@ -39,7 +39,7 @@
 .page-kicker {
   color: var(--ink-soft);
   font-family: var(--font-heading);
-  font-size: clamp(17px, 2vw, 24px);
+  font-size: clamp(var(--text-xs), 2vw, var(--text-md));
   letter-spacing: 0.12em;
   text-align: center;
   text-transform: uppercase;
@@ -47,7 +47,7 @@
 
 .page-title {
   margin-top: 4px;
-  font-size: clamp(42px, 7vw, 72px);
+  font-size: clamp(var(--text-2xl), 7vw, var(--text-5xl));
   line-height: 0.95;
   overflow-wrap: anywhere;
   text-align: center;
@@ -57,12 +57,12 @@
 .page-intro {
   max-width: 690px;
   margin: 12px auto 0;
-  font-size: clamp(23px, 3vw, 31px);
+  font-size: clamp(var(--text-md), 3vw, var(--text-xl));
   text-align: center;
 }
 
 .page-heading {
-  font-size: clamp(28px, 4vw, 42px);
+  font-size: clamp(var(--text-lg), 4vw, var(--text-2xl));
   text-transform: uppercase;
 }
 
@@ -83,7 +83,7 @@
 
 .meta {
   color: var(--ink-soft);
-  font-size: 22px;
+  font-size: var(--text-md);
 }
 
 .tag-list {
@@ -105,7 +105,7 @@
     0 2px var(--wood-shadow);
   color: var(--green-dark);
   font-family: var(--font-body);
-  font-size: 21px;
+  font-size: var(--text-sm);
   line-height: 0.9;
   text-transform: uppercase;
 }
@@ -115,11 +115,11 @@
   border: 2px solid var(--green-dark);
   background: var(--green);
   box-shadow:
-    inset 0 2px #bbd787,
+    inset 0 2px var(--green-highlight),
     0 2px var(--wood-shadow);
-  color: #fff0cb;
+  color: var(--on-green);
   font-family: var(--font-body);
-  font-size: 24px;
+  font-size: var(--text-md);
   line-height: 0.85;
   text-shadow: 1px 1px var(--green-dark);
   text-transform: uppercase;
@@ -129,13 +129,13 @@
   border-color: var(--wood-dark);
   background: var(--gold);
   box-shadow:
-    inset 0 2px #fff0a0,
+    inset 0 2px var(--gold-highlight),
     0 2px var(--wood-shadow);
   color: var(--wood-dark);
   text-shadow: none;
 }
 
-@media (max-width: 560px) {
+@media (width <= 560px) {
   .portfolio-page {
     padding-inline: 8px;
   }

@@ -153,7 +153,7 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
 
   .post-title-row h2 {
     font-family: var(--font-body);
-    font-size: clamp(29px, 4vw, 42px);
+    font-size: clamp(var(--text-lg), 4vw, var(--text-2xl));
     font-weight: 400;
     line-height: 1;
   }
@@ -162,7 +162,7 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
     color: var(--ink);
   }
 
-  @media (max-width: 520px) {
+  @media (width <= 520px) {
     .post-title-row {
       flex-direction: column;
       align-items: flex-start;

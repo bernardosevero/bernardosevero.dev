@@ -11,13 +11,14 @@ npm ci
 npm run dev
 npm run check
 npm run format:check
+npm run lint:css
 npm run build
 npx playwright install chromium # First browser-test setup
 npm test
 npm test -- tests/design-consistency.spec.ts # Focused iteration
 ```
 
-`npm test` builds before running Chromium tests. Focused runs do not replace required full suites. CI must pass formatting, type checking, builds, and browser tests for both base paths before deployment.
+`npm test` builds before running Chromium tests. Focused runs do not replace required full suites. CI must pass formatting, CSS linting, type checking, builds, and browser tests for both base paths before deployment.
 
 ## Read before changing
 
@@ -78,7 +79,7 @@ Requirements are cumulative; apply each matching row.
 | Change | Required verification |
 | --- | --- |
 | Documentation only | Check links, commands, and consistency; no browser run required. Markdown is excluded from Prettier. |
-| Code or configuration | `npm run check`, `npm run format:check`, `npm run build`. |
+| Code or configuration | `npm run check`, `npm run format:check`, `npm run lint:css`, `npm run build`. |
 | Editorial content | Schema validation via check/build; review facts, links, headings, draft visibility, and affected pages at mobile/desktop widths. |
 | Routes, UI, behavior, accessibility, or shared styles | Full `npm test` at both base paths using the deployment guide; inspect affected pages and follow the design-system visual/accessibility checklist. |
 | Build/test/deployment pipeline | Run both base-path browser suites locally; preserve deployment's dependency on successful checks. |

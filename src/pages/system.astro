@@ -18,14 +18,32 @@ const colorTokens = [
   '--parchment',
   '--parchment-light',
   '--parchment-edge',
+  '--backdrop',
   '--wood-dark',
   '--wood',
   '--wood-light',
   '--green-dark',
   '--green',
   '--green-light',
+  '--green-highlight',
+  '--green-shade',
+  '--on-green',
+  '--button-shadow',
   '--gold',
+  '--gold-highlight',
   '--ornament',
+];
+const typeScale = [
+  { token: '--text-2xs', size: '1rem · 16px' },
+  { token: '--text-xs', size: '1.125rem · 18px' },
+  { token: '--text-sm', size: '1.25rem · 20px' },
+  { token: '--text-md', size: '1.5rem · 24px' },
+  { token: '--text-lg', size: '1.75rem · 28px' },
+  { token: '--text-xl', size: '2rem · 32px' },
+  { token: '--text-2xl', size: '2.5rem · 40px' },
+  { token: '--text-3xl', size: '3rem · 48px' },
+  { token: '--text-4xl', size: '3.75rem · 60px' },
+  { token: '--text-5xl', size: '4.5rem · 72px' },
 ];
 ---
 
@@ -74,6 +92,18 @@ const colorTokens = [
               <code>VT323 · 400</code>
             </article>
           </div>
+          <h3 class="type-scale-heading">Type scale</h3>
+          <ul class="type-scale" aria-label="Font-size tokens">
+            {typeScale.map(({ token, size }) => (
+              <li>
+                <code>{token}</code>
+                <small>{size}</small>
+                <span class="type-scale-sample" style={`--sample-size: var(${token})`}>
+                  Quest log
+                </span>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section class="system-section system-surface">
@@ -296,7 +326,7 @@ const colorTokens = [
   }
   .system-header h1 {
     margin: 0;
-    font-size: clamp(42px, 7vw, 72px);
+    font-size: clamp(var(--text-2xl), 7vw, var(--text-5xl));
     line-height: 0.95;
     text-transform: uppercase;
   }
@@ -311,7 +341,7 @@ const colorTokens = [
     padding: clamp(22px, 4vw, 44px);
   }
   .system-section > h2 {
-    font-size: clamp(32px, 5vw, 48px);
+    font-size: clamp(var(--text-xl), 5vw, var(--text-3xl));
     text-align: center;
     text-transform: uppercase;
   }
@@ -329,12 +359,12 @@ const colorTokens = [
     gap: 20px;
   }
   .component-grid > article > h3 {
-    font-size: 26px;
+    font-size: var(--text-lg);
     text-transform: uppercase;
   }
   .component-grid > article > p {
     margin: 0;
-    font-size: 23px;
+    font-size: var(--text-md);
   }
   .swatch-grid {
     display: grid;
@@ -354,7 +384,7 @@ const colorTokens = [
     aspect-ratio: 1;
     background: var(--swatch);
     border: 3px solid var(--ink);
-    box-shadow: inset 2px 2px #ffffff55;
+    box-shadow: inset 2px 2px #fff5;
   }
   .swatch code,
   .swatch small {
@@ -364,11 +394,41 @@ const colorTokens = [
     color: var(--ink-soft);
   }
   .type-heading {
-    font: 700 38px/1 var(--font-heading);
+    font: 700 var(--text-2xl)/1 var(--font-heading);
     text-transform: uppercase;
   }
   .type-body {
-    font: 400 30px/1.15 var(--font-body);
+    font: 400 var(--text-xl)/1.15 var(--font-body);
+  }
+  .type-scale-heading {
+    margin: 24px 0 8px;
+    font-family: var(--font-heading);
+    font-size: var(--text-md);
+    text-transform: uppercase;
+  }
+  .type-scale {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .type-scale li {
+    display: grid;
+    grid-template-columns: 7.5rem 9rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--parchment-edge);
+  }
+  .type-scale small {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+  }
+  .type-scale-sample {
+    font-size: var(--sample-size);
+    line-height: 1;
+    overflow-wrap: anywhere;
   }
   .project-card-specimens {
     display: grid;
@@ -405,7 +465,7 @@ const colorTokens = [
     background: #321b1088;
     color: var(--parchment-light);
     font-family: var(--font-heading);
-    font-size: 19px;
+    font-size: var(--text-sm);
     text-align: center;
     text-transform: uppercase;
   }
@@ -426,12 +486,12 @@ const colorTokens = [
     align-items: center;
     min-height: 66px;
   }
-  @media (max-width: 760px) {
+  @media (width <= 760px) {
     .component-grid {
       grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
     }
   }
-  @media (max-width: 520px) {
+  @media (width <= 520px) {
     .system-page {
       width: calc(100% - 16px);
     }
@@ -443,6 +503,13 @@ const colorTokens = [
     }
     .book-tile-specimens {
       gap: 16px;
+    }
+    .type-scale li {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 4px 12px;
+    }
+    .type-scale-sample {
+      grid-column: 1 / -1;
     }
   }
 </style>
