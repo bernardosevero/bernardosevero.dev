@@ -1,7 +1,6 @@
 .portfolio-page {
   position: relative;
-  min-height: 100vh;
-  padding: clamp(24px, 5vw, 72px) 16px;
+  padding: var(--page-section-gap) 16px clamp(24px, 5vw, 72px);
 }
 
 .portfolio-page::before {
@@ -31,10 +30,6 @@
 
 .portfolio-shell * {
   min-width: 0;
-}
-
-.portfolio-shell:focus {
-  outline: 0;
 }
 
 .portfolio-frame .frame-surface {
