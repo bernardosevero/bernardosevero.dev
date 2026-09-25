@@ -13,14 +13,12 @@ test('base paths preserve root and GitHub Pages navigation', () => {
   }
 });
 
-test('draft previews never publish and require opt-in in development', () => {
-  for (const development of [false, true]) {
-    for (const draft of [false, true]) {
-      for (const preview of [false, true]) {
-        expect(isVisibleContent({ data: { draft, preview } }, development)).toBe(
-          !draft || (development && preview),
-        );
-      }
-    }
-  }
+test('drafts are excluded even when old content requests a preview', () => {
+  const entries = [
+    { id: 'published', data: { draft: false } },
+    { id: 'unfinished', data: { draft: true } },
+    { id: 'legacy-preview', data: { draft: true, preview: true } },
+  ];
+
+  expect(entries.filter(isVisibleContent).map((entry) => entry.id)).toEqual(['published']);
 });

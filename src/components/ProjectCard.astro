@@ -3,10 +3,9 @@ interface Props {
   title: string;
   summary: string;
   links?: Array<{ label: string; url: string }>;
-  preview?: boolean;
 }
 
-const { title, summary, links = [], preview = false } = Astro.props;
+const { title, summary, links = [] } = Astro.props;
 
 function isPublicProjectUrl(value: string) {
   try {
@@ -25,7 +24,6 @@ function getProjectDestinationType(value: string) {
 ---
 
 <article class="project-card">
-  {preview && <p class="project-card__label">Draft preview</p>}
   <h2>{title}</h2>
   <p>{summary}</p>
   {verifiedLinks.length > 0 && (
@@ -65,13 +63,6 @@ function getProjectDestinationType(value: string) {
 
   .project-card h2 {
     font-size: clamp(28px, 4vw, 39px);
-  }
-
-  .project-card__label {
-    color: var(--ink-soft);
-    font-family: var(--font-heading);
-    font-size: 17px;
-    text-transform: uppercase;
   }
 
   .project-card__links {

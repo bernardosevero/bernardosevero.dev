@@ -1,8 +1,10 @@
 # Home / Personal Log
 
+Historical implementation notes. The source mockups were retired on 2026-09-24; use the [design system](../design-system.md) for current UI work.
+
 ## Scope
 
-This first implementation covers only `src/pages/index.astro`, based on `docs/design/references/home.png`. It preserves the nameplate, left four-button menu, right character panel, profile labels, and welcome message. The other four reference screens are not implemented.
+This first implementation covered only `src/pages/index.astro`, based on the retired `home.png` mockup. It preserved the nameplate, left four-button menu, right character panel, profile labels, and welcome message. The other four screens were not yet implemented.
 
 The menu opens native modal dialogs with short section introductions and explicit availability messages. This avoids dead links or claiming unfinished pages exist. Native dialog focus handling, Escape dismissal, visible keyboard focus, arrow-key selection, Home/End selection, and a skip link are supported. There are no third-party browser scripts or external font requests.
 
@@ -19,7 +21,6 @@ This is a faithful structural interpretation, not a pixel-identical reproduction
 ## Decorative scenery
 
 - Production asset: `public/images/village.webp` (1584 × 993, lossless WebP).
-- Source reference: `docs/design/references/home.png`.
 - Method: built-in image-generation tool, editing the supplied reference to remove all interface overlays. The resulting image was inspected for embedded text and controls, then encoded as lossless WebP without resizing or visual changes.
 - Use: decorative fixed background with an empty semantic footprint, preloaded locally. The entire functional interface is rendered separately.
 

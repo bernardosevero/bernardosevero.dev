@@ -14,7 +14,6 @@ const posts = defineCollection({
     topics: z.array(z.string()).default([]),
     readingMinutes: z.number().int().positive(),
     draft: z.boolean().default(false),
-    preview: z.boolean().default(false),
   }),
 });
 
@@ -28,7 +27,6 @@ const projects = defineCollection({
     outcomes: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     draft: z.boolean().default(true),
-    preview: z.boolean().default(false),
     publishedAt: date.optional(),
     repositoryUrl: z.url().optional(),
     liveUrl: z.url().optional(),
@@ -70,7 +68,6 @@ const books = defineCollection({
       notionId: z.string().optional(),
       notionLastEditedAt: date.optional(),
       draft: z.boolean().default(false),
-      preview: z.boolean().default(false),
     })
     .strict(),
 });

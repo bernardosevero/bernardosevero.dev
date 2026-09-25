@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The design system turns the supplied medieval pixel-art references into a maintainable web language. It balances two goals: a distinctive RPG-world atmosphere and immediate professional clarity for recruiters and technical readers.
+The design system defines the portfolio's medieval pixel-art language: a distinctive RPG atmosphere with immediate professional clarity.
 
 The public `/system/` route is the live specimen sheet. This document defines ownership, constraints, and contribution rules. Production CSS and components remain authoritative.
 
@@ -24,7 +24,13 @@ Tradeoffs accepted:
 - Responsive composition is written by hand.
 - Drift is possible if one-off values bypass tokens; review and the live `/system/` page are the controls.
 
-Revisit this decision only if repetition or team scale creates a demonstrated maintenance problem. Do not add a framework preemptively.
+Revisit this decision only with explicit user direction. Do not add a framework preemptively.
+
+## Visual source of truth
+
+Use production tokens, components, and live `/system/` specimens when changing UI. Home and About share the Character Sheet; every content route uses the top navigation from `BaseLayout`.
+
+Preserve hierarchy, density, proportions, timber, parchment, green actions, gold selection cues, and the medieval village atmosphere. Avoid generic dashboards, terminal aesthetics, glassmorphism, and cyberpunk motifs. Raster assets may supply scenery, texture, and illustration; text, navigation, controls, lists, ratings, and statuses remain semantic HTML.
 
 ## CSS ownership
 
@@ -36,6 +42,8 @@ Revisit this decision only if repetition or team scale creates a demonstrated ma
 | Routes | `src/styles/*.css` or route-local `<style>` | Cross-component page composition and responsive changes |
 
 The cascade order is declared as `reset, tokens, base, components, utilities, overrides`. Do not create a new layer without a concrete conflict it resolves.
+
+Reuse existing tokens before adding values. Name stable roles semantically and materials descriptively. Keep page composition out of shared primitives; prefer Grid/Flexbox, reserve absolute positioning for decoration and overlays, and document any accessibility or third-party `!important` override.
 
 ## Foundation tokens
 
@@ -95,7 +103,7 @@ Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green act
 
 ### Project card
 
-`ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified Alura and GitHub destinations without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Project list cards do not show technology tags or case-study labels.
+`ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified Alura and GitHub destinations without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Project list cards do not show technology tags or case-study labels. Draft entries are excluded in all environments; cards have no draft-preview state.
 
 ### Ornaments
 
@@ -103,7 +111,7 @@ Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green act
 
 ### Pixel icons
 
-The homepage and `/about/` share `src/layouts/CharacterSheet.astro`, backed by the About content entry. The approved About composition supersedes the original Home mockup for the landing screen. Production content pages use the shared navigation for page switching; redundant return links are not rendered. `/system/` retains a return link as a documentation-page escape hatch and specimen. The homepage menu retains Reading instead of a redundant home link. The sheet stacks its columns at intermediate widths to preserve readability.
+The homepage and `/about/` share `src/layouts/CharacterSheet.astro`, backed by the About content entry. Production content pages use the shared navigation for page switching; redundant return links are not rendered. `/system/` retains a return link as a documentation-page escape hatch and specimen. The homepage menu retains Reading instead of a redundant home link. The sheet stacks its columns at intermediate widths to preserve readability.
 
 `PixelIcon.astro` contains multicolor SVG artwork for the character sheet, tool tiles, and professional profile links. Tool marks retain recognizable colors; the briefcase, star, wrench, and book share dark walnut outlines, bronze shading, and gold highlights drawn from the About reference. The AWS illustration is a cloud symbol with an orange smile, not an official logo. Artwork is independent of CSS geometry; CSS controls its size and surrounding tile. Decorative instances are hidden from assistive technology; icon-only controls must provide an accessible name and a visible tooltip or nearby label. The live inventory shows both icon families.
 
@@ -121,7 +129,7 @@ The optional `CvDownloadLink.astro` reuses `.social-link` from `about.css` and f
 
 ## Responsive behavior
 
-Desktop mockups define hierarchy, not a fixed canvas. Layouts should reflow at content-driven breakpoints:
+Layouts reflow at content-driven breakpoints:
 
 - Preserve readable text and touch targets.
 - Stack or reorder panels when horizontal space disappears.
@@ -133,20 +141,37 @@ Current regression widths are 320, 390, 760, 768, 1024, and 1586 pixels.
 
 ## Accessibility states
 
-Every interactive primitive needs default, hover, focus-visible, active, and disabled behavior when disabled is supported. Test keyboard interaction at 200% zoom and with reduced motion. Automated axe checks supplement rather than replace manual review.
+Target WCAG 2.2 AA. Every interactive primitive needs default, hover, focus-visible, active, and disabled behavior when supported. Automated axe checks supplement manual review.
+
+- Use links for navigation and buttons for actions, with accessible names and visible keyboard focus. Never remove a focus indicator without an equivalent replacement or communicate state through color alone.
+- Preserve the `BaseLayout` skip link and its focusable `#main-content` destination. Verify activation moves focus past navigation.
+- Associate form controls with visible labels and connect help/error text with the relevant field.
+- When adding a modal, move focus into it, contain keyboard focus while open, support Escape, and restore focus to the trigger on close. Prefer native dialog behavior.
+- Hide decoration from assistive technology; supply meaningful alt text for informative images. Icon-only controls need accessible names.
+- Verify changed controls and state indicators in forced-colors mode, at 200% zoom, and with reduced motion. Keep keyboard focus distinct from selection.
+- Preserve comfortable reading sizes and touch targets. Self-host fonts, optimize raster assets, and avoid runtime dependencies for CSS effects.
+
+## Visual verification
+
+For visual changes, capture and inspect before/after screenshots of affected routes at mobile and desktop widths. Shared-layout changes require 320, 390, 760, 1024, and 1586px checks, including `/system/` specimens. Verify menu/content geometry, backdrop layers, timber/parchment materials, visible link targets, and specimen containment.
+
+Check overflow, wrapping, loading/console errors, keyboard order and focus, reduced motion, and the accessibility states above. For motion changes, include a recording or sampled states. Report intentional differences, approximations, and unavailable checks; a build or DOM assertion alone does not establish visual fidelity. Keep evidence in ignored test artifacts or attach it to the review, never commit generated captures.
 
 ## Maintaining `/system/`
 
 The public route must import real production components and read computed CSS variables. It should not maintain a copied palette or recreated button. When a shared visual primitive changes:
 
 1. Update its implementation and tokens.
-2. Update the live specimen if a new state or variant exists.
+2. Update the live specimen for every shared component, variant, token, or interaction-state change. Route-only composition needs no specimen unless it changes a shared rule.
 3. Update this document if the ownership or rule changes.
-4. Run type, build, browser, accessibility, and responsive checks.
+4. Run formatting, type, build, browser, accessibility, and responsive checks.
+
 ## Shared page geometry and specimen isolation
 
-`tests/design-consistency.spec.ts` enforces the shared geometry, material styles, background layers, keyboard-accessible navigation, and isolated specimen layout at 320, 390, 760, 1024, and 1586 pixels. Home, section indexes, and representative detail routes participate in the same comparison. The navigation preview must match production styling without exposing navigation controls. GitHub Actions runs type checking, a production build, and browser tests on pull requests and before deployment; visual screenshot review remains required for intentional design changes.
+`tests/design-consistency.spec.ts` enforces the shared geometry, material styles, background layers, keyboard-accessible navigation, and isolated specimen layout at 320, 390, 760, 1024, and 1586 pixels. Extend its route matrix for new content routes and its assertions for new shared primitives. Never weaken assertions to accept drift; intentional contract changes require user direction and matching documentation. GitHub Actions gates deployment on formatting, type checking, production builds, and browser tests; screenshot review remains required for visual changes.
 
 All content routes share `--page-width` (1160px), `--page-top-space`, and `--page-section-gap`. `BaseLayout` owns the top navigation; `portfolio.css` owns the common backdrop and content shell. About's former side navigation is intentionally replaced by this shared bar. Books has no background opacity or width override. Codex frames inherit the global timber thickness, and their parchment uses `--surface-parchment`, the same material as `WoodFrame`.
+
+Do not add route-local menus, side rails, positioned navigation, compensating offsets, or overrides of backdrop opacity, timber thickness, and outer panel width. Production navigation remains real links with exactly one current item.
 
 The design-system catalog displays individual components in responsive specimen cells. Layout CSS targets direct specimen children only; it must not override nested component padding, heading styles, or dimensions. The menu specimen uses its own full-width section and static preview mode. The return-to-Personal-Log link remains functional on `/system/`.

@@ -33,7 +33,6 @@ const projects = (await getCollection('projects', isVisibleContent)).sort(
               title={project.data.title}
               summary={project.data.summary}
               links={project.data.links}
-              preview={project.data.preview}
             />
           </li>
         ))}

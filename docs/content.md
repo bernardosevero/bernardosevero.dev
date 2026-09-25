@@ -6,6 +6,8 @@ Visitor-facing editorial content lives in `src/content/` and is validated by `sr
 
 Use Markdown for normal prose. Use MDX only when an article or project requires an embedded Astro component. Images belong in a clearly named production asset folder and need meaningful alt text unless they are decorative.
 
+Posts and projects live in their respective `src/content/` directories; low-frequency copy lives in `src/content/pages/`. Use lowercase kebab-case slugs and ISO dates. Keep navigation behavior and reusable UI configuration in code. Every `draft: true` entry is excluded from routes, indexes, and feeds in development and production. There is no local draft-preview mode or `preview` content field.
+
 ## Posts
 
 Required frontmatter: `title`, `description`, `publishedAt`, and `readingMinutes`. Add `topics` for useful grouping. Keep `draft: true` until the article has been reviewed and its links have been checked.
@@ -30,11 +32,13 @@ Add a draft book with:
 npm run add:book -- --id author-book-title --title "Book title" --author "Author name" --status wishlist
 ```
 
-Pass `--isbn` when the exact edition is known. The command normalizes spaces and hyphens, validates ISBN-10 or ISBN-13 shapes (including an ISBN-10 `X` check character), rejects duplicate IDs, sorts the catalog by title, and always creates `draft: true` with `preview: false`. Edit the new JSON object to add verified metadata and publish it.
+Pass `--isbn` when the exact edition is known. The command normalizes spaces and hyphens, validates ISBN-10 or ISBN-13 shapes (including an ISBN-10 `X` check character), rejects duplicate IDs, sorts the catalog by title, and creates `draft: true`. Edit the new JSON object to add verified metadata and publish it.
 
 To add a review, create `src/content/book-reviews/author-book-title.md` with normal Markdown prose. Do not put the review in a JSON attribute. Reviews for draft books remain unpublished until the matching catalog record is visible.
 
 Notion-managed entries also carry `notionId` and `notionLastEditedAt`. Those fields provide stable identity and conflict context. The importer updates the matching JSON object and writes a supplied nonempty review to its separate Markdown file. It never deletes a local entry or review simply because it disappeared from the input.
+
+Sync owns only entries carrying `notionId`; it must not overwrite hand-authored entries or silently rewrite unrelated fields. Show the normalized diff before importing.
 
 The normalized import shape is:
 
@@ -82,7 +86,3 @@ Low-frequency Home and About copy lives in `src/content/pages/`. The schema uses
 - Headings form a logical outline.
 - Images include correct alt text and attribution when required.
 - `npm run check` and `npm run build` pass.
-
-## Local draft previews
-
-Set `preview: true` only on a `draft: true` entry when a local interface flow needs fixture content. These entries render in `npm run dev` with a visible Draft preview label, but remain excluded from production builds and deploys.

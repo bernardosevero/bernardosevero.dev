@@ -23,9 +23,22 @@ The project is a statically generated Astro portfolio. Content collections provi
 2. `src/content.config.ts` validates its frontmatter during development and build.
 3. A route queries the collection at build time.
 4. Astro renders static HTML with no content API required in the browser.
-5. GitHub Actions checks types, builds through Playwright, tests, and uploads the verified root-path `dist/` to Cloudflare Pages after both root and GitHub Pages compatibility suites pass. Pull requests validate without deploying.
+5. GitHub Actions checks formatting and types, builds through Playwright, tests, and uploads the verified root-path `dist/` to Cloudflare Pages after both root and GitHub Pages compatibility suites pass. Pull requests validate without deploying.
 
-Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md`. Base-path normalization lives in `src/utils/paths.ts`; collection visibility lives in `src/utils/content.ts`. Draft previews are development-only. The design-system page imports the same `WoodFrame` and `Ornament` components and reads CSS token values from the browser, which reduces documentation drift.
+Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md`. Base-path normalization lives in `src/utils/paths.ts`; `src/utils/content.ts` excludes drafts in every environment. There is no draft-preview mode. The design-system page imports production components and reads CSS token values from the browser.
+
+## Route contract
+
+| Route | Purpose |
+| --- | --- |
+| `/`, `/about/` | Shared Character Sheet: profile, experience, specialties, tools, contact |
+| `/posts/`, `/posts/[slug]/` | Journal index with topic filters and individual articles |
+| `/projects/`, `/projects/[slug]/` | Quest Log and case studies: problem, constraints, decisions, contribution, outcome, lessons |
+| `/reading/` | Reading Codex: reading, finished, wishlist, optional ratings/reviews |
+| `/reading/[slug]/` | Review for a visible book with nonempty Markdown |
+| `/system/` | Live inventory of production tokens, components, and states |
+
+Expose a route as finished only when its content, responsive layout, keyboard behavior, metadata, and tests are ready; otherwise use an honest unavailable state. Production components and the design system supersede historical implementation notes.
 
 ## External references
 
@@ -33,12 +46,9 @@ Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md
 - [Astro content collections](https://docs.astro.build/en/guides/content-collections/) — build-time content loading and schema validation.
 - [Cloudflare Pages deployment](deployment.md) — verified static uploads, credentials, and custom-domain setup.
 - [Bruno Paulino's design system](https://bpaulino.com/system/) — public, inspectable system-page reference.
-- `docs/design/references/` — user-supplied visual direction for all five screens.
 
 ## Current state and next routes
 
 Home, `/system/`, About, Projects, Posts, and Reading are implemented. Posts currently has no published entries; Reading has real covers and reviews. Astro's `file()` loader reads the JSON metadata catalog, while `glob()` loads separate Markdown reviews. A detail route is generated only when a visible book has a nonempty review with the same ID.
 
-## Compatibility and retired code
 
-The original Home stylesheet, unused preview-dialog component, Home content entry/schema, and branch ornament have been retired. Historical implementation notes and design references remain as provenance. `public/images/social-card.png` is intentionally retained for older external links; current metadata uses `social-card-v2.jpg`.

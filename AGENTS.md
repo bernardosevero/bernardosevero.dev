@@ -1,182 +1,92 @@
 # Project operating guide
 
-## Mission
+Build Bernardo Severo's static portfolio with a cozy medieval RPG atmosphere. Visitors must quickly understand his work, judgment, technologies, and contact options. Professional evidence and readable semantic HTML come first.
 
-Build Bernardo Severo's personal portfolio as a memorable, credible entry point for recruiters, engineering leaders, collaborators, and curious visitors. The experience should feel like opening a cozy medieval RPG menu while making Bernardo's work, judgment, and technologies easy to understand.
+## Commands
 
-Success means a visitor can quickly answer:
-
-1. Who is Bernardo and what kind of problems does he solve?
-2. What has he built, what was his role, and what changed because of it?
-3. How does he think and communicate?
-4. Which technologies and domains does he work with?
-5. How can someone contact him?
-
-Visual charm supports those answers; it must never hide them.
-
-## Non-negotiable product principles
-
-- Lead with professional evidence. The RPG metaphor is the navigation language, not a barrier to comprehension.
-- Keep the site static, fast, accessible, and simple to maintain.
-- Render real semantic HTML. Never ship a screenshot as the interface or place invisible controls over an image.
-- Do not invent employers, responsibilities, metrics, testimonials, dates, book ratings, or project outcomes. Mark incomplete content as draft.
-- Treat privacy and confidentiality as product requirements. Remove internal names and sensitive details from case studies.
-- Use progressive enhancement. Core reading and navigation must work without client-side JavaScript.
-
-## Language and voice
-
-- Write code identifiers, comments, documentation, commit messages, content frontmatter, and default UI copy in English.
-- Use `lang="en"` unless a page is explicitly localized later.
-- Sound precise, warm, curious, and direct. Avoid corporate filler, inflated claims, and excessive RPG jokes.
-- Prefer short paragraphs, descriptive headings, concrete verbs, and evidence-backed outcomes.
-- Preserve proper names and user-supplied facts exactly unless asked to edit them.
-
-## Information architecture
-
-- `/` — Character Sheet: profile, experience, specialties, tools, contact, and primary navigation.
-- `/posts/` — Journal: writing list with useful topic filters.
-- `/posts/[slug]/` — Individual article.
-- `/about/` — Compatibility entry point to the same Character Sheet layout.
-- `/projects/` — Quest Log: project list and featured work.
-- `/projects/[slug]/` — Case study with problem, constraints, decisions, contribution, outcome, and lessons.
-- `/reading/` — Reading Codex: reading, finished, and wishlist shelves with ratings and optional reviews.
-- `/system/` — Live design-system inventory built from production tokens and components.
-
-Do not expose a route as finished until its content, responsive layout, keyboard behavior, metadata, and tests are ready. Until then, use an honest unavailable state.
-
-## Content architecture
-
-Astro content collections are the source of truth for editorial material:
-
-- `src/content/posts/` — articles in Markdown or MDX.
-- `src/content/projects/` — project case studies in Markdown or MDX.
-- `src/content/books.json` — book metadata in one catalog; each entry has a stable `id`.
-- `src/content/book-reviews/` — optional Markdown reviews named after their catalog book ID.
-- `src/content/pages/` — low-frequency page copy such as Home and About.
-- `src/content.config.ts` — schemas and validation contracts.
-
-Rules:
-
-- Use plain Markdown by default. Use MDX only when an article genuinely needs an interactive or custom component.
-- Keep navigation behavior and reusable UI configuration in code; keep visitor-facing prose in content files.
-- Use lowercase kebab-case slugs and ISO dates.
-- A draft must stay out of production indexes and feeds.
-- A project begins with `draft: true`; publishing requires real role, context, decisions, and supportable outcomes.
-- Notion book sync owns only entries carrying `notionId`. It must not delete hand-authored content or rewrite unrelated fields silently.
-- Add books through `npm run add:book`; the command appends a draft and refuses duplicate IDs.
-- Store no Notion token, database secret, or private URL in Git.
-- See `docs/content.md` before adding or importing content.
-
-## Astro and code architecture
-
-- Use Astro, strict TypeScript, static generation, npm, and the committed `package-lock.json`.
-- Put routes in `src/pages/`, shared shells in `src/layouts/`, reusable UI in `src/components/`, and editorial data in `src/content/`.
-- Prefer `.astro` components. Add a framework integration only when a concrete interaction cannot be expressed simply with Astro and browser APIs.
-- Keep client JavaScript small and local. Do not hydrate static prose or decoration.
-- Use semantic links for navigation and buttons for actions.
-- Production uses Cloudflare Pages at `https://bernardosevero.dev/`. Build internal paths from `import.meta.env.BASE_URL`; preserve support for non-root bases in regression tests.
-- Production assets belong in `public/` or `src/assets/`. References and process notes belong in `docs/`.
-- Never commit secrets, `node_modules/`, `.astro/`, `dist/`, browser binaries, or generated test artifacts.
-
-## CSS decision
-
-Use vanilla CSS. Do not add Tailwind, Sass, CSS-in-JS, or a component library unless the user explicitly reopens this decision.
-
-The styling layers are:
-
-1. `src/styles/tokens.css` — global design tokens and cascade-layer order.
-2. `src/styles/global.css` — reset, base rules, accessibility helpers, and shared primitives such as frames and buttons.
-3. Component-local `<style>` blocks — styles owned by one Astro component.
-4. Route stylesheets such as `src/styles/home.css` — composition that genuinely spans several child components.
-
-Rules:
-
-- Reuse a token when one expresses the intent; do not scatter near-duplicate colors or spacing values.
-- Name tokens semantically when their role is stable and descriptively when they represent a material.
-- Keep page composition out of shared component primitives.
-- Prefer Grid and Flexbox. Use absolute positioning only for decorative details and overlays that require it.
-- Avoid `!important` except for a documented accessibility or third-party override.
-- The public `/system/` page must render production classes, components, fonts, and CSS variables. If a specimen disagrees with the real component, fix or remove the specimen.
-- Every new or changed reusable UI component, visual variant, design token, or interaction state must update `/system/` in the same change.
-- Page-specific layout CSS does not require a `/system/` specimen unless it introduces a reusable pattern or changes a shared visual rule.
-- Update `docs/design-system.md` in the same change whenever the design system's ownership, usage rules, tokens, or shared primitives change materially.
-
-## Visual source of truth
-
-### Shared layout regression contract
-
-- `BaseLayout` owns the single top `SiteNavigation` for every content route, including Home, About, and detail pages. Do not add route-local menus, side rails, absolute positioning, or compensating page offsets.
-- Reuse `--page-width`, `--page-top-space`, `--page-section-gap`, `--frame-width`, and `--surface-parchment`. Background overlays belong to `portfolio.css`; routes must not independently adjust their opacity, timber thickness, or outer panel width.
-- `/system/` is a component catalog, not a second copy of a production page. Render small production-component specimens and explicit states; never embed an entire Reading Codex or load editorial collections just to demonstrate a component.
-- Use the static `SiteNavigation` preview in `/system/`. Production navigation must remain real links with exactly one current item; the specimen must not navigate. Keep the return-to-Personal-Log link only on `/system/`.
-- Scope specimen layout to its wrapper and direct children. Do not use broad descendant selectors that restyle nested component headings, surfaces, links, or state indicators.
-- Preserve `tests/design-consistency.spec.ts` as a regression gate. Extend its route matrix for new content routes and its assertions for new shared primitives. Never weaken assertions merely to accept drift; intentional design-contract changes require user direction and matching documentation.
-- For shared-layout changes, verify mobile (320/390px), tablet (760/1024px), and desktop (1586px): equal menu/content geometry, background layers, frame materials, visible link targets, specimen containment, and accessibility. Review screenshots too; DOM checks are not proof of pixel-perfect fidelity.
-- Deployment must depend on successful type checking, production build, and browser tests. Keep this gate in the GitHub Actions workflow.
-
-### Reference review
-
-- Inspect `docs/design/references/` before changing a referenced screen.
-- The five supplied mockups are the primary composition references. Home defines navigation; Projects defines list/detail structure; Reading defines finish; Posts and About define their screens.
-- Preserve hierarchy, density, proportions, timber frames, parchment surfaces, green actions, gold selection cues, and the medieval village atmosphere.
-- Avoid generic dashboards, terminal aesthetics, glassmorphism, and cyberpunk motifs.
-- Raster imagery is allowed for scenery, textures, and illustration. Text, navigation, controls, lists, ratings, and statuses must remain real HTML/CSS.
-- Document approximations and missing assets. A passing build is not proof of visual fidelity.
-
-## Accessibility, responsiveness, and performance
-
-- Target WCAG 2.2 AA for content and interactions.
-- Support keyboard navigation, visible focus, logical focus order, accessible names, and Escape behavior for dialogs.
-- Never communicate selection or status through color alone.
-- Preserve readable type and touch targets on small screens; reflow layouts instead of shrinking a desktop screenshot.
-- Respect `prefers-reduced-motion` and hide decorative nodes from assistive technology.
-- Keep long-form reading comfortable even when display typography is pixel-inspired.
-- Self-host necessary fonts and optimize raster assets. Avoid new runtime dependencies for effects CSS can provide.
-- Every page needs a useful title, description, heading hierarchy, and shareable URL. Add canonical and social metadata before public launch.
-
-## Skills and automation contracts
-
-- `$add-project` scaffolds a draft in `src/content/projects/` through `npm run content:add-project`. It must fail rather than overwrite an existing slug and must never fabricate claims.
-- `$sync-notion-books` reads the configured Notion books database, shows a normalized diff, and imports metadata into `src/content/books.json` and supplied reviews into Markdown through `npm run content:import-books`. It must not delete local entries or store credentials.
-- A skill may prepare local changes, but it may not commit, push, deploy, delete references, or mutate Notion without the user's request.
-- Skills are personal Codex skills stored under the user's Codex skills directory. Their project contract is documented in `docs/skills.md`.
-
-## Git workflow
-
-- Always write commit messages in English using both Gitmoji and the Conventional Commits specification.
-- Format commit subjects as `<gitmoji> <type>(<scope>): <description>`, for example `✨ feat(home): add social sharing metadata`.
-- Keep the Gitmoji consistent with the intent of the Conventional Commit type.
-
-## Reference retirement gate
-
-Do not delete `docs/design/references/` during normal page work. Remove it only when all five experience areas are complete and all of the following are true:
-
-1. Home, Posts, About, Projects, and Reading are implemented at desktop and mobile sizes.
-2. Production no longer depends on a reference file.
-3. Each screen has been visually compared with its reference and the remaining intentional differences are documented.
-4. Accessibility, type checking, build, and browser tests pass.
-5. The user explicitly approves retiring the references.
-
-Reference removal should be a separate, reviewable housekeeping change. Keep provenance and design decisions even after the large images are removed.
-
-## Verification checklist
-
-For any code or configuration change:
+Use Node.js 24, npm, and the committed `package-lock.json`. Dependency versions live in `package.json` and the lockfile; `.gitattributes` keeps text line endings LF across platforms.
 
 ```sh
+npm ci
+npm run dev
 npm run check
 npm run format:check
 npm run build
+npx playwright install chromium # First browser-test setup
+npm test
+npm test -- tests/design-consistency.spec.ts # Focused iteration
 ```
 
-Run `npm test` for routes, layout, interactions, shared styles, or accessibility changes. Install Chromium once with `npx playwright install chromium` if needed.
+`npm test` builds before running Chromium tests. Focused runs do not replace required full suites. CI must pass formatting, type checking, builds, and browser tests for both base paths before deployment.
 
-Before reporting completion:
+## Read before changing
 
-- Inspect the affected routes at mobile and desktop widths.
-- Check overflow, wrapping, loading errors, keyboard focus, and reduced motion.
-- Validate new content against `src/content.config.ts`.
-- Confirm production paths work at `/` and non-root regression paths work under `/bernardosevero.dev/`. The latter is a test configuration, not a second deployment.
-- Report what changed, what was verified, and what remains incomplete.
+| Task | Required guide |
+| --- | --- |
+| Routes, layouts, architecture | [Architecture](docs/architecture.md) |
+| Code, scripts, tests, inline scripts | [Code review](docs/code-review.md) |
+| UI, styles, accessibility | [Design system](docs/design-system.md) and live `/system/` specimens |
+| Editorial content or imports | [Content](docs/content.md) |
+| Builds, CI, deployment, base paths | [Deployment and local verification](docs/deployment.md#local-verification) |
+| Skill workflows or maintenance | [Skills](docs/skills.md) |
 
-Preserve unrelated user changes. Do not commit, push, deploy, force-push, delete broad paths, or change external services unless the task authorizes it.
+Production components and the design system are the visual source of truth. `/` and `/about/` share the Character Sheet and `BaseLayout` top navigation.
+
+## Product and content
+
+- Use English for code, comments, docs, commits, frontmatter, and default UI; use `lang="en"`. Write precise, warm prose without inflated claims or excessive RPG jokes. Preserve supplied facts and proper names.
+- Never invent employers, responsibilities, metrics, testimonials, dates, ratings, or outcomes. Remove confidential details and publish only complete, verified content.
+- Keep editorial prose in `src/content/`, validated by `src/content.config.ts`; keep behavior and reusable configuration in code. Prefer Markdown; use MDX only for embedded components. Use kebab-case slugs and ISO dates.
+- Exclude every `draft: true` entry in all environments. Keep this a simple filter; no draft previews or workflow features. Use existing content commands without overwriting IDs.
+- Notion sync owns only entries with `notionId`. Show a normalized diff before importing; preserve hand-authored entries, unrelated fields, and existing reviews unless replacements are supplied. Never delete local content because it disappeared from Notion.
+- Core reading and navigation must work without JavaScript. Every public page needs useful metadata, canonical/social URLs, and a logical heading hierarchy. Keep unfinished routes honestly unavailable.
+
+## Implementation contracts
+
+- Use Astro, strict TypeScript, static generation, and vanilla CSS. Prefer `.astro` components and small local browser scripts; add a framework only for a concrete interaction need. No Tailwind, Sass, CSS-in-JS, or component library without user direction.
+- Put routes in `src/pages/`, shells in `src/layouts/`, components in `src/components/`, and assets in `public/` or `src/assets/`. References and process notes belong in `docs/`.
+- Build internal paths from `import.meta.env.BASE_URL`; preserve `/` and `/bernardosevero.dev/` support. Production is Cloudflare Pages at `https://bernardosevero.dev/`.
+- `BaseLayout` owns the single `SiteNavigation`. Reuse shared geometry/material tokens; `portfolio.css` owns the backdrop and outer shell. Do not add route-local menus or compensating offsets.
+- Reuse tokens and primitives. Keep component styles local and page composition in route CSS. Prefer Grid/Flexbox; reserve absolute positioning for decoration/overlays and `!important` for documented accessibility/third-party overrides.
+- Update `/system/` with every shared component, variant, token, or interaction-state change. Use small production-component specimens and static navigation previews; never embed full pages or load editorial collections. Update the design-system guide when ownership or shared rules change.
+- Preserve `tests/design-consistency.spec.ts`; extend it for new routes and primitives. Intentional contract changes require user direction and matching documentation.
+
+## Code Review Rules
+
+Apply these to all new or modified code, including generated code, scripts, and tests. See [review examples](docs/code-review.md) for lookup maps, branching, and boundary checks.
+
+- No nested ternaries. Choose `if`, `switch`, lookup objects, or `Map` for clarity; none is mandatory. For a fixed mapping:
+
+  ```ts
+  type Shelf = 'reading' | 'finished' | 'wishlist';
+  const shelfLabels: Record<Shelf, string> = {
+    reading: 'Reading',
+    finished: 'Finished',
+    wishlist: 'Wishlist',
+  };
+  ```
+
+- Keep decisions and side effects explicit. Give functions one responsibility, use meaningful names, explain non-obvious constraints, and reuse existing helpers without speculative abstractions.
+- Use narrow types and boundary validation. Do not bypass unresolved types with `any`, unchecked assertions, non-null assertions, or suppression comments. Handle missing DOM nodes and empty collections deliberately.
+- Surface actionable failures; never swallow exceptions or promises. Preserve valid zero values, keyboard defaults, focus, and boundary behavior during refactors. Test behavior and meaningful edge cases.
+- Inspect the full diff before finishing. Correct readability, failure-path, duplication, and scope problems. Automated checks do not enforce every review rule; never weaken checks to pass.
+
+## Verification by change
+
+Requirements are cumulative; apply each matching row.
+
+| Change | Required verification |
+| --- | --- |
+| Documentation only | Check links, commands, and consistency; no browser run required. Markdown is excluded from Prettier. |
+| Code or configuration | `npm run check`, `npm run format:check`, `npm run build`. |
+| Editorial content | Schema validation via check/build; review facts, links, headings, draft visibility, and affected pages at mobile/desktop widths. |
+| Routes, UI, behavior, accessibility, or shared styles | Full `npm test` at both base paths using the deployment guide; inspect affected pages and follow the design-system visual/accessibility checklist. |
+| Build/test/deployment pipeline | Run both base-path browser suites locally; preserve deployment's dependency on successful checks. |
+
+Report changes, verification results, and anything incomplete. Distinguish automated checks from manual visual review.
+
+## Boundaries and Git
+
+- Preserve unrelated user changes. Do not commit, push, deploy, force-push, broadly delete, or mutate external services (including Notion) unless authorized by the task. Skill use does not grant that authorization.
+- Never commit secrets, private URLs, `node_modules/`, `.astro/`, `dist/`, browser binaries, or generated test artifacts.
+- When authorized to commit, use English Gitmoji + Conventional Commits: `✨ feat(home): add social sharing metadata`. Match the emoji to the change.

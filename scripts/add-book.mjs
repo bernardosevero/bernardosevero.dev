@@ -27,7 +27,7 @@ const books = JSON.parse(await readFile(target, 'utf8'));
 if (!Array.isArray(books)) throw new Error('src/content/books.json must contain an array.');
 if (books.some((book) => book.id === id)) throw new Error(`Book already exists: ${id}`);
 
-books.push({ id, title, author, status, ...(isbn ? { isbn } : {}), draft: true, preview: false });
+books.push({ id, title, author, status, ...(isbn ? { isbn } : {}), draft: true });
 books.sort((left, right) => left.title.localeCompare(right.title));
 await writeFile(temporary, `${JSON.stringify(books, null, 2)}\n`, { encoding: 'utf8', flag: 'wx' });
 await rename(temporary, target);

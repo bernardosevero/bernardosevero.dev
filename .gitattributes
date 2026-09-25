@@ -1,0 +1,2 @@
+# Match Prettier and CI on every platform; leave binary files untouched.
+* text=auto eol=lf

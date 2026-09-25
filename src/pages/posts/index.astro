@@ -52,7 +52,6 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
             <li data-topics={post.data.topics.map((topic) => topic.toLowerCase()).join('|')}>
               <article>
                 <p class="meta">
-                  {post.data.preview && <span class="status-badge">Draft preview</span>}{' '}
                   {post.data.publishedAt.toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
@@ -107,11 +106,15 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
         item.dataset.active = String(active);
         item.setAttribute('aria-pressed', String(active));
       }
-      if (status)
-        status.textContent =
-          topic === 'all'
-            ? `Showing all ${visibleCount} posts.`
-            : `Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'} tagged ${control.textContent?.trim() ?? topic}.`;
+      if (status) {
+        if (topic === 'all') {
+          status.textContent = `Showing all ${visibleCount} posts.`;
+        } else {
+          const postLabel = visibleCount === 1 ? 'post' : 'posts';
+          const topicLabel = control.textContent?.trim() ?? topic;
+          status.textContent = `Showing ${visibleCount} ${postLabel} tagged ${topicLabel}.`;
+        }
+      }
       window.posthog?.capture('post_topic_filtered', {
         topic,
         visible_post_count: visibleCount,

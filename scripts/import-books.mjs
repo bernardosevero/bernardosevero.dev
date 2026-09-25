@@ -75,7 +75,6 @@ for (const source of incoming) {
     notionId: source.notionId,
     notionLastEditedAt: source.notionLastEditedAt,
     draft: false,
-    preview: false,
   };
   delete book.review;
   if (source.rating == null) delete book.rating;

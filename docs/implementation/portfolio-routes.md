@@ -1,5 +1,7 @@
 # Portfolio routes
 
+Use the [design system](../design-system.md) for current UI work.
+
 ## Scope
 
 About, Projects, Posts, and Reading are implemented as static Astro routes using the shared village scenery, `WoodFrame`, `Ornament`, RPG controls, and portfolio route composition in `src/styles/portfolio.css`.
@@ -17,7 +19,7 @@ Dynamic post and project routes are generated only for non-draft entries. The la
 
 The supplied mockups establish the split-panel parchment and timber hierarchy. This implementation reuses the production village asset and CSS materials rather than the reference PNGs. At small widths, split panels stack, list actions expand to full width, and the content remains readable.
 
-The Reading Codex follows `docs/design/references/reading.png`: one timber window, compact leaf-decorated title banner, four-column bookshelf, 3:2 shelf/detail split, gold selected-book treatment, star ratings, and bottom shelf tabs. Container queries stack the shelf and details on phones. The backdrop uses the same production village artwork and overlay as every other content page.
+The Reading Codex was based on the retired `reading.png` mockup: one timber window, compact leaf-decorated title banner, four-column bookshelf, 3:2 shelf/detail split, gold selected-book treatment, star ratings, and bottom shelf tabs. Container queries stack the shelf and details on phones. The backdrop uses the same production village artwork and overlay as every other content page.
 
 Real verified edition covers replace the reference's illustrated volumes. No mockup books or unsupported synopses are invented. The Finished shelf opens by default. Each shelf has a bounded, keyboard-focusable vertical scroll region so a long wishlist does not extend the whole page. Existing review links are retained. The shared green, timber-framed site navigation remains above the window in normal document flow. Timber, leaf ornaments, and parchment use production CSS approximations instead of raster interface artwork.
 

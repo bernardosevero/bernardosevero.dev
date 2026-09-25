@@ -80,7 +80,7 @@ src/
 └── styles/          Tokens, foundations, and route composition
 ```
 
-Start with [AGENTS.md](AGENTS.md) for the project's rules and [architecture.md](docs/architecture.md) for the guided tour. The original visual references stay in `docs/design/references/` until every page passes the retirement gate in `AGENTS.md`.
+Start with [AGENTS.md](AGENTS.md) for the project's rules and [architecture.md](docs/architecture.md) for the guided tour. Production components and the live `/system/` page define the design.
 
 ## 🚀 Deployment
 
