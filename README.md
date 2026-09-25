@@ -21,7 +21,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://localhost:4321/`. Astro will reload the page while you edit.
+Open `http://localhost:4321/`. Astro will reload the page while you edit. PostHog analytics stays off unless `PUBLIC_POSTHOG_KEY` and `PUBLIC_POSTHOG_HOST` are both set (see `.env.example`).
 
 Useful spells:
 

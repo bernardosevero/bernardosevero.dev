@@ -2,18 +2,8 @@
 const apiKey = import.meta.env.PUBLIC_POSTHOG_KEY;
 const apiHost = import.meta.env.PUBLIC_POSTHOG_HOST;
 
-if (import.meta.env.DEV && !apiKey) {
-  throw new Error(
-    'PUBLIC_POSTHOG_KEY variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once PUBLIC_POSTHOG_KEY is configured',
-  );
-}
-
-if (import.meta.env.DEV && !apiHost) {
-  throw new Error(
-    'PUBLIC_POSTHOG_HOST variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once PUBLIC_POSTHOG_HOST is configured',
-  );
-}
-
+// Analytics is optional: without both values the snippet is omitted. Do not throw here;
+// the page is already streaming, so an error truncates it behind an HTTP 200.
 const posthogEnabled = Boolean(apiKey && apiHost);
 ---
 
