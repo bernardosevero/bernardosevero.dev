@@ -15,6 +15,15 @@ test('base paths preserve root and GitHub Pages navigation', () => {
   }
 });
 
+test('each navigation item owns its routes and About is the fallback', () => {
+  for (const base of ['/', '/bernardosevero.dev/']) {
+    expect(getActiveNavigationItem(`${base}posts/example/`, base)).toBe('posts');
+    expect(getActiveNavigationItem(`${base}system/`, base)).toBe('system');
+    expect(getActiveNavigationItem(`${base}about/`, base)).toBe('about');
+    expect(getActiveNavigationItem(`${base}missing/`, base)).toBe('about');
+  }
+});
+
 test('drafts are excluded even when old content requests a preview', () => {
   const entries = [
     { id: 'published', data: { draft: false } },

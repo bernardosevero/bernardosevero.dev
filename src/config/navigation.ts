@@ -15,12 +15,10 @@ export function getActiveNavigationItem(pathname: string, base: string): Navigat
   const relativePath = pathname.startsWith(basePath)
     ? pathname.slice(basePath.length)
     : pathname.replace(/^\/+/, '');
+  const activeItem = navigationItems.find(
+    (item) => item.path !== '' && relativePath.startsWith(item.path),
+  );
 
-  if (relativePath === '' || relativePath === 'about/' || relativePath === 'about') return 'about';
-  if (relativePath.startsWith('projects/')) return 'projects';
-  if (relativePath.startsWith('posts/')) return 'posts';
-  if (relativePath.startsWith('reading/')) return 'books';
-  if (relativePath.startsWith('system/')) return 'system';
-
-  return 'about';
+  // About lives at the site root, so it also covers /about/ and unknown routes.
+  return activeItem?.id ?? 'about';
 }
