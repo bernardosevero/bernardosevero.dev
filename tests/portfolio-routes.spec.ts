@@ -190,6 +190,22 @@ test('shelf tabs support keyboard selection, scrolling, and remembered books', a
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
 });
 
+test('codex fragment links open the linked shelf and book', async ({ page }) => {
+  await page.goto('./reading/#reading-codex-book-machado-de-assis-the-alienist');
+  await expect(page.getByRole('tab', { name: 'reading', exact: true })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(page.getByRole('article', { name: 'The Alienist' })).toBeVisible();
+  await page.goto('./');
+  await page.goto('./reading/#reading-codex-wishlist');
+  await expect(page.getByRole('tab', { name: 'wishlist', exact: true })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(page.getByRole('tabpanel', { name: 'wishlist' })).toBeVisible();
+});
+
 test('post topic filters announce correctly pluralized results', async ({ page }) => {
   await page.goto('./posts/');
   const status = page.locator('[data-filter-status]');
