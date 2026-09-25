@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { profileLinkLabels, toolNames } from './config/character-sheet';
 
 const date = z.coerce.date();
 
@@ -100,10 +101,10 @@ const pages = defineCollection({
       }),
     ),
     specializations: z.array(z.string()),
-    tools: z.array(z.string()),
+    tools: z.array(z.enum(toolNames)),
     links: z.array(
       z.object({
-        label: z.string(),
+        label: z.enum(profileLinkLabels),
         url: z.url(),
       }),
     ),

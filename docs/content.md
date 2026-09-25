@@ -77,6 +77,8 @@ Replace the PDF at the same path to preserve its URL. Review the document for pu
 
 Low-frequency Home and About copy lives in `src/content/pages/`. The schema uses a `kind` discriminator so each page has an explicit contract. Do not move button behavior or layout configuration into prose files.
 
+About `tools` and profile `links` labels must be names listed in `src/config/character-sheet.ts`, which pairs each with its `PixelIcon.astro` artwork. The build rejects unknown names instead of rendering an empty icon tile. To add a tool, draw its icon first, then add its name and icon to that file.
+
 ## Editorial release checklist
 
 - All claims are accurate and safe to publish.
