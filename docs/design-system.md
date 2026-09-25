@@ -36,7 +36,7 @@ Preserve hierarchy, density, proportions, timber, parchment, green actions, gold
 
 | Layer | Location | Owns |
 | --- | --- | --- |
-| Tokens | `src/styles/tokens.css` | Palette, typography families, shared page spacing, frame geometry, shared effects |
+| Tokens | `src/styles/tokens.css` | Palette, typography families, type scale, shared page spacing, frame geometry, shared effects |
 | Foundations and primitives | `src/styles/global.css` | Reset, document defaults, focus, wood frames, parchment, RPG buttons, ornaments, reduced-motion behavior |
 | Components | Component-local `<style>` | A reusable component's internal layout and variants |
 | Routes | `src/styles/*.css` or route-local `<style>` | Cross-component page composition and responsive changes |
@@ -72,7 +72,26 @@ Gold is not body-copy color. Green does not carry state by itself. Every status 
 
 Both fonts are self-hosted through Fontsource. Pixel typography is thematic, not permission to use cramped sizes. Long articles should target a readable line length and may use a future text-optimized token if testing shows it is needed.
 
-Set font sizes in `rem`, including `clamp()` bounds, so text follows the visitor's browser font-size preference; 1rem equals 16px at the default setting. Layout geometry, borders, and pixel-art details stay in `px`.
+#### Type scale
+
+Every font size uses a `--text-*` token. Steps follow the 4px rhythm through 32px, then widen for display headings:
+
+| Token | Size | Typical use |
+| --- | --- | --- |
+| `--text-2xs` | 1rem · 16px | Character Sheet strength and identity labels |
+| `--text-xs` | 1.125rem · 18px | Navigation minimum, book tile titles, timeline periods, project links |
+| `--text-sm` | 1.25rem · 20px | Tags and badges, timeline copy, About prose, phone-size headings |
+| `--text-md` | 1.5rem · 24px | Metadata, topic filters, Codex fact labels, heading and intro minimums |
+| `--text-lg` | 1.75rem · 28px | Body copy (`body` default), card and post title minimums |
+| `--text-xl` | 2rem · 32px | RPG buttons, article subheads, section heading and intro maximums |
+| `--text-2xl` | 2.5rem · 40px | Page and sheet title minimums, card and post title maximums |
+| `--text-3xl` | 3rem · 48px | Codex title and desktop sheet title maximums |
+| `--text-4xl` | 3.75rem · 60px | Character Sheet title maximum |
+| `--text-5xl` | 4.5rem · 72px | Page title maximum |
+
+Fluid headings use two tokens as `clamp()` bounds, for example `clamp(var(--text-md), 3vw, var(--text-xl))`. The tokens are in `rem`, so text follows the visitor's browser font-size preference; layout geometry, borders, and pixel-art details stay in `px`. `npm run lint:css` rejects raw font sizes. Add a step only when no existing step works, and record it here and in the `/system/` type-scale specimen.
+
+When a label column must fit text, size it from the content (for example a shared `max-content` column with `subgrid`) instead of a fixed pixel width tuned to one font size.
 
 ### Space and geometry
 

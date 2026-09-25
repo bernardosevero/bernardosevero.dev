@@ -27,7 +27,7 @@
     margin: 0;
     color: var(--ink);
     font-family: var(--font-body);
-    font-size: 1.75rem;
+    font-size: var(--text-lg);
     line-height: 1.15;
   }
   button {
@@ -204,7 +204,7 @@
     text-transform: uppercase;
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 1.875rem;
+    font-size: var(--text-xl);
     line-height: 1;
     background:
       linear-gradient(90deg, #539f7138, transparent 10% 90%, #2f744e36),

@@ -154,7 +154,7 @@ const topics = [...new Set(posts.flatMap((post) => post.data.topics))].sort();
 
   .post-title-row h2 {
     font-family: var(--font-body);
-    font-size: clamp(1.8125rem, 4vw, 2.625rem);
+    font-size: clamp(var(--text-lg), 4vw, var(--text-2xl));
     font-weight: 400;
     line-height: 1;
   }

@@ -4,6 +4,7 @@ export default {
   rules: {
     // Prettier owns whitespace and blank-line formatting.
     'at-rule-empty-line-before': null,
+    'comment-empty-line-before': null,
     'custom-property-empty-line-before': null,
     'rule-empty-line-before': null,
     // Components use BEM: block, block__element, block--modifier.
@@ -13,6 +14,11 @@ export default {
     ],
     // Flags unrelated selectors that never target the same element.
     'no-descending-specificity': null,
+    // Font sizes come from the --text-* type scale in tokens.css.
+    'declaration-property-value-disallowed-list': [
+      { 'font-size': ['/\\d(px|r?em|pt|%)/'], font: ['/\\d(px|r?em|pt|%)/'] },
+      { message: 'Use a --text-* token from tokens.css for font sizes' },
+    ],
   },
   overrides: [
     {

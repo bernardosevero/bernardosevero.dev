@@ -53,7 +53,7 @@ const activeItem = getActiveNavigationItem(pathname, base);
   .site-navigation__link {
     min-height: 54px;
     padding: 8px 10px;
-    font-size: clamp(1.125rem, 2.2vw, 1.625rem);
+    font-size: clamp(var(--text-xs), 2.2vw, var(--text-lg));
     text-decoration: none;
   }
   .site-navigation__link[data-active='true'] {
