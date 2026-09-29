@@ -9,6 +9,14 @@ const routes = [
     path: 'projects/full-stack-courses-alura/',
     heading: 'Full-stack development courses for beginners',
   },
+  {
+    path: 'projects/dsa-learning/',
+    heading: 'dsa-learning: spaced repetition for coding interviews',
+  },
+  {
+    path: 'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/',
+    heading: 'I kept forgetting LeetCode problems, so I built a spaced-repetition trainer',
+  },
   { path: 'posts/', heading: 'Posts' },
   { path: 'reading/', heading: 'Reading' },
   { path: 'reading/fyodor-dostoevsky-white-nights/', heading: 'White Nights' },
@@ -214,12 +222,12 @@ test('codex fragment links open the linked shelf and book', async ({ page }) => 
 test('post topic filters announce correctly pluralized results', async ({ page }) => {
   await page.goto('./posts/');
   const status = page.locator('[data-filter-status]');
-  const topic = page.getByRole('button', { name: 'AI', exact: true });
+  const topic = page.getByRole('button', { name: 'Design Systems', exact: true });
   await topic.click();
   await expect(topic).toHaveAttribute('aria-pressed', 'true');
-  await expect(status).toHaveText('Showing 1 post tagged AI.');
+  await expect(status).toHaveText('Showing 1 post tagged Design Systems.');
   await page.getByRole('button', { name: 'All', exact: true }).click();
-  await expect(status).toHaveText('Showing 1 post across all topics.');
+  await expect(status).toHaveText('Showing 2 posts across all topics.');
 });
 
 test('books and reviews remain available without JavaScript', async ({ browser, baseURL }) => {
@@ -310,7 +318,9 @@ for (const width of [390, 1586]) {
       'about/',
       'projects/',
       'projects/full-stack-courses-alura/',
+      'projects/dsa-learning/',
       'posts/',
+      'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/',
       'reading/',
       'reading/fyodor-dostoevsky-white-nights/',
     ]) {

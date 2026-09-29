@@ -143,6 +143,14 @@ const { Content } = await render(project);
     color: var(--ink-soft);
   }
 
+  .case-note :global(p + p) {
+    margin-top: 16px;
+  }
+
+  .case-note :global(a) {
+    color: var(--green-dark);
+  }
+
   @media (width <= 640px) {
     .case-facts,
     .case-grid {

@@ -73,8 +73,36 @@ const { Content } = await render(post);
   }
 
   .article-content :global(p + p),
-  .article-content :global(ul + p) {
+  .article-content :global(ul + p),
+  .article-content :global(ol + p) {
     margin-top: 16px;
+  }
+
+  .article-content :global(li + li) {
+    margin-top: 8px;
+  }
+
+  /* Wide tables scroll inside the article instead of widening the page. */
+  .article-content :global(table) {
+    display: block;
+    max-width: 100%;
+    margin-block: 16px;
+    overflow-x: auto;
+    border-collapse: collapse;
+    overflow-wrap: normal;
+  }
+
+  .article-content :global(th),
+  .article-content :global(td) {
+    padding: 6px 10px;
+    border: 2px solid var(--parchment-edge);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .article-content :global(th) {
+    font-family: var(--font-heading);
+    background: var(--parchment-light);
   }
 
   .article-content :global(a) {
