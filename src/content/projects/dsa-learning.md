@@ -35,4 +35,6 @@ lessons: []
 
 dsa-learning grew out of my own interview prep: I kept forgetting problems I had already solved. Before designing it, I read research on skill decay, spacing, retrieval practice, interleaving and self-assessment, and each finding maps to a concrete feature.
 
+You can [open the live application](https://dsa-learning.bernardosevero.dev/) to try it.
+
 I wrote more about the design, the research behind it and how it was built in the post [I kept forgetting LeetCode problems, so I built a spaced-repetition trainer](../../posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/).

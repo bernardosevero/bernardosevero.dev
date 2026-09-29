@@ -11,7 +11,7 @@ outcomes:
 featured: true
 draft: false
 links:
-  - label: "View Alura formation"
+  - label: "View courses"
     url: "https://www.alura.com.br/formacao-full-stack-react-node-js"
   - label: "Frontend repository"
     url: "https://github.com/bernardosevero/alura-books-aulas"

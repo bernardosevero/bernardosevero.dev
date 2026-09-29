@@ -263,7 +263,7 @@ for (const width of [320, 390, 760, 1586]) {
   });
 }
 
-test('Projects list uses repository cards without case-study actions', async ({ page }) => {
+test('Projects list exposes verified destinations without case-study actions', async ({ page }) => {
   await page.goto('./projects/');
   await expect(page.getByRole('link', { name: 'View case study' })).toHaveCount(0);
   await expect(page.locator('.project-list a[href*="/projects/"]')).toHaveCount(0);
@@ -275,20 +275,27 @@ test('Projects list uses repository cards without case-study actions', async ({ 
       exact: false,
     }),
   ).toBeVisible();
-  const aluraLinks = page.getByRole('list', {
+  const courseLinks = page.getByRole('list', {
     name: 'Full-stack development courses for beginners links',
   });
-  await expect(aluraLinks.getByRole('link', { name: /View Alura formation/ })).toHaveAttribute(
+  await expect(courseLinks.getByRole('link', { name: /View courses/ })).toHaveAttribute(
     'href',
     'https://www.alura.com.br/formacao-full-stack-react-node-js',
   );
-  await expect(aluraLinks.getByRole('link', { name: /Frontend repository/ })).toHaveAttribute(
+  await expect(courseLinks.getByRole('link', { name: /Frontend repository/ })).toHaveAttribute(
     'href',
     'https://github.com/bernardosevero/alura-books-aulas',
   );
-  await expect(aluraLinks.getByRole('link', { name: /API repository/ })).toHaveAttribute(
+  await expect(courseLinks.getByRole('link', { name: /API repository/ })).toHaveAttribute(
     'href',
     'https://github.com/bernardosevero/alura-books-server-aulas',
+  );
+  const dsaLinks = page.getByRole('list', {
+    name: 'dsa-learning: spaced repetition for coding interviews links',
+  });
+  await expect(dsaLinks.getByRole('link', { name: /Open the app/ })).toHaveAttribute(
+    'href',
+    'https://dsa-learning.bernardosevero.dev/',
   );
 });
 
@@ -298,11 +305,23 @@ test('case studies omit list sections that have no items', async ({ page }) => {
   await expect(page.locator('.case-study ul:empty')).toHaveCount(0);
 });
 
+test('dsa-learning case study links to the live application', async ({ page }) => {
+  await page.goto('./projects/dsa-learning/');
+  await expect(page.getByRole('link', { name: 'open the live application' })).toHaveAttribute(
+    'href',
+    'https://dsa-learning.bernardosevero.dev/',
+  );
+});
+
 test('Project card specimens expose linked and read-only states', async ({ page }) => {
   await page.goto('./system/');
   await expect(page.getByRole('link', { name: /Source repository/ })).toHaveAttribute(
     'href',
     'https://github.com/bernardosevero/bernardosevero.dev',
+  );
+  await expect(page.getByRole('link', { name: /Live application/ })).toHaveAttribute(
+    'href',
+    'https://dsa-learning.bernardosevero.dev/',
   );
   await expect(page.getByRole('heading', { name: 'Repository unavailable' })).toBeVisible();
   await expect(page.getByRole('link', { name: /Repository unavailable/ })).toHaveCount(0);
