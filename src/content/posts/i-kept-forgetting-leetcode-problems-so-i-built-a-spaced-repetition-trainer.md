@@ -2,7 +2,7 @@
 title: "I kept forgetting LeetCode problems, so I built a spaced-repetition trainer"
 description: "Why I built dsa-learning, a small local-first web app that tells you which NeetCode 150 problem to re-solve today, and the learning research behind its design."
 publishedAt: 2026-09-29
-topics: [Learning, Interview Prep, React, AI]
+topics: [DSA, Learning, Interview Prep, React, AI]
 readingMinutes: 5
 ---
 
