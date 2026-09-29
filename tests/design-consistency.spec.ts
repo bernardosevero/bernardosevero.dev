@@ -51,6 +51,8 @@ for (const width of [320, 390, 760, 1024, 1586]) {
       'posts/building-my-portfolio-with-a-design-system-and-llms/',
       'reading/',
       'projects/full-stack-courses-alura/',
+      'projects/dsa-learning/',
+      'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/',
       'reading/fyodor-dostoevsky-white-nights/',
     ]) {
       // Reading covers are remote and must not delay checks of the local page chrome.
