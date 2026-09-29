@@ -6,10 +6,6 @@ technologies:
   - React
   - TypeScript
   - Vite
-  - React Router
-  - zod
-  - Vitest
-  - Playwright
   - Cloudflare
 outcomes:
   - "Live as a static site on Cloudflare, with no backend or account."
