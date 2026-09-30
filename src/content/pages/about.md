@@ -25,6 +25,7 @@ experience:
   - company: SAP Concur
     role: Software Engineer
     period: February 2022 — Present
+    logo: ./logos/sap-concur.svg
     description: Global enterprise software company; team building tooling and AI features for SAP Concur, its travel and expense management product.
   - company: Alura
     role: Instructor
@@ -34,6 +35,7 @@ experience:
   - company: TAG Livros
     role: Software Engineer
     period: April 2019 — February 2022
+    logo: ./logos/tag-livros.svg
     description: Brazil's largest book-subscription club (e-commerce/subscription commerce), serving 70,000+ members, a consumer brand running its own product-development, fulfillment, and billing operations.
 specializations:
   - React
