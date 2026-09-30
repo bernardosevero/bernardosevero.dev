@@ -8,6 +8,7 @@ import '@fontsource/alegreya/latin-700.css';
 import '../styles/tokens.css';
 import '../styles/global.css';
 import SiteNavigation from '../components/SiteNavigation.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import PostHog from '../components/posthog.astro';
 
 interface Props {
@@ -72,6 +73,7 @@ const socialImageAlt =
       <SiteNavigation pathname={Astro.url.pathname} />
     </div>
     <slot />
+    <SiteFooter />
   </body>
 </html>
 

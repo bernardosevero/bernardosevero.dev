@@ -1,0 +1,329 @@
+---
+import {
+  chapterStatusText,
+  summarizeReading,
+  type ChapterLabels,
+  type OutlineSection,
+} from '../utils/outline';
+
+interface Props {
+  sections: OutlineSection[];
+  readingMinutes: number;
+  /** Static per-section progress for /system/; the preview is not scroll-tracked. */
+  previewProgress?: number[];
+}
+
+const { sections, readingMinutes, previewProgress } = Astro.props;
+
+// UI strings stay here so translation (#5) can move them in one place; the script reads them from data attributes.
+const CONTENTS_LABEL = 'Contents';
+const labels: ChapterLabels = { of: 'of', minLeft: 'min left', finished: 'Finished' };
+
+const preview = previewProgress !== undefined;
+const progress = previewProgress ?? sections.map(() => 0);
+const reading = summarizeReading(
+  sections.map((section) => section.words),
+  progress,
+  readingMinutes,
+);
+const status = chapterStatusText(reading, sections.length, labels);
+const titleSection = sections[reading.current ?? 0];
+---
+
+{sections.length >= 2 && titleSection && (
+  <details
+    class="chapter-bar"
+    data-chapter-bar
+    data-preview={preview ? '' : undefined}
+    data-reading-minutes={readingMinutes}
+    data-label-of={labels.of}
+    data-label-min-left={labels.minLeft}
+    data-label-finished={labels.finished}
+  >
+    <summary>
+      <span class="chapter-bar__row">
+        <span class="chapter-bar__status" data-chapter-status hidden={!preview}>
+          <span class="chapter-bar__heading">
+            <span class="chapter-bar__marker" aria-hidden="true" />
+            <span class="chapter-bar__title" data-chapter-title>
+              {titleSection.text}
+            </span>
+          </span>
+          <span class="chapter-bar__position" data-chapter-position>
+            {status.position}
+          </span>
+          <span class="chapter-bar__remaining" data-chapter-remaining>
+            {status.remaining}
+          </span>
+        </span>
+        <span class="chapter-bar__label">{CONTENTS_LABEL}</span>
+        <svg class="chapter-bar__chevron" viewBox="0 0 12 8" aria-hidden="true">
+          <path d="M1 1.5 6 6.5 11 1.5" />
+        </svg>
+      </span>
+      <span
+        class="chapter-bar__segments"
+        data-chapter-segments
+        aria-hidden="true"
+        hidden={!preview}
+      >
+        {sections.map((section, index) => (
+          <span
+            class="chapter-bar__segment"
+            data-chapter-segment
+            data-current={index === reading.current ? '' : undefined}
+            style={`--words: ${section.words}; --progress: ${progress[index]}`}
+          >
+            <span class="chapter-bar__fill" />
+          </span>
+        ))}
+      </span>
+    </summary>
+    <nav class="chapter-bar__panel" aria-label={CONTENTS_LABEL}>
+      <ol>
+        {sections.map((section, index) => (
+          <li style={`--progress: ${progress[index]}`}>
+            <span class="chapter-bar__marker" aria-hidden="true" />
+            <a
+              href={`#${section.slug}`}
+              data-chapter-link
+              data-words={section.words}
+              aria-current={index === reading.current ? 'location' : undefined}
+            >
+              {section.text}
+            </a>
+            <span class="chapter-bar__row-track" aria-hidden="true">
+              <span class="chapter-bar__fill" />
+            </span>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </details>
+)}
+
+<script>
+  import '../scripts/chapter-bar';
+</script>
+
+<style>
+  .chapter-bar {
+    /* Unfilled track shared by strip segments and Contents rows. */
+    --chapter-track: #d8bb7c;
+
+    position: sticky;
+    top: 12px;
+    z-index: 3;
+    max-width: 68ch;
+    margin-inline: auto;
+    font-family: var(--font-text);
+    /* The same size as .prose, so 68ch here matches the prose column exactly. */
+    font-size: var(--prose-size);
+  }
+
+  summary {
+    display: grid;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 3px solid var(--wood-dark);
+    background: var(--surface-wood);
+    box-shadow: var(--wood-bevel);
+    color: var(--on-green);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 4px;
+  }
+
+  .chapter-bar__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .chapter-bar__status {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    min-width: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: 1.1;
+  }
+
+  .chapter-bar__status[hidden] {
+    display: none;
+  }
+
+  .chapter-bar__heading {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .chapter-bar__title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .chapter-bar__position {
+    opacity: 0.75;
+  }
+
+  .chapter-bar__remaining {
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .chapter-bar__label {
+    margin-left: auto;
+    font-family: var(--font-heading);
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .chapter-bar__status:not([hidden]) + .chapter-bar__label {
+    margin-left: 0;
+  }
+
+  .chapter-bar__chevron {
+    flex: none;
+    width: 12px;
+    height: 8px;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 2;
+  }
+
+  .chapter-bar[open] .chapter-bar__chevron {
+    transform: rotate(180deg);
+  }
+
+  .chapter-bar__marker {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    outline: 2px solid var(--wood-dark);
+    transform: rotate(45deg);
+  }
+
+  .chapter-bar__segments {
+    display: flex;
+    gap: 4px;
+  }
+
+  .chapter-bar__segments[hidden] {
+    display: none;
+  }
+
+  .chapter-bar__segment,
+  .chapter-bar__row-track {
+    position: relative;
+    height: 12px;
+    border: 2px solid var(--wood-dark);
+    background: var(--chapter-track);
+  }
+
+  .chapter-bar__segment {
+    flex: var(--words) 1 0;
+    min-width: 6px;
+  }
+
+  .chapter-bar__segment[data-current] {
+    border-color: var(--gold);
+  }
+
+  .chapter-bar__fill {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: calc(var(--progress, 0) * 100%);
+    background:
+      repeating-linear-gradient(90deg, transparent 0 6px, #2e704d66 6px 8px), var(--green);
+    box-shadow: inset 0 2px var(--green-light);
+    transition: width 120ms linear;
+  }
+
+  .chapter-bar__panel {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 8px);
+    padding: 12px 14px;
+    border: 3px solid var(--wood-dark);
+    background: var(--parchment-light);
+    box-shadow: var(--frame-shadow);
+  }
+
+  .chapter-bar__panel ol {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chapter-bar__panel li {
+    display: grid;
+    grid-template-columns: 14px minmax(0, 1fr) 180px;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .chapter-bar__panel li > .chapter-bar__marker {
+    visibility: hidden;
+    justify-self: center;
+  }
+
+  .chapter-bar__panel li:has([aria-current='location']) > .chapter-bar__marker {
+    visibility: visible;
+  }
+
+  .chapter-bar__panel a {
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: 1.1;
+  }
+
+  .chapter-bar__panel a[aria-current='location'] {
+    color: var(--ink);
+  }
+
+  .chapter-bar[data-preview] {
+    position: relative;
+    top: 0;
+  }
+
+  .chapter-bar__panel a:focus-visible {
+    outline-offset: 2px;
+  }
+
+  @media (width < 520px) {
+    .chapter-bar__panel li {
+      grid-template-columns: 14px minmax(0, 1fr);
+    }
+
+    .chapter-bar__row-track {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chapter-bar__fill {
+      transition: none;
+    }
+  }
+</style>

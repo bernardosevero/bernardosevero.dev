@@ -5,6 +5,7 @@ import { isVisibleContent } from '../src/utils/content';
 import { companyMonogram, formatCalendarDate, formatCount } from '../src/utils/format';
 import { getActiveNavigationItem } from '../src/config/navigation';
 import { selectProjectImage } from '../src/utils/project-image';
+import { chapterStatusText, outlineSections, summarizeReading } from '../src/utils/outline';
 
 test('base paths preserve root and GitHub Pages navigation', () => {
   for (const path of ['/', '/bernardosevero.dev', '/bernardosevero.dev/']) {
@@ -84,4 +85,68 @@ test('project images prefer the added image, then og:image, then the default', (
     source: 'default',
   });
   expect(selectProjectImage('plain', undefined, new Map(), fallback).source).toBe('default');
+});
+
+test('post outlines pair each ## section with its heading and word count', () => {
+  const markdown = [
+    'Intro words are not a section.',
+    '',
+    '## First part',
+    'one two three',
+    '### A subheading',
+    'four',
+    '## Second part',
+    '```md',
+    '## not a heading inside a fence',
+    '```',
+    'five',
+  ].join('\n');
+  const headings = [
+    { depth: 2, slug: 'first-part', text: 'First part' },
+    { depth: 3, slug: 'a-subheading', text: 'A subheading' },
+    { depth: 2, slug: 'second-part', text: 'Second part' },
+  ];
+
+  expect(outlineSections(markdown, headings)).toEqual([
+    { slug: 'first-part', text: 'First part', words: 7 },
+    { slug: 'second-part', text: 'Second part', words: 10 },
+  ]);
+  expect(outlineSections('Just an introduction.\n\n### Minor', [])).toEqual([]);
+  expect(() => outlineSections('## One\ntext', [])).toThrow(/Outline mismatch/);
+});
+
+test('reading progress is word-weighted and names the section being read', () => {
+  expect(summarizeReading([100, 300], [0, 0], 4)).toEqual({
+    percent: 0,
+    minutesLeft: 4,
+    current: undefined,
+  });
+  expect(summarizeReading([100, 300], [1, 0.5], 4)).toEqual({
+    percent: 63,
+    minutesLeft: 2,
+    current: 1,
+  });
+  expect(summarizeReading([100, 300], [1, 1], 4)).toEqual({
+    percent: 100,
+    minutesLeft: 0,
+    current: 1,
+  });
+  expect(summarizeReading([0, 0], [1, 0], 2).percent).toBe(50);
+  expect(summarizeReading([10], [1.4], 1).percent).toBe(100);
+  expect(() => summarizeReading([10, 20], [1], 1)).toThrow(/Expected 2/);
+});
+
+test('chapter status labels show position, time left, and completion', () => {
+  const labels = { of: 'of', minLeft: 'min left', finished: 'Finished' };
+  expect(chapterStatusText({ percent: 0, minutesLeft: 4, current: undefined }, 6, labels)).toEqual({
+    position: '· 0 of 6',
+    remaining: '0% · 4 min left',
+  });
+  expect(chapterStatusText({ percent: 30, minutesLeft: 3, current: 1 }, 6, labels)).toEqual({
+    position: '· 2 of 6',
+    remaining: '30% · 3 min left',
+  });
+  expect(chapterStatusText({ percent: 100, minutesLeft: 0, current: 5 }, 6, labels).remaining).toBe(
+    '100% · Finished',
+  );
 });

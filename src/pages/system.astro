@@ -7,10 +7,13 @@ import CvDownloadLink from '../components/CvDownloadLink.astro';
 import { cvAsset } from '../config/cv';
 import WoodFrame from '../components/WoodFrame.astro';
 import SiteNavigation from '../components/SiteNavigation.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import BookTile from '../components/BookTile.astro';
 import BookRating from '../components/BookRating.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { defaultProjectImage } from '../utils/project-images';
+import ChapterBar from '../components/ChapterBar.astro';
+import type { OutlineSection } from '../utils/outline';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
 import '../styles/portfolio.css';
 
@@ -47,6 +50,13 @@ const typeScale = [
   { token: '--text-4xl', size: '3.75rem · 60px' },
   { token: '--text-5xl', size: '4.5rem · 72px' },
 ];
+// A static outline keeps the chapter bar specimen independent of editorial posts.
+const specimenOutline: OutlineSection[] = [
+  { slug: 'specimen-problem', text: 'The problem', words: 180 },
+  { slug: 'specimen-approach', text: 'The approach', words: 420 },
+  { slug: 'specimen-lessons', text: 'Lessons', words: 120 },
+];
+
 const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/9780241619780';
 ---
 
@@ -237,6 +247,20 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               </p>
             </article>
             <article>
+              <h3>Chapter bar</h3>
+              <div class="chapter-bar-specimen">
+                <ChapterBar
+                  sections={specimenOutline}
+                  readingMinutes={5}
+                  previewProgress={[1, 0.5, 0]}
+                />
+              </div>
+              <p>
+                Closed strip halfway through the second of three sections. On posts it sticks above
+                the prose and tracks scrolling; this static preview does not.
+              </p>
+            </article>
+            <article>
               <h3>Book tiles</h3>
               <div class="book-tile-specimens">
                 <BookTile title="White Nights" coverSrc={specimenCoverUrl} />
@@ -283,6 +307,13 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
                 Collection metadata uses the same concise labels across project, post, and reading
                 routes.
               </p>
+            </article>
+            <article>
+              <h3>Site footer</h3>
+              <div class="footer-specimen">
+                <SiteFooter />
+              </div>
+              <p>The shared author credit follows the main content on every page.</p>
             </article>
             <article>
               <h3>Topic filters</h3>
@@ -483,6 +514,10 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
     padding: 16px 4px;
+  }
+  .footer-specimen {
+    padding-top: 24px;
+    background: var(--backdrop);
   }
   .system-page :global(.frame-surface) {
     height: auto;

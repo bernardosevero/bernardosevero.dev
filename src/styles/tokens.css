@@ -13,6 +13,29 @@
       radial-gradient(ellipse at 7% 100%, #c49c4e30, transparent 38%),
       radial-gradient(ellipse at 100% 0%, #fff4c84d, transparent 42%),
       repeating-linear-gradient(0deg, #9b754b04 0 2px, transparent 2px 4px), var(--parchment);
+    --surface-wood:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 4px,
+        #32170e30 4px 7px,
+        transparent 7px 15px,
+        #bf8d5126 15px 18px,
+        transparent 18px 28px
+      ),
+      repeating-linear-gradient(
+        177deg,
+        transparent 0 9px,
+        #30180e30 10px 12px,
+        transparent 13px 23px
+      ),
+      repeating-linear-gradient(
+        2deg,
+        transparent 0 23px,
+        #42211440 24px 27px,
+        transparent 29px 61px
+      ),
+      linear-gradient(90deg, #59321f, #845333 20%, #704126 64%, #53301e);
+    --wood-bevel: inset 0 3px #ab794c, inset 3px 0 #a06b3f, inset -3px -3px #241910;
     --ornament: #a7884f;
     --backdrop: #45634c;
     --wood-dark: #321b10;
@@ -41,6 +64,7 @@
     --text-3xl: 3rem;
     --text-4xl: 3.75rem;
     --text-5xl: 4.5rem;
+    --prose-size: clamp(var(--text-sm), 2.5vw, var(--text-md));
     --page-width: 1160px;
     --page-top-space: clamp(18px, 3vw, 40px);
     --page-section-gap: 28px;

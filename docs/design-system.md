@@ -77,7 +77,7 @@ All fonts are self-hosted through Fontsource, with their SIL Open Font License t
 
 #### Long-form prose
 
-`.prose` in `src/styles/global.css` (`@layer components`) is the single owner of long-form reading styles; it wraps the rendered Markdown on post articles and book reviews. It sets a `68ch` measure (in the text face), `clamp(var(--text-sm), 2.5vw, var(--text-md))` size, 1.6 line height, and 0.8em spacing between blocks, and adds no type-scale token. Pixel accents: `h2` in `--font-heading` with diamond ornaments, wood diamond bullets, wood numbered badges, pixel table headers, inline `code` in `--font-body`, and a centered italic pull quote with ornament rules. There is no drop cap. Descendant rules use `:where()` so routes can refine them; routes keep only page composition (for example the top margin). `/system/` lists Alegreya as a font card (name and short description) under Typography, like the other faces.
+`.prose` in `src/styles/global.css` (`@layer components`) is the single owner of long-form reading styles; it wraps the rendered Markdown on post articles and book reviews. It sets a `68ch` measure (in the text face), the `--prose-size` token (`clamp(var(--text-sm), 2.5vw, var(--text-md))`), 1.6 line height, and 0.8em spacing between blocks, and adds no type-scale token. Pixel accents: `h2` in `--font-heading` with diamond ornaments, wood diamond bullets, wood numbered badges, pixel table headers, inline `code` in `--font-body`, and a centered italic pull quote with ornament rules. There is no drop cap. Descendant rules use `:where()` so routes can refine them; routes keep only page composition (for example the top margin). `/system/` lists Alegreya as a font card (name and short description) under Typography, like the other faces.
 
 #### Type scale
 
@@ -112,7 +112,7 @@ Not every dimension must become a token. Promote a value when it represents a re
 
 ### WoodFrame
 
-`WoodFrame.astro` provides the timber surround, corner hardware, and optional parchment surface. Use it for primary RPG windows, not every content card. Nested frames should be rare so the hierarchy remains obvious.
+`WoodFrame.astro` provides the timber surround, corner hardware, and optional parchment surface. Its timber material is the `--surface-wood` background plus the `--wood-bevel` inset highlights (tokens.css), which other dark-wood strips reuse instead of copying the gradients. Use it for primary RPG windows, not every content card. Nested frames should be rare so the hierarchy remains obvious.
 
 The Components and States section on `/system/` includes a live timber-only specimen alongside the parchment-backed production windows that structure the page.
 
@@ -139,6 +139,20 @@ Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green act
 ### Project card
 
 `ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified course pages, source repositories, and live applications without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Summaries use the text face (`--font-text`, 70ch measure, 1.55 line height); titles and link actions stay pixel. Each card shows one decorative image (`alt=""`, not a link) in a timber frame at a 1200:630 ratio: beside the text in a `304px` column when the card is wider than 600px (a container query, so `/system/` cells and tablets stack), otherwise full width above the title. The image is chosen by `resolveProjectImage` in `src/utils/project-images.ts`, first match wins: the entry's own `image`, then its saved og:image in `src/assets/projects/og/`, then `src/assets/projects/default.webp`. The frame exposes the choice as `data-image-source` (`added`, `og`, or `default`). `/system/` specimens pass the default image. Project list cards do not show technology tags or case-study labels. Draft entries are excluded in all environments; cards have no draft-preview state.
+
+### Chapter bar
+
+`ChapterBar.astro` (with `src/scripts/chapter-bar.ts`) is the reading tracker on posts. It renders only when a post has at least two `##` sections; book reviews and shorter posts get nothing. `posts/[slug].astro` builds the outline at build time with `outlineSections()` in `src/utils/outline.ts`, which pairs Astro's rendered `headings` (never hand-made slugs) with per-section word counts, so segment sizes are in the HTML with no layout shift.
+
+- It is a native `<details>` placed directly above `.prose`, with the same `68ch` measure (it shares `--prose-size` so `ch` matches), `position: sticky; top: 12px` inside the article wrapper so it scrolls away when the article ends.
+- The `<summary>` strip uses `--surface-wood` and `--wood-bevel`: current section, `· 2 of 6`, `30% · 4 min left` (or `Finished`), the `Contents` label, and one segment per section sized by word count and filled in green as you read. The current segment has a gold border.
+- The open panel overlays the prose with one link per section; the current link has `aria-current="location"`. Activating a link closes the panel; Escape closes it and returns focus to the summary. The script measures the strip so headings reached from Contents land below it.
+- Without JavaScript, the strip shows only `Contents` and a chevron, and the disclosure still opens a working list of heading links. The script reveals the status and segments; if markup is missing it throws before enhancing, leaving that native disclosure usable.
+- A section's progress is how far a reading line, 30% down the viewport, has moved from its heading to the next heading (or the end of the prose). In the last viewport-height of scrolling the line slides to the viewport bottom so the final sections can reach 100% and show `Finished`.
+- Progress updates run in a `requestAnimationFrame`-throttled passive scroll/resize listener, with no live-region announcements. Fill width transitions are disabled under reduced motion.
+- The four UI strings (`Contents`, `of`, `min left`, `Finished`) are constants in the component for translation.
+
+`/system/` shows a closed static preview (`previewProgress`) from a fixed three-section outline; it is not scroll-tracked.
 
 ### Ornaments
 
@@ -223,7 +237,7 @@ The public route must import real production components and read computed CSS va
 
 `tests/design-consistency.spec.ts` enforces the shared geometry, material styles, background layers, keyboard-accessible navigation, and isolated specimen layout at 320, 390, 760, 1024, and 1586 pixels. Extend its route matrix for new content routes and its assertions for new shared primitives. Never weaken assertions to accept drift; intentional contract changes require user direction and matching documentation. GitHub Actions gates deployment on formatting, CSS linting, type checking, production builds, and browser tests; screenshot review remains required for visual changes.
 
-All content routes share `--page-width` (1160px), `--page-top-space`, and `--page-section-gap`. `BaseLayout` owns the top navigation; `portfolio.css` owns the common backdrop and content shell. About's former side navigation is intentionally replaced by this shared bar. Books has no background opacity or width override. Codex frames inherit the global timber thickness, and their parchment uses `--surface-parchment`, the same material as `WoodFrame`.
+All content routes share `--page-width` (1160px), `--page-top-space`, and `--page-section-gap`. `BaseLayout` owns the top navigation and `SiteFooter`, which follows the main content with the author credit and no social icons. `portfolio.css` owns the common backdrop and content shell, including the 24px gap before the footer; the footer owns its responsive bottom padding. About's former side navigation is intentionally replaced by this shared bar. Books has no background opacity or width override. Codex frames inherit the global timber thickness, and their parchment uses `--surface-parchment`, the same material as `WoodFrame`.
 
 Do not add route-local menus, side rails, positioned navigation, compensating offsets, or overrides of backdrop opacity, timber thickness, and outer panel width. Production navigation remains real links with exactly one current item.
 
