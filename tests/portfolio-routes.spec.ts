@@ -399,8 +399,114 @@ test('project cards show one decorative image beside the text on desktop and abo
   await expect(
     cardFor('Full-stack development courses for beginners').locator('[data-image-source]'),
   ).toHaveAttribute('data-image-source', 'default');
-  await expect(cards.locator('.project-card__image a')).toHaveCount(0);
   expect(failures).toEqual([]);
+});
+
+const imageLinkDestinations = [
+  {
+    title: 'dsa-learning: spaced repetition for coding interviews',
+    href: 'https://dsa-learning.bernardosevero.dev/',
+  },
+  {
+    title: 'Full-stack development courses for beginners',
+    href: 'https://www.alura.com.br/formacao-full-stack-react-node-js',
+  },
+];
+
+test('project card images link to the main destination without adding a focus stop', async ({
+  page,
+}) => {
+  await page.goto('./projects/');
+  const cards = page.locator('.project-card');
+  for (const destination of imageLinkDestinations) {
+    const imageLink = cards
+      .filter({ has: page.getByRole('heading', { name: destination.title }) })
+      .locator('.project-card__image a');
+    await expect(imageLink).toHaveCount(1);
+    await expect(imageLink).toHaveAttribute('href', destination.href);
+    await expect(imageLink).toHaveAttribute('tabindex', '-1');
+    await expect(imageLink).toHaveAttribute('aria-hidden', 'true');
+    expect(await imageLink.getAttribute('target')).toBeNull();
+    await expect(imageLink.locator('img')).toHaveAttribute('alt', '');
+  }
+
+  // Resolve tokens through a probe so they compare with computed rgb() border colors.
+  const tokenColor = (token: string) =>
+    page.evaluate((name) => {
+      const probe = document.createElement('span');
+      probe.style.color = `var(${name})`;
+      document.body.append(probe);
+      const color = getComputedStyle(probe).color;
+      probe.remove();
+      return color;
+    }, token);
+  const frame = cards.first().locator('.project-card__image');
+  const frameBorder = () => frame.evaluate((element) => getComputedStyle(element).borderTopColor);
+  expect(await frameBorder()).toBe(await tokenColor('--wood-dark'));
+  await frame.locator('a').hover();
+  expect(await frameBorder()).toBe(await tokenColor('--gold'));
+  expect(await frame.locator('a').evaluate((link) => getComputedStyle(link).cursor)).toBe(
+    'pointer',
+  );
+  await page.mouse.move(0, 0);
+
+  const listedLinks = await page
+    .locator('.project-card__links a')
+    .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+  expect(listedLinks.length).toBeGreaterThan(0);
+
+  // Tab from the page start until focus leaves the project list, recording each stop inside it.
+  const stops: Array<{ href: string | null; listed: boolean }> = [];
+  for (let press = 0; press < 100; press += 1) {
+    await page.keyboard.press('Tab');
+    const stop = await page.evaluate(() => {
+      const active = document.activeElement;
+      if (!active?.closest('.project-list')) return undefined;
+      return {
+        href: active.getAttribute('href'),
+        listed: active.matches('.project-card__links a'),
+      };
+    });
+    if (stop) stops.push(stop);
+    else if (stops.length > 0) break;
+  }
+  expect(stops.every((stop) => stop.listed)).toBe(true);
+  expect(stops.map((stop) => stop.href)).toEqual(listedLinks);
+});
+
+test('project card image links report the image trigger to analytics', async ({ page }) => {
+  await page.addInitScript(() => {
+    const captured: Array<{ event: string; properties?: Record<string, unknown> }> = [];
+    Object.assign(window, {
+      capturedEvents: captured,
+      posthog: {
+        capture: (event: string, properties?: Record<string, unknown>) => {
+          captured.push({ event, properties });
+        },
+      },
+    });
+    // Keep clicks on the local page; the capture runs before this document-level listener.
+    document.addEventListener('click', (event) => event.preventDefault());
+  });
+  await page.goto('./projects/');
+  const card = page.locator('.project-card').filter({
+    has: page.getByRole('heading', { name: imageLinkDestinations[0].title }),
+  });
+  await card.locator('.project-card__image a').click();
+  await card.getByRole('link', { name: /Open the app/ }).click();
+  const events = await page.evaluate(() =>
+    'capturedEvents' in window ? window.capturedEvents : undefined,
+  );
+  expect(events).toEqual([
+    {
+      event: 'project_destination_opened',
+      properties: { destination_type: 'live_application', trigger: 'image' },
+    },
+    {
+      event: 'project_destination_opened',
+      properties: { destination_type: 'live_application', trigger: 'link' },
+    },
+  ]);
 });
 
 test('Projects list exposes verified destinations without case-study actions', async ({ page }) => {
@@ -456,7 +562,39 @@ test('Project card specimens expose linked and read-only states', async ({ page 
   );
   await expect(page.getByRole('heading', { name: 'Repository unavailable' })).toBeVisible();
   await expect(page.getByRole('link', { name: /Repository unavailable/ })).toHaveCount(0);
+  const specimens = page.locator('.project-card');
+  const linkedImage = specimens
+    .filter({ has: page.getByRole('heading', { name: 'Portfolio source' }) })
+    .locator('.project-card__image a');
+  await expect(linkedImage).toHaveAttribute('href', 'https://dsa-learning.bernardosevero.dev/');
+  await expect(linkedImage).toHaveAttribute('tabindex', '-1');
+  await expect(linkedImage).toHaveAttribute('aria-hidden', 'true');
+  const readOnlyImage = specimens
+    .filter({ has: page.getByRole('heading', { name: 'Repository unavailable' }) })
+    .locator('.project-card__image img');
+  await expect(readOnlyImage).toHaveCount(1);
+  expect(await readOnlyImage.evaluate((image) => image.closest('a') === null)).toBe(true);
 });
+
+for (const width of [390, 1586]) {
+  test(`hidden project image links stay out of the focus order for axe at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 992 });
+    for (const path of ['projects/', 'system/']) {
+      await page.goto(`./${path}`, { waitUntil: 'domcontentloaded' });
+      await expect(
+        page.locator('.project-card__image a[aria-hidden="true"]').first(),
+      ).toBeVisible();
+      const accessibility = await new AxeBuilder({ page })
+        .include('.project-card')
+        .withRules(['aria-hidden-focus'])
+        .analyze();
+      expect(accessibility.violations).toEqual([]);
+      expect(accessibility.passes.map((rule) => rule.id)).toContain('aria-hidden-focus');
+    }
+  });
+}
 
 const proseRoutes = [
   {
