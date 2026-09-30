@@ -4,13 +4,13 @@ Use the [design system](../design-system.md) for current UI work.
 
 ## Scope
 
-About, Projects, Posts, and Reading are implemented as static Astro routes using the shared village scenery, `WoodFrame`, `Ornament`, RPG controls, and portfolio route composition in `src/styles/portfolio.css`.
+About, Projects, Blog (`/posts/`), and Reading are implemented as static Astro routes using the shared village scenery, `WoodFrame`, `Ornament`, RPG controls, and portfolio route composition in `src/styles/portfolio.css`.
 
 ## Content availability
 
 - About reads `src/content/pages/about.md`.
 - Projects reads non-draft entries in `src/content/projects/`; only résumé-supported project facts are published.
-- Posts reads non-draft entries in `src/content/posts/`. No posts existed when this route was implemented, so the index presents an honest empty state.
+- Blog (`/posts/`) reads non-draft entries in `src/content/posts/`. No posts existed when this route was implemented, so the index presents an honest empty state.
 - Reading reads non-draft book metadata from the single `src/content/books.json` catalog, including supplied ratings, ISBNs, and verified edition covers. Full reviews live in matching `src/content/book-reviews/<book-id>.md` files. Empty shelves retain an honest empty state.
 
 Dynamic post and project routes are generated only for non-draft entries. The layouts are therefore ready without exposing placeholder articles or case studies.
