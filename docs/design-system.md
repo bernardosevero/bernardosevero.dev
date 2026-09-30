@@ -184,7 +184,6 @@ Write queries in range syntax (`width <= 520px`, `width > 820px`) so adjacent ra
 | --- | --- | --- |
 | Viewport | `<= 520px` | Phone density: tighter panel padding, smaller headings and icons |
 | Viewport | `<= 560px` | Outer shell: page and navigation side gutters shrink to 8px |
-| Viewport | `<= 640px` | Case-study fact and content grids stack |
 | Viewport | `<= 760px` | `/system/` specimen grid switches to auto-fit columns |
 | Viewport | `> 820px`, `<= 1200px`, `<= 1080px` | Character Sheet: desktop spacing, one stacked column, then compact identity and tag sizing |
 | Container | `<= 850px`, `<= 650px` | Reading Codex: three-column shelf, then two columns with stacked panels |

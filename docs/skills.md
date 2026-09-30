@@ -4,7 +4,7 @@ Two personal Codex skills support this repository. They live in the user's Codex
 
 ## `$add-project`
 
-Use `$add-project` with a real title and desired slug. The skill finds this repository, runs the safe project scaffolder, and reports the created draft. It never overwrites an existing file and leaves factual fields as explicit prompts rather than inventing a case study.
+Use `$add-project` with a real title and desired slug. The skill finds this repository, runs the safe project scaffolder, and reports the created draft. It never overwrites an existing file and leaves factual fields as explicit prompts rather than inventing case-study notes (these fields are kept for the owner's records and are not published).
 
 Equivalent command:
 

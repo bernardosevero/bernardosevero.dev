@@ -33,7 +33,7 @@ Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md
 | --- | --- |
 | `/`, `/about/` | Shared Character Sheet: profile, experience, specialties, tools, contact |
 | `/posts/`, `/posts/[slug]/` | Journal index with topic filters and individual articles |
-| `/projects/`, `/projects/[slug]/` | Quest Log and case studies: problem, constraints, decisions, contribution, outcome, lessons |
+| `/projects/` | Quest Log list; cards link directly to live apps, courses, and repositories. There are no project detail pages |
 | `/reading/` | Reading Codex: reading, finished, wishlist, optional ratings/reviews |
 | `/reading/[slug]/` | Review for a visible book with nonempty Markdown |
 | `/system/` | Live inventory of production tokens, components, and states |
