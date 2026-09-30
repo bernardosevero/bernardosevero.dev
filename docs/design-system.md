@@ -77,7 +77,7 @@ All fonts are self-hosted through Fontsource, with their SIL Open Font License t
 
 #### Long-form prose
 
-`.prose` in `src/styles/global.css` (`@layer components`) is the single owner of long-form reading styles; it wraps the rendered Markdown on post articles and book reviews. It sets a `68ch` measure (in the text face), `clamp(var(--text-sm), 2.5vw, var(--text-md))` size, 1.6 line height, and 0.8em spacing between blocks, and adds no type-scale token. Pixel accents: `h2` in `--font-heading` with diamond ornaments, wood diamond bullets, wood numbered badges, pixel table headers, inline `code` in `--font-body`, and a centered italic pull quote with ornament rules. There is no drop cap. Descendant rules use `:where()` so routes can refine them; routes keep only page composition (for example the top margin). `/system/` shows a static specimen under Typography.
+`.prose` in `src/styles/global.css` (`@layer components`) is the single owner of long-form reading styles; it wraps the rendered Markdown on post articles and book reviews. It sets a `68ch` measure (in the text face), `clamp(var(--text-sm), 2.5vw, var(--text-md))` size, 1.6 line height, and 0.8em spacing between blocks, and adds no type-scale token. Pixel accents: `h2` in `--font-heading` with diamond ornaments, wood diamond bullets, wood numbered badges, pixel table headers, inline `code` in `--font-body`, and a centered italic pull quote with ornament rules. There is no drop cap. Descendant rules use `:where()` so routes can refine them; routes keep only page composition (for example the top margin). `/system/` lists Alegreya as a font card (name and short description) under Typography, like the other faces.
 
 #### Type scale
 
