@@ -11,6 +11,8 @@ import SiteFooter from '../components/SiteFooter.astro';
 import BookTile from '../components/BookTile.astro';
 import BookRating from '../components/BookRating.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import ChapterBar from '../components/ChapterBar.astro';
+import type { OutlineSection } from '../utils/outline';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
 import '../styles/portfolio.css';
 
@@ -47,6 +49,13 @@ const typeScale = [
   { token: '--text-4xl', size: '3.75rem · 60px' },
   { token: '--text-5xl', size: '4.5rem · 72px' },
 ];
+// A static outline keeps the chapter bar specimen independent of editorial posts.
+const specimenOutline: OutlineSection[] = [
+  { slug: 'specimen-problem', text: 'The problem', words: 180 },
+  { slug: 'specimen-approach', text: 'The approach', words: 420 },
+  { slug: 'specimen-lessons', text: 'Lessons', words: 120 },
+];
+
 const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/9780241619780';
 ---
 
@@ -229,6 +238,20 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               </div>
               <p>
                 Multi-link and read-only states share the same hierarchy with explicit destinations.
+              </p>
+            </article>
+            <article>
+              <h3>Chapter bar</h3>
+              <div class="chapter-bar-specimen">
+                <ChapterBar
+                  sections={specimenOutline}
+                  readingMinutes={5}
+                  previewProgress={[1, 0.5, 0]}
+                />
+              </div>
+              <p>
+                Closed strip halfway through the second of three sections. On posts it sticks above
+                the prose and tracks scrolling; this static preview does not.
               </p>
             </article>
             <article>
