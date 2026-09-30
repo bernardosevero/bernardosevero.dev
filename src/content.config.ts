@@ -20,31 +20,33 @@ const posts = defineCollection({
 
 const projects = defineCollection({
   loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
-    title: z.string(),
-    summary: z.string(),
-    role: z.string(),
-    technologies: z.array(z.string()).default([]),
-    outcomes: z.array(z.string()).default([]),
-    featured: z.boolean().default(false),
-    draft: z.boolean().default(true),
-    publishedAt: date.optional(),
-    repositoryUrl: z.url().optional(),
-    liveUrl: z.url().optional(),
-    links: z
-      .array(
-        z.object({
-          label: z.string(),
-          url: z.url(),
-        }),
-      )
-      .default([]),
-    problem: z.string(),
-    constraints: z.array(z.string()).default([]),
-    decisions: z.array(z.string()).default([]),
-    contribution: z.string(),
-    lessons: z.array(z.string()).default([]),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      summary: z.string(),
+      image: image().optional(),
+      role: z.string(),
+      technologies: z.array(z.string()).default([]),
+      outcomes: z.array(z.string()).default([]),
+      featured: z.boolean().default(false),
+      draft: z.boolean().default(true),
+      publishedAt: date.optional(),
+      repositoryUrl: z.url().optional(),
+      liveUrl: z.url().optional(),
+      links: z
+        .array(
+          z.object({
+            label: z.string(),
+            url: z.url(),
+          }),
+        )
+        .default([]),
+      problem: z.string(),
+      constraints: z.array(z.string()).default([]),
+      decisions: z.array(z.string()).default([]),
+      contribution: z.string(),
+      lessons: z.array(z.string()).default([]),
+    }),
 });
 
 const books = defineCollection({

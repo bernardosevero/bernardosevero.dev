@@ -4,6 +4,7 @@ import { normalizeBasePath } from '../src/utils/paths';
 import { isVisibleContent } from '../src/utils/content';
 import { companyMonogram, formatCalendarDate, formatCount } from '../src/utils/format';
 import { getActiveNavigationItem } from '../src/config/navigation';
+import { selectProjectImage } from '../src/utils/project-image';
 import { chapterStatusText, outlineSections, summarizeReading } from '../src/utils/outline';
 
 test('base paths preserve root and GitHub Pages navigation', () => {
@@ -62,6 +63,28 @@ test('company monograms use the first letter of up to three words', () => {
   expect(companyMonogram('  one two   three four ')).toBe('OTT');
   expect(companyMonogram('   ')).toBe('');
   expect(companyMonogram('')).toBe('');
+});
+
+test('project images prefer the added image, then og:image, then the default', () => {
+  const image = (src: string) => ({ src, width: 1200, height: 630, format: 'webp' as const });
+  const added = image('/added.webp');
+  const og = image('/og.png');
+  const fallback = image('/default.webp');
+  const ogImages = new Map([['with-og', og]]);
+
+  expect(selectProjectImage('with-og', added, ogImages, fallback)).toEqual({
+    image: added,
+    source: 'added',
+  });
+  expect(selectProjectImage('with-og', undefined, ogImages, fallback)).toEqual({
+    image: og,
+    source: 'og',
+  });
+  expect(selectProjectImage('plain', undefined, ogImages, fallback)).toEqual({
+    image: fallback,
+    source: 'default',
+  });
+  expect(selectProjectImage('plain', undefined, new Map(), fallback).source).toBe('default');
 });
 
 test('post outlines pair each ## section with its heading and word count', () => {
