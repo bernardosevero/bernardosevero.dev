@@ -479,7 +479,11 @@ test('project card image links report the image trigger to analytics', async ({ 
     const captured: Array<{ event: string; properties?: Record<string, unknown> }> = [];
     Object.assign(window, {
       capturedEvents: captured,
+      // `__SV` marks the SDK as already loaded, so the real snippet (present when the build
+      // has PostHog settings, as in CI) keeps this stub instead of replacing `capture`.
       posthog: {
+        __SV: 1,
+        init: () => undefined,
         capture: (event: string, properties?: Record<string, unknown>) => {
           captured.push({ event, properties });
         },
