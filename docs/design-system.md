@@ -67,11 +67,13 @@ Gold is not body-copy color. Green does not carry state by itself. Every status 
 
 ### Typography
 
-- `--font-heading`: Pixelify Sans 700 for names, section titles, navigation, and compact labels.
+- `--font-heading`: Pixelify Sans 700 for decorative page titles, section titles, navigation, and compact labels.
 - `--font-body`: VT323 400 for metadata, descriptions, tags, badges, inline code, and controls where legible.
-- `--font-text`: Alegreya 400, 400 italic, and 700 (fallback Georgia, serif) for sentence-length copy: long-form prose, the About paragraph and timeline descriptions, and project card summaries.
+- `--font-text`: Alegreya 400, 400 italic, and 700 (fallback Georgia, serif) for sentence-length copy (long-form prose, the About paragraph and timeline descriptions, and project card summaries) and, at 700, for post and project names: the post page title, post titles on `/posts/`, and project card titles.
 
-Rule: anything read as sentences uses the text face. Names, headings, labels, stats, tags, badges, dates, navigation, buttons, links styled as actions, and the short page intro under each page title stay pixel (`--font-heading` / `--font-body`).
+Rule: anything read as sentences uses the text face, and so do post and project names, which are often sentence-length. Decorative page titles (`ABOUT`, `PROJECTS`, `POSTS`, `READING`, `SYSTEM`), other names and headings (including book titles and `h2` headings inside prose), labels, stats, tags, badges, dates, navigation, buttons, links styled as actions, the post kicker, and the short page intro under each page title stay pixel (`--font-heading` / `--font-body`).
+
+The post page title uses the route-local `.page-title--text` modifier in `src/pages/posts/[slug].astro` (Alegreya 700, no uppercase, `clamp(var(--text-2xl), 5vw, var(--text-4xl))`, 1.1 line height, centered `22ch` measure); the shared `.page-title` stays pixel. The topic tags under a post header are centered by the route-local `.article-tags` class; the shared `.tag-list` and the tags on `/posts/` stay left-aligned.
 
 All fonts are self-hosted through Fontsource, with their SIL Open Font License texts in `public/licenses/` (`pixelify-sans.txt`, `vt323.txt`, `alegreya.txt`). Pixel typography is thematic, not permission to use cramped sizes.
 
@@ -138,7 +140,7 @@ Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green act
 
 ### Project card
 
-`ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified course pages, source repositories, and live applications without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Summaries use the text face (`--font-text`, 70ch measure, 1.55 line height); titles and link actions stay pixel. Each card shows one decorative image (`alt=""`, not a link) in a timber frame at a 1200:630 ratio: beside the text in a `304px` column when the card is wider than 600px (a container query, so `/system/` cells and tablets stack), otherwise full width above the title. The image is chosen by `resolveProjectImage` in `src/utils/project-images.ts`, first match wins: the entry's own `image`, then its saved og:image in `src/assets/projects/og/`, then `src/assets/projects/default.webp`. The frame exposes the choice as `data-image-source` (`added`, `og`, or `default`). `/system/` specimens pass the default image. Project list cards do not show technology tags or case-study labels. Draft entries are excluded in all environments; cards have no draft-preview state.
+`ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified course pages, source repositories, and live applications without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Summaries use the text face (`--font-text`, 70ch measure, 1.55 line height); titles use the text face at 700 with a 1.15 line height and the existing size clamps; link actions stay pixel. Each card shows one decorative image (`alt=""`, not a link) in a timber frame at a 1200:630 ratio: beside the text in a `304px` column when the card is wider than 600px (a container query, so `/system/` cells and tablets stack), otherwise full width above the title. The image is chosen by `resolveProjectImage` in `src/utils/project-images.ts`, first match wins: the entry's own `image`, then its saved og:image in `src/assets/projects/og/`, then `src/assets/projects/default.webp`. The frame exposes the choice as `data-image-source` (`added`, `og`, or `default`). `/system/` specimens pass the default image. Project list cards do not show technology tags or case-study labels. Draft entries are excluded in all environments; cards have no draft-preview state.
 
 ### Chapter bar
 
