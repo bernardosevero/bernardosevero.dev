@@ -4,6 +4,8 @@ import { formatCalendarDate } from '../../utils/format';
 import PortfolioPage from '../../layouts/PortfolioPage.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
+import ChapterBar from '../../components/ChapterBar.astro';
+import { outlineSections } from '../../utils/outline';
 import { getCollection, render } from 'astro:content';
 import '../../styles/portfolio.css';
 
@@ -17,7 +19,8 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const sections = outlineSections(post.body ?? '', headings);
 ---
 
 <PortfolioPage
@@ -38,8 +41,11 @@ const { Content } = await render(post);
         <li>{topic}</li>
       ))}
     </ul>
-    <div class="article-content prose">
-      <Content />
+    <div class="article-reading">
+      <ChapterBar sections={sections} readingMinutes={post.data.readingMinutes} />
+      <div class="article-content prose">
+        <Content />
+      </div>
     </div>
   </WoodFrame>
 </PortfolioPage>
@@ -48,7 +54,18 @@ const { Content } = await render(post);
     text-align: center;
   }
 
-  .article-content {
+  /* Bounds the sticky chapter bar to the article body. */
+  .article-reading {
     margin-block-start: 28px;
+  }
+
+  .article-reading > :global(.chapter-bar) {
+    margin-block-end: 20px;
+  }
+
+  /* Headings reached from Contents land below the sticky strip. chapter-bar.ts measures
+     the strip; the fallback covers the shorter no-JavaScript strip. */
+  .article-content :global(h2) {
+    scroll-margin-top: calc(var(--chapter-bar-offset, 64px) + 16px);
   }
 </style>
