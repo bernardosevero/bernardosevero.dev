@@ -4,11 +4,14 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { cvAsset } from '../src/config/cv';
 
+const longPostPath =
+  'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/';
+
 const routes = [
   { path: 'about/', heading: 'About' },
   { path: 'projects/', heading: 'Projects' },
   {
-    path: 'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/',
+    path: longPostPath,
     heading: 'I kept forgetting LeetCode problems, so I built a spaced-repetition trainer',
   },
   { path: 'posts/', heading: 'Posts' },
@@ -88,9 +91,7 @@ test('authored names keep their casing while page titles remain decorative', asy
   await expect(page.locator('.timeline h3').first()).toHaveText('SAP Concur');
 });
 
-test('sentence-length About and project copy uses the text face while names stay pixel', async ({
-  page,
-}) => {
+test('sentence-length copy and post and project names use the text face', async ({ page }) => {
   const family = (selector: string) =>
     page
       .locator(selector)
@@ -106,7 +107,51 @@ test('sentence-length About and project copy uses the text face while names stay
   await page.goto('./projects/');
   await page.evaluate(() => document.fonts.ready);
   expect(await family('.project-card p')).toMatch(/^Alegreya/);
-  expect(await family('.project-card h2')).toMatch(/^"?Pixelify Sans/);
+  expect(await family('.project-card h2')).toMatch(/^Alegreya/);
+
+  await page.goto('./posts/');
+  await page.evaluate(() => document.fonts.ready);
+  expect(await family('.post-title-row h2')).toMatch(/^Alegreya/);
+
+  await page.goto(`./${longPostPath}`);
+  await page.evaluate(() => document.fonts.ready);
+  expect(await family('h1')).toMatch(/^Alegreya/);
+});
+
+test('decorative page titles stay uppercase pixel type', async ({ page }) => {
+  for (const route of ['about/', 'projects/', 'reading/']) {
+    await page.goto(`./${route}`, { waitUntil: 'domcontentloaded' });
+    await page.evaluate(() => document.fonts.ready);
+    const title = await page
+      .locator('h1')
+      .first()
+      .evaluate((element) => {
+        const style = getComputedStyle(element);
+        return { family: style.fontFamily, transform: style.textTransform };
+      });
+    expect(title.family).toMatch(/^"?Pixelify Sans/);
+    expect(title.transform).toBe('uppercase');
+  }
+});
+
+test('post page tags are centered in the frame at 1586px', async ({ page }) => {
+  await page.setViewportSize({ width: 1586, height: 992 });
+  await page.goto(`./${longPostPath}`, { waitUntil: 'domcontentloaded' });
+  await page.evaluate(() => document.fonts.ready);
+  const gaps = await page.locator('.article > .frame-surface > .tag-list').evaluate((list) => {
+    const items = Array.from(list.children);
+    const frame = list.parentElement;
+    if (items.length === 0 || !frame) throw new Error('The post tag row needs tags and a frame.');
+    const frameBox = frame.getBoundingClientRect();
+    const style = getComputedStyle(frame);
+    const contentLeft = frameBox.left + parseFloat(style.paddingLeft);
+    const contentRight = frameBox.right - parseFloat(style.paddingRight);
+    const first = items[0].getBoundingClientRect();
+    const last = items[items.length - 1].getBoundingClientRect();
+    return { left: first.left - contentLeft, right: contentRight - last.right };
+  });
+  expect(gaps.left).toBeGreaterThan(0);
+  expect(Math.abs(gaps.left - gaps.right)).toBeLessThanOrEqual(2);
 });
 
 test('About exposes the requested professional profile links', async ({ page }) => {
@@ -415,10 +460,15 @@ test('Project card specimens expose linked and read-only states', async ({ page 
 
 const proseRoutes = [
   {
-    path: 'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/',
+    path: longPostPath,
     container: '.article-content',
+    titleFace: /^Alegreya/,
   },
-  { path: 'reading/fyodor-dostoevsky-white-nights/', container: '.review-content' },
+  {
+    path: 'reading/fyodor-dostoevsky-white-nights/',
+    container: '.review-content',
+    titleFace: /^"?Pixelify Sans/,
+  },
 ];
 
 for (const route of proseRoutes) {
@@ -436,7 +486,7 @@ for (const route of proseRoutes) {
         .first()
         .evaluate((element) => getComputedStyle(element).fontFamily);
     expect(await family(`${route.container} p`)).toMatch(/^Alegreya/);
-    expect(await family('h1')).toMatch(/^"?Pixelify Sans/);
+    expect(await family('h1')).toMatch(route.titleFace);
     expect(await family('.status-badge, .tag-list li')).toMatch(/^"?VT323/);
     const measure = await prose.evaluate((element) => {
       const probe = document.createElement('span');

@@ -31,12 +31,12 @@ const sections = outlineSections(post.body ?? '', headings);
   <WoodFrame class="portfolio-frame article">
     <header>
       <p class="page-kicker">{post.data.readingMinutes} min read</p>
-      <h1 class="page-title">{post.data.title}</h1>
+      <h1 class="page-title page-title--text">{post.data.title}</h1>
       <p class="page-intro">{post.data.description}</p>
       <p class="meta article-date">Published {formatCalendarDate(post.data.publishedAt, 'long')}</p>
       <Ornament variant="divider" />
     </header>
-    <ul class="tag-list">
+    <ul class="tag-list article-tags">
       {post.data.topics.map((topic) => (
         <li>{topic}</li>
       ))}
@@ -50,8 +50,23 @@ const sections = outlineSections(post.body ?? '', headings);
   </WoodFrame>
 </PortfolioPage>
 <style>
+  /* Post names are read as sentences, so they use the book face; decorative page titles stay pixel. */
+  .page-title--text {
+    max-width: 22ch;
+    margin-inline: auto;
+    font-family: var(--font-text);
+    font-size: clamp(var(--text-2xl), 5vw, var(--text-4xl));
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: none;
+  }
+
   .article-date {
     text-align: center;
+  }
+
+  .article-tags {
+    justify-content: center;
   }
 
   /* Bounds the sticky chapter bar to the article body. */
