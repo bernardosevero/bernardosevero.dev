@@ -32,7 +32,7 @@ Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md
 | Route | Purpose |
 | --- | --- |
 | `/`, `/about/` | Shared Character Sheet: profile, experience, specialties, tools, contact |
-| `/posts/`, `/posts/[slug]/` | Journal index with topic filters and individual articles |
+| `/posts/`, `/posts/[slug]/` | Blog index (kicker "Journal") with topic filters and individual articles |
 | `/projects/` | Quest Log list; cards link directly to live apps, courses, and repositories. There are no project detail pages |
 | `/reading/` | Reading Codex: reading, finished, wishlist, optional ratings/reviews |
 | `/reading/[slug]/` | Review for a visible book with nonempty Markdown |
@@ -49,6 +49,6 @@ Expose a route as finished only when its content, responsive layout, keyboard be
 
 ## Current state and next routes
 
-Home, `/system/`, About, Projects, Posts, and Reading are implemented. Posts currently has no published entries; Reading has real covers and reviews. Astro's `file()` loader reads the JSON metadata catalog, while `glob()` loads separate Markdown reviews. A detail route is generated only when a visible book has a nonempty review with the same ID.
+Home, `/system/`, About, Projects, Blog (`/posts/`), and Reading are implemented. The blog currently has no published entries; Reading has real covers and reviews. Astro's `file()` loader reads the JSON metadata catalog, while `glob()` loads separate Markdown reviews. A detail route is generated only when a visible book has a nonempty review with the same ID.
 
 

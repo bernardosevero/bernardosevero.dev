@@ -11,7 +11,7 @@ const routes = [
     path: 'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/',
     heading: 'I kept forgetting LeetCode problems, so I built a spaced-repetition trainer',
   },
-  { path: 'posts/', heading: 'Posts' },
+  { path: 'posts/', heading: 'Blog' },
   { path: 'reading/', heading: 'Reading' },
   { path: 'reading/fyodor-dostoevsky-white-nights/', heading: 'White Nights' },
 ];
@@ -200,7 +200,7 @@ test('mobile codex keeps navigation, bookshelf, and details separate', async ({ 
   );
   const about = await menu.getByRole('link', { name: 'About', exact: true }).boundingBox();
   const projects = await menu.getByRole('link', { name: 'Projects', exact: true }).boundingBox();
-  const posts = await menu.getByRole('link', { name: 'Posts', exact: true }).boundingBox();
+  const posts = await menu.getByRole('link', { name: 'Blog', exact: true }).boundingBox();
   expect(about!.y).toBe(projects!.y);
   expect(posts!.y).toBeGreaterThan(about!.y + about!.height);
   const codex = await page.locator('reading-codex').boundingBox();

@@ -3,7 +3,7 @@ import { normalizeBasePath } from '../utils/paths';
 export const navigationItems = [
   { id: 'about', label: 'About', path: '' },
   { id: 'projects', label: 'Projects', path: 'projects/' },
-  { id: 'posts', label: 'Posts', path: 'posts/' },
+  { id: 'posts', label: 'Blog', path: 'posts/' },
   { id: 'books', label: 'Books', path: 'reading/' },
   { id: 'system', label: 'System', path: 'system/' },
 ] as const;

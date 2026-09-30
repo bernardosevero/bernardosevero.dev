@@ -23,7 +23,7 @@ test('homepage opens the character sheet with keyboard-accessible navigation', a
 test('every menu item reaches its implemented route', async ({ page }) => {
   await page.goto('./');
   for (const [name, path] of [
-    ['Posts', 'posts/'],
+    ['Blog', 'posts/'],
     ['Projects', 'projects/'],
     ['Books', 'reading/'],
     ['System', 'system/'],
