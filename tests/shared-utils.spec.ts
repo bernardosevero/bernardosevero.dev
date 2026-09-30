@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import process from 'node:process';
 import { normalizeBasePath } from '../src/utils/paths';
 import { isVisibleContent } from '../src/utils/content';
-import { formatCalendarDate, formatCount } from '../src/utils/format';
+import { companyMonogram, formatCalendarDate, formatCount } from '../src/utils/format';
 import { getActiveNavigationItem } from '../src/config/navigation';
 
 test('base paths preserve root and GitHub Pages navigation', () => {
@@ -52,4 +52,13 @@ test('counts use the singular noun only for exactly one item', () => {
   expect(formatCount(0, 'post')).toBe('0 posts');
   expect(formatCount(1, 'post')).toBe('1 post');
   expect(formatCount(2, 'book')).toBe('2 books');
+});
+
+test('company monograms use the first letter of up to three words', () => {
+  expect(companyMonogram('SAP Concur')).toBe('SC');
+  expect(companyMonogram('Alura')).toBe('A');
+  expect(companyMonogram('TAG Livros')).toBe('TL');
+  expect(companyMonogram('  one two   three four ')).toBe('OTT');
+  expect(companyMonogram('   ')).toBe('');
+  expect(companyMonogram('')).toBe('');
 });

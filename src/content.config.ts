@@ -79,36 +79,38 @@ const bookReviews = defineCollection({
 
 const pages = defineCollection({
   loader: glob({ base: './src/content/pages', pattern: '**/*.md' }),
-  schema: z.object({
-    kind: z.literal('about'),
-    name: z.string(),
-    title: z.string(),
-    base: z.string(),
-    focus: z.array(z.string()),
-    description: z.string(),
-    strengths: z.array(
-      z.object({
-        label: z.string(),
-        level: z.number().int().min(1).max(10),
-      }),
-    ),
-    experience: z.array(
-      z.object({
-        company: z.string(),
-        role: z.string(),
-        period: z.string(),
-        description: z.string(),
-      }),
-    ),
-    specializations: z.array(z.string()),
-    tools: z.array(z.enum(toolNames)),
-    links: z.array(
-      z.object({
-        label: z.enum(profileLinkLabels),
-        url: z.url(),
-      }),
-    ),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      kind: z.literal('about'),
+      name: z.string(),
+      title: z.string(),
+      base: z.string(),
+      focus: z.array(z.string()),
+      description: z.string(),
+      strengths: z.array(
+        z.object({
+          label: z.string(),
+          level: z.number().int().min(1).max(10),
+        }),
+      ),
+      experience: z.array(
+        z.object({
+          company: z.string(),
+          role: z.string(),
+          period: z.string(),
+          description: z.string(),
+          logo: image().optional(),
+        }),
+      ),
+      specializations: z.array(z.string()),
+      tools: z.array(z.enum(toolNames)),
+      links: z.array(
+        z.object({
+          label: z.enum(profileLinkLabels),
+          url: z.url(),
+        }),
+      ),
+    }),
 });
 
 export const collections = { posts, projects, books, bookReviews, pages };

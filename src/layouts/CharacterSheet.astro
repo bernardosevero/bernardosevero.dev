@@ -3,6 +3,7 @@ import PortfolioPage from '../layouts/PortfolioPage.astro';
 import WoodFrame from '../components/WoodFrame.astro';
 import Ornament from '../components/Ornament.astro';
 import PixelIcon from '../components/PixelIcon.astro';
+import ExperienceEntry from '../components/ExperienceEntry.astro';
 import CvDownloadLink from '../components/CvDownloadLink.astro';
 import { cvAsset } from '../config/cv';
 import { profileLinkIcons, toolIcons } from '../config/character-sheet';
@@ -91,12 +92,7 @@ const { Content } = await render(about);
         </h2>
         <ol class="timeline">
           {about.data.experience.map((item) => (
-            <li>
-              <h3>{item.company}</h3>
-              <p class="timeline-role">{item.role}</p>
-              <p class="timeline-period">{item.period}</p>
-              <p>{item.description}</p>
-            </li>
+            <ExperienceEntry {...item} />
           ))}
         </ol>
       </section>

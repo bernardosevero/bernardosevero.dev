@@ -10,6 +10,7 @@ import SiteNavigation from '../components/SiteNavigation.astro';
 import BookTile from '../components/BookTile.astro';
 import BookRating from '../components/BookRating.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import ExperienceEntry from '../components/ExperienceEntry.astro';
 import '../styles/portfolio.css';
 
 const colorTokens = [
@@ -242,6 +243,21 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               <p>
                 Full, fractional, zero, and unrated values use the production star component with an
                 exact screen-reader label.
+              </p>
+            </article>
+            <article>
+              <h3>Experience entry</h3>
+              <ol class="timeline">
+                <ExperienceEntry
+                  company="Example Company"
+                  role="Example role"
+                  period="2020 — 2022"
+                  description="Static specimen data with the monogram fallback tile."
+                />
+              </ol>
+              <p>
+                A 40px tile precedes the company name. Without a logo it shows a decorative monogram
+                of up to three initials; supplied logos are decorative images.
               </p>
             </article>
             <article>

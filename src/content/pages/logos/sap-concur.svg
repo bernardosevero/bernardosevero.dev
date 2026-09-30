@@ -1,0 +1,14 @@
+<svg width="400" height="200" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SAP">
+  <defs>
+    <linearGradient id="sap-gradient" x1="200" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00AEEF"/>
+      <stop offset="1" stop-color="#0063B1"/>
+    </linearGradient>
+  </defs>
+  <polygon points="0,0 400,0 200,200 0,200" fill="url(#sap-gradient)"/>
+  <g fill="#fff" fill-rule="evenodd">
+    <path d="M92 40 Q84 20 52 20 Q12 20 12 54 Q12 80 46 88 L60 92 Q70 95 70 104 Q70 114 54 114 Q36 114 30 96 L4 118 Q20 156 58 156 Q100 156 100 116 Q100 88 66 78 L52 74 Q42 71 42 64 Q42 56 52 56 Q62 56 68 66 Z"/>
+    <path d="M84 156 L128 22 H172 L216 156 H184 L177 130 H123 L116 156 Z M131 102 H169 L150 46 Z"/>
+    <path d="M204 156 V22 H262 Q300 22 300 62 Q300 102 262 102 H238 V156 Z M238 50 V74 H256 Q266 74 266 62 Q266 50 256 50 Z"/>
+  </g>
+</svg>

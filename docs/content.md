@@ -81,6 +81,18 @@ Low-frequency Home and About copy lives in `src/content/pages/`. The schema uses
 
 About `tools` and profile `links` labels must be names listed in `src/config/character-sheet.ts`, which pairs each with its `PixelIcon.astro` artwork. The build rejects unknown names instead of rendering an empty icon tile. To add a tool, draw its icon first, then add its name and icon to that file.
 
+### Company logos
+
+Each About `experience` item may have an optional `logo`. Save an official logo supplied by the owner (SVG, or PNG/WebP at least 80×80px) as `src/content/pages/logos/<company-slug>.<ext>`, for example `sap-concur.svg`, then reference it relatively:
+
+```yaml
+experience:
+  - company: SAP Concur
+    logo: ./logos/sap-concur.svg
+```
+
+Replace a logo by overwriting the file or changing the path. Never draw, trace, generate, or use placeholder artwork. Entries without `logo` show a monogram tile (`SAP Concur` becomes `SC`), so a missing logo never breaks the layout. The tile is decorative; the company name is the accessible text.
+
 ## Editorial release checklist
 
 - All claims are accurate and safe to publish.
