@@ -59,6 +59,27 @@ test('authored names keep their casing while page titles remain decorative', asy
   await expect(page.locator('.timeline h3').first()).toHaveText('SAP Concur');
 });
 
+test('sentence-length About and project copy uses the text face while names stay pixel', async ({
+  page,
+}) => {
+  const family = (selector: string) =>
+    page
+      .locator(selector)
+      .first()
+      .evaluate((element) => getComputedStyle(element).fontFamily);
+
+  await page.goto('./about/');
+  await page.evaluate(() => document.fonts.ready);
+  expect(await family('.about-prose p')).toMatch(/^Alegreya/);
+  expect(await family('.timeline li > p:last-child')).toMatch(/^Alegreya/);
+  expect(await family('.timeline h3')).toMatch(/^"?Pixelify Sans/);
+
+  await page.goto('./projects/');
+  await page.evaluate(() => document.fonts.ready);
+  expect(await family('.project-card p')).toMatch(/^Alegreya/);
+  expect(await family('.project-card h2')).toMatch(/^"?Pixelify Sans/);
+});
+
 test('About exposes the requested professional profile links', async ({ page }) => {
   await page.goto('./about/');
   await expect(page.getByRole('link', { name: /LinkedIn/ })).toHaveAttribute(

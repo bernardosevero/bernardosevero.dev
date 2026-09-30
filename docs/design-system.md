@@ -69,7 +69,7 @@ Gold is not body-copy color. Green does not carry state by itself. Every status 
 
 - `--font-heading`: Pixelify Sans 700 for names, section titles, navigation, and compact labels.
 - `--font-body`: VT323 400 for metadata, descriptions, tags, badges, inline code, and controls where legible.
-- `--font-text`: Alegreya 400, 400 italic, and 700 (fallback Georgia, serif) for long-form prose only.
+- `--font-text`: Alegreya 400, 400 italic, and 700 (fallback Georgia, serif) for sentence-length copy: long-form prose, the About paragraph and timeline descriptions, and project card summaries.
 
 Rule: anything read as sentences uses the text face. Names, headings, labels, stats, tags, badges, dates, navigation, buttons, links styled as actions, and the short page intro under each page title stay pixel (`--font-heading` / `--font-body`).
 
@@ -138,7 +138,7 @@ Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green act
 
 ### Project card
 
-`ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified course pages, source repositories, and live applications without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Project list cards do not show technology tags or case-study labels. Draft entries are excluded in all environments; cards have no draft-preview state.
+`ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified course pages, source repositories, and live applications without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Summaries use the text face (`--font-text`, 70ch measure, 1.55 line height); titles and link actions stay pixel. Project list cards do not show technology tags or case-study labels. Draft entries are excluded in all environments; cards have no draft-preview state.
 
 ### Ornaments
 
