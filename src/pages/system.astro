@@ -92,6 +92,26 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               <p class="type-body">Readable notes, metadata, and longer stories.</p>
               <code>VT323 · 400</code>
             </article>
+            <article class="type-prose-specimen">
+              <div class="prose">
+                <p>
+                  Sentences read in a book face, with
+                  <a href="#typography-prose" id="typography-prose">
+                    links
+                  </a>{' '}
+                  and inline
+                  <code>code</code> kept in pixel type.
+                </p>
+                <ul>
+                  <li>Names, labels, and navigation stay pixel.</li>
+                  <li>Only long-form reading uses the text face.</li>
+                </ul>
+                <blockquote>
+                  <p>A quiet line worth pausing on.</p>
+                </blockquote>
+              </div>
+              <code>Alegreya · 400 / 700</code>
+            </article>
           </div>
           <h3 class="type-scale-heading">Type scale</h3>
           <ul class="type-scale" aria-label="Font-size tokens">
@@ -390,6 +410,9 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
   }
   .swatch small {
     color: var(--ink-soft);
+  }
+  .type-prose-specimen {
+    grid-column: 1 / -1;
   }
   .type-heading {
     font: 700 var(--text-2xl)/1 var(--font-heading);

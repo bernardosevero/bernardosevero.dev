@@ -37,7 +37,7 @@ Preserve hierarchy, density, proportions, timber, parchment, green actions, gold
 | Layer | Location | Owns |
 | --- | --- | --- |
 | Tokens | `src/styles/tokens.css` | Palette, typography families, type scale, shared page spacing, frame geometry, shared effects |
-| Foundations and primitives | `src/styles/global.css` | Reset, document defaults, focus, wood frames, parchment, RPG buttons, ornaments, reduced-motion behavior |
+| Foundations and primitives | `src/styles/global.css` | Reset, document defaults, focus, wood frames, parchment, RPG buttons, ornaments, long-form `.prose`, reduced-motion behavior |
 | Components | Component-local `<style>` | A reusable component's internal layout and variants |
 | Routes | `src/styles/*.css` or route-local `<style>` | Cross-component page composition and responsive changes |
 
@@ -68,9 +68,16 @@ Gold is not body-copy color. Green does not carry state by itself. Every status 
 ### Typography
 
 - `--font-heading`: Pixelify Sans 700 for names, section titles, navigation, and compact labels.
-- `--font-body`: VT323 400 for body copy, metadata, descriptions, and controls where legible.
+- `--font-body`: VT323 400 for metadata, descriptions, tags, badges, inline code, and controls where legible.
+- `--font-text`: Alegreya 400, 400 italic, and 700 (fallback Georgia, serif) for long-form prose only.
 
-Both fonts are self-hosted through Fontsource. Pixel typography is thematic, not permission to use cramped sizes. Long articles should target a readable line length and may use a future text-optimized token if testing shows it is needed.
+Rule: anything read as sentences uses the text face. Names, headings, labels, stats, tags, badges, dates, navigation, buttons, links styled as actions, and the short page intro under each page title stay pixel (`--font-heading` / `--font-body`).
+
+All fonts are self-hosted through Fontsource, with their SIL Open Font License texts in `public/licenses/` (`pixelify-sans.txt`, `vt323.txt`, `alegreya.txt`). Pixel typography is thematic, not permission to use cramped sizes.
+
+#### Long-form prose
+
+`.prose` in `src/styles/global.css` (`@layer components`) is the single owner of long-form reading styles; it wraps the rendered Markdown on post articles and book reviews. It sets a `68ch` measure (in the text face), `clamp(var(--text-sm), 2.5vw, var(--text-md))` size, 1.6 line height, and 0.8em spacing between blocks, and adds no type-scale token. Pixel accents: `h2` in `--font-heading` with diamond ornaments, wood diamond bullets, wood numbered badges, pixel table headers, inline `code` in `--font-body`, and a centered italic pull quote with ornament rules. There is no drop cap. Descendant rules use `:where()` so routes can refine them; routes keep only page composition (for example the top margin). `/system/` shows a static specimen under Typography.
 
 #### Type scale
 

@@ -327,6 +327,68 @@ test('Project card specimens expose linked and read-only states', async ({ page 
   await expect(page.getByRole('link', { name: /Repository unavailable/ })).toHaveCount(0);
 });
 
+const proseRoutes = [
+  {
+    path: 'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/',
+    container: '.article-content',
+  },
+  { path: 'reading/fyodor-dostoevsky-white-nights/', container: '.review-content' },
+];
+
+for (const route of proseRoutes) {
+  test(`${route.path} sets long-form prose in the text face and chrome in pixel type`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1586, height: 992 });
+    await page.goto(`./${route.path}`, { waitUntil: 'domcontentloaded' });
+    await page.evaluate(() => document.fonts.ready);
+    const prose = page.locator(`${route.container}.prose`);
+    await expect(prose).toHaveCount(1);
+    const family = (selector: string) =>
+      page
+        .locator(selector)
+        .first()
+        .evaluate((element) => getComputedStyle(element).fontFamily);
+    expect(await family(`${route.container} p`)).toMatch(/^Alegreya/);
+    expect(await family('h1')).toMatch(/^"?Pixelify Sans/);
+    expect(await family('.status-badge, .tag-list li')).toMatch(/^"?VT323/);
+    const measure = await prose.evaluate((element) => {
+      const probe = document.createElement('span');
+      probe.style.cssText = 'position:absolute;visibility:hidden;width:68ch';
+      element.append(probe);
+      const limit = probe.getBoundingClientRect().width;
+      probe.remove();
+      return { width: element.getBoundingClientRect().width, limit };
+    });
+    expect(measure.width).toBeLessThanOrEqual(measure.limit + 1);
+    const blockquote = page.locator(`${route.container} blockquote`);
+    if ((await blockquote.count()) > 0) {
+      const style = await blockquote.first().evaluate((element) => {
+        const computed = getComputedStyle(element);
+        return {
+          borderLeftWidth: computed.borderLeftWidth,
+          textAlign: computed.textAlign,
+          fontStyle: computed.fontStyle,
+        };
+      });
+      expect(style).toEqual({ borderLeftWidth: '0px', textAlign: 'center', fontStyle: 'italic' });
+    }
+  });
+}
+
+test('post subheads keep the pixel face and the page does not overflow at 390px', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 992 });
+  await page.goto(`./${proseRoutes[0].path}`, { waitUntil: 'domcontentloaded' });
+  await page.evaluate(() => document.fonts.ready);
+  const heading = page.locator('.article-content h2').first();
+  expect(await heading.evaluate((element) => getComputedStyle(element).fontFamily)).toMatch(
+    /^"?Pixelify Sans/,
+  );
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 for (const width of [390, 1586]) {
   test(`portfolio pages fit and pass automated accessibility checks at ${width}px`, async ({
     page,
