@@ -4,6 +4,7 @@ import PortfolioPage from '../../layouts/PortfolioPage.astro';
 import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import { resolveProjectImage } from '../../utils/project-images';
 import { getCollection } from 'astro:content';
 import '../../styles/portfolio.css';
 
@@ -27,15 +28,20 @@ const projects = (await getCollection('projects', isVisibleContent)).sort(
     </header>
     {projects.length ? (
       <ol class="project-list">
-        {projects.map((project) => (
-          <li>
-            <ProjectCard
-              title={project.data.title}
-              summary={project.data.summary}
-              links={project.data.links}
-            />
-          </li>
-        ))}
+        {projects.map((project) => {
+          const { image, source } = resolveProjectImage(project.id, project.data.image);
+          return (
+            <li>
+              <ProjectCard
+                title={project.data.title}
+                summary={project.data.summary}
+                image={image}
+                imageSource={source}
+                links={project.data.links}
+              />
+            </li>
+          );
+        })}
       </ol>
     ) : (
       <section class="empty-state">

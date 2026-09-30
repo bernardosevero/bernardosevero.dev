@@ -10,6 +10,7 @@ import SiteNavigation from '../components/SiteNavigation.astro';
 import BookTile from '../components/BookTile.astro';
 import BookRating from '../components/BookRating.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import { defaultProjectImage } from '../utils/project-images';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
 import '../styles/portfolio.css';
 
@@ -206,6 +207,8 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
                 <ProjectCard
                   title="Portfolio source"
                   summary="A project can expose several verified public destinations."
+                  image={defaultProjectImage}
+                  imageSource="default"
                   links={[
                     {
                       label: 'Source repository',
@@ -224,10 +227,13 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
                 <ProjectCard
                   title="Repository unavailable"
                   summary="Projects without a verified public repository remain readable without a fabricated link."
+                  image={defaultProjectImage}
+                  imageSource="default"
                 />
               </div>
               <p>
                 Multi-link and read-only states share the same hierarchy with explicit destinations.
+                Both show the default image used when a project has no added or og:image.
               </p>
             </article>
             <article>

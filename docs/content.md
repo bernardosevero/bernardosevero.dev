@@ -22,6 +22,22 @@ npm run content:add-project -- --slug project-slug --title "Real project title"
 
 The command fails if the slug exists and creates a draft with prompts for the problem, constraints, decisions, contribution, outcome, and lessons. Replace every `TODO` before publishing. A published project requires these sections plus a real role and supportable outcomes. Add only outcomes you can support and remove confidential details. Project detail (case-study) pages were removed: the `/projects/` list links straight to external destinations. The case-study fields and Markdown bodies are kept as the owner's records but are not rendered.
 
+### Project card images
+
+Each project card shows one image, first match wins:
+
+1. **Added image:** set `image: ./images/<slug>.<ext>` in the entry and store the file in `src/content/projects/images/`. Use only files the owner supplies.
+2. **Link preview:** the og:image of the project's `liveUrl`, else its first link, saved in `src/assets/projects/og/<slug>.<ext>`.
+3. **Default:** `src/assets/projects/default.webp`, cropped from `public/images/village.webp` (left 150, top 690, 580 × 303: the notice board and fences), resized to 1200 × 630, WebP quality 82.
+
+Link previews are fetched by a script, not during the build, so builds never depend on other servers:
+
+```sh
+npm run content:fetch-project-images
+```
+
+It skips drafts, entries with an added image, and slugs that already have a saved file (pass `-- --force` to replace one). It prints one line per project (`saved`, `skipped`, `no og:image`, `og:image unavailable`, or `error`), never edits content files, and exits non-zero only on errors. Re-run it when a site changes its preview image, then review and commit the saved file. The Alura course page currently advertises an og:image that returns 404, so that card uses the default until the owner supplies an image.
+
 ## Books
 
 Book metadata lives in `src/content/books.json`, loaded by Astro's native single-file JSON loader. Each array entry has a unique lowercase kebab-case `id`, `title`, `author`, and one of three statuses: `reading`, `finished`, or `wishlist`. Ratings are optional numbers from 0 through 5. Reviews are separate Markdown files in `src/content/book-reviews/`, named `<book-id>.md`. A review needs no duplicated frontmatter; its filename links it to the catalog record. Astro renders the full Markdown body, and a review link appears only when a nonempty file exists for a visible book.

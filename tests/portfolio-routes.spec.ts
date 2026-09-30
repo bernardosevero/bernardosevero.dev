@@ -278,6 +278,57 @@ for (const width of [320, 390, 760, 1586]) {
   });
 }
 
+test('project cards show one decorative image beside the text on desktop and above it on phones', async ({
+  page,
+}) => {
+  const failures: string[] = [];
+  page.on('response', (response) => {
+    if (response.status() >= 400) failures.push(response.url());
+  });
+  const cards = page.locator('.project-card');
+  const cardFor = (title: string) =>
+    cards.filter({ has: page.getByRole('heading', { name: title }) });
+
+  for (const width of [1586, 390, 320]) {
+    await page.setViewportSize({ width, height: 992 });
+    await page.goto('./projects/');
+    for (const card of await cards.all()) {
+      const image = card.locator('.project-card__image img');
+      await expect(image).toHaveCount(1);
+      await expect(image).toHaveAttribute('alt', '');
+      await image.scrollIntoViewIfNeeded();
+      await expect
+        .poll(() =>
+          image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth),
+        )
+        .toBeGreaterThan(0);
+      const imageBox = await image.boundingBox();
+      const titleBox = await card.locator('h2').boundingBox();
+      expect(imageBox).not.toBeNull();
+      expect(titleBox).not.toBeNull();
+      if (!imageBox || !titleBox) continue;
+      // Desktop cards are wide enough for the side-by-side container query; phones stack.
+      if (width === 1586) {
+        expect(imageBox.x + imageBox.width).toBeLessThanOrEqual(titleBox.x);
+      } else {
+        expect(imageBox.y + imageBox.height).toBeLessThanOrEqual(titleBox.y);
+      }
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+  }
+
+  await expect(
+    cardFor('dsa-learning: spaced repetition for coding interviews').locator('[data-image-source]'),
+  ).toHaveAttribute('data-image-source', 'og');
+  await expect(
+    cardFor('Full-stack development courses for beginners').locator('[data-image-source]'),
+  ).toHaveAttribute('data-image-source', 'default');
+  await expect(cards.locator('.project-card__image a')).toHaveCount(0);
+  expect(failures).toEqual([]);
+});
+
 test('Projects list exposes verified destinations without case-study actions', async ({ page }) => {
   await page.goto('./projects/');
   await expect(page.getByRole('link', { name: 'View case study' })).toHaveCount(0);
