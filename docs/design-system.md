@@ -147,6 +147,10 @@ The homepage and `/about/` share `src/layouts/CharacterSheet.astro`, backed by t
 
 The optional `CvDownloadLink.astro` reuses `.social-link` from `about.css` and follows LinkedIn and GitHub in the shared Character Sheet. It owns native download semantics and an explicit accessible PDF label, independently of external profile navigation. The contact heading row wraps when the actions need more space. Its walnut-and-gold document icon belongs to `PixelIcon.astro`. System renders the same action and its keyboard focus behavior when a public CV is configured, or the icon alone when it is absent. This small addition preserves the approved About composition; the narrow heading row may reflow to a second line. See `docs/content.md` for enabling and replacing the PDF.
 
+### Company tile
+
+`ExperienceEntry.astro` renders one Experience timeline item: a row with a 40px `.company-tile`, then the company name (`h3`) with role and period, followed by the description. Tile styles and the diamond alignment (centered on the 40px row) live in `about.css`. The tile has a 2px `--wood-dark` border, `--parchment-light` fill, and the standard inset and drop shadows. A supplied logo renders at 28px with `object-fit: contain` and keeps its own colors; without one, the tile shows a monogram from `companyMonogram()` in `src/utils/format.ts` (first letter of up to three words, `--font-heading` 700 at `--text-2xs`, `--ink-soft`). Both forms are decorative (`alt=""` or `aria-hidden="true"`) because the company name sits beside the tile. The tile stays 40px on phones. `/system/` shows a static monogram specimen. See `docs/content.md` for adding logos.
+
 ### Tags and status labels
 
 `.tag-list` groups technologies and topics; `.status-badge` labels metadata. Both use the legible body pixel font rather than the display face. They are real semantic list or text content and are demonstrated on `/system/`. The Codex's status field and star rating belong to its detail panel.

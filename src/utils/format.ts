@@ -14,3 +14,14 @@ export function formatCalendarDate(date: Date, style: CalendarDateStyle): string
 export function formatCount(count: number, singular: string, plural = `${singular}s`): string {
   return `${count} ${count === 1 ? singular : plural}`;
 }
+
+const maxMonogramLetters = 3;
+
+export function companyMonogram(company: string): string {
+  return company
+    .split(/\s+/)
+    .filter((word) => word.length > 0)
+    .slice(0, maxMonogramLetters)
+    .map((word) => Array.from(word)[0]?.toUpperCase() ?? '')
+    .join('');
+}
