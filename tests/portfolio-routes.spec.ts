@@ -16,6 +16,35 @@ const routes = [
   { path: 'reading/fyodor-dostoevsky-white-nights/', heading: 'White Nights' },
 ];
 
+const footerRoutes = [
+  '',
+  ...routes.map((route) => route.path),
+  'system/',
+  'posts/building-my-portfolio-with-a-design-system-and-llms/',
+];
+
+for (const route of footerRoutes) {
+  test(`${route || 'home'} has one shared author credit without duplicate profile links`, async ({
+    page,
+  }) => {
+    await page.goto(`./${route}`);
+    const footer = page.locator('body > .site-footer');
+
+    await expect(footer).toHaveCount(1);
+
+    await expect(footer.locator('[aria-hidden="true"]')).toHaveText(
+      '© Bernardo Severo - 2026 | Made with ❤️ in 🇧🇷',
+    );
+    await expect(footer.locator('.sr-only')).toHaveText(
+      '© Bernardo Severo - 2026. Made with love in Brazil.',
+    );
+    await expect(footer.locator('a, svg')).toHaveCount(0);
+    await expect(
+      page.getByText('All we have to decide is what to do with the time that is given us'),
+    ).toHaveCount(0);
+  });
+}
+
 // Reading covers are remote; navigation checks wait for local HTML and assert page behavior separately.
 for (const route of routes) {
   test(`${route.path} has a real page, no loading failures, and an accessible heading`, async ({
@@ -57,6 +86,27 @@ test('authored names keep their casing while page titles remain decorative', asy
   }
   await page.goto('./about/');
   await expect(page.locator('.timeline h3').first()).toHaveText('SAP Concur');
+});
+
+test('sentence-length About and project copy uses the text face while names stay pixel', async ({
+  page,
+}) => {
+  const family = (selector: string) =>
+    page
+      .locator(selector)
+      .first()
+      .evaluate((element) => getComputedStyle(element).fontFamily);
+
+  await page.goto('./about/');
+  await page.evaluate(() => document.fonts.ready);
+  expect(await family('.about-prose p')).toMatch(/^Alegreya/);
+  expect(await family('.timeline li > p:last-child')).toMatch(/^Alegreya/);
+  expect(await family('.timeline h3')).toMatch(/^"?Pixelify Sans/);
+
+  await page.goto('./projects/');
+  await page.evaluate(() => document.fonts.ready);
+  expect(await family('.project-card p')).toMatch(/^Alegreya/);
+  expect(await family('.project-card h2')).toMatch(/^"?Pixelify Sans/);
 });
 
 test('About exposes the requested professional profile links', async ({ page }) => {

@@ -7,6 +7,7 @@ import CvDownloadLink from '../components/CvDownloadLink.astro';
 import { cvAsset } from '../config/cv';
 import WoodFrame from '../components/WoodFrame.astro';
 import SiteNavigation from '../components/SiteNavigation.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import BookTile from '../components/BookTile.astro';
 import BookRating from '../components/BookRating.astro';
 import ProjectCard from '../components/ProjectCard.astro';
@@ -279,6 +280,13 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               </p>
             </article>
             <article>
+              <h3>Site footer</h3>
+              <div class="footer-specimen">
+                <SiteFooter />
+              </div>
+              <p>The shared author credit follows the main content on every page.</p>
+            </article>
+            <article>
               <h3>Topic filters</h3>
               <p>
                 <button class="topic-filter" type="button" data-active="true" aria-pressed="true">
@@ -477,6 +485,10 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
     padding: 16px 4px;
+  }
+  .footer-specimen {
+    padding-top: 24px;
+    background: var(--backdrop);
   }
   .system-page :global(.frame-surface) {
     height: auto;

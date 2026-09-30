@@ -69,7 +69,7 @@ Gold is not body-copy color. Green does not carry state by itself. Every status 
 
 - `--font-heading`: Pixelify Sans 700 for names, section titles, navigation, and compact labels.
 - `--font-body`: VT323 400 for metadata, descriptions, tags, badges, inline code, and controls where legible.
-- `--font-text`: Alegreya 400, 400 italic, and 700 (fallback Georgia, serif) for long-form prose only.
+- `--font-text`: Alegreya 400, 400 italic, and 700 (fallback Georgia, serif) for sentence-length copy: long-form prose, the About paragraph and timeline descriptions, and project card summaries.
 
 Rule: anything read as sentences uses the text face. Names, headings, labels, stats, tags, badges, dates, navigation, buttons, links styled as actions, and the short page intro under each page title stay pixel (`--font-heading` / `--font-body`).
 
@@ -138,7 +138,7 @@ Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green act
 
 ### Project card
 
-`ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified course pages, source repositories, and live applications without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Project list cards do not show technology tags or case-study labels. Draft entries are excluded in all environments; cards have no draft-preview state.
+`ProjectCard.astro` owns the compact Projects index presentation. Its explicit link list can expose verified course pages, source repositories, and live applications without making the entire card interactive; missing or unusable URLs leave the title and summary readable. Summaries use the text face (`--font-text`, 70ch measure, 1.55 line height); titles and link actions stay pixel. Project list cards do not show technology tags or case-study labels. Draft entries are excluded in all environments; cards have no draft-preview state.
 
 ### Ornaments
 
@@ -223,7 +223,7 @@ The public route must import real production components and read computed CSS va
 
 `tests/design-consistency.spec.ts` enforces the shared geometry, material styles, background layers, keyboard-accessible navigation, and isolated specimen layout at 320, 390, 760, 1024, and 1586 pixels. Extend its route matrix for new content routes and its assertions for new shared primitives. Never weaken assertions to accept drift; intentional contract changes require user direction and matching documentation. GitHub Actions gates deployment on formatting, CSS linting, type checking, production builds, and browser tests; screenshot review remains required for visual changes.
 
-All content routes share `--page-width` (1160px), `--page-top-space`, and `--page-section-gap`. `BaseLayout` owns the top navigation; `portfolio.css` owns the common backdrop and content shell. About's former side navigation is intentionally replaced by this shared bar. Books has no background opacity or width override. Codex frames inherit the global timber thickness, and their parchment uses `--surface-parchment`, the same material as `WoodFrame`.
+All content routes share `--page-width` (1160px), `--page-top-space`, and `--page-section-gap`. `BaseLayout` owns the top navigation and `SiteFooter`, which follows the main content with the author credit and no social icons. `portfolio.css` owns the common backdrop and content shell, including the 24px gap before the footer; the footer owns its responsive bottom padding. About's former side navigation is intentionally replaced by this shared bar. Books has no background opacity or width override. Codex frames inherit the global timber thickness, and their parchment uses `--surface-parchment`, the same material as `WoodFrame`.
 
 Do not add route-local menus, side rails, positioned navigation, compensating offsets, or overrides of backdrop opacity, timber thickness, and outer panel width. Production navigation remains real links with exactly one current item.
 

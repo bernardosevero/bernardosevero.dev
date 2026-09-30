@@ -235,9 +235,11 @@
   font-size: var(--text-xs);
 }
 .timeline li > p:last-child {
-  margin-top: 2px;
-  font-size: var(--text-sm);
-  line-height: 1.02;
+  max-width: 68ch;
+  margin-top: 8px;
+  font-family: var(--font-text);
+  font-size: var(--text-xs);
+  line-height: 1.45;
 }
 
 .sheet-section {
@@ -286,13 +288,14 @@
   border-top: 2px solid var(--ornament);
 }
 .about-prose {
-  max-width: 880px;
+  max-width: 68ch;
   margin: 8px auto 0;
+  font-family: var(--font-text);
   font-size: var(--text-sm);
-  line-height: 1.05;
+  line-height: 1.6;
 }
 .about-prose p + p {
-  margin-top: 7px;
+  margin-top: 0.8em;
 }
 .about-heading-row {
   display: flex;
@@ -456,11 +459,4 @@
     width: 40px;
     height: 40px;
   }
-}
-
-.about-motto {
-  margin: 24px auto 0;
-  max-width: 680px;
-  color: var(--parchment-light);
-  text-align: center;
 }

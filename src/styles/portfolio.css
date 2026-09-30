@@ -1,6 +1,6 @@
 .portfolio-page {
   position: relative;
-  padding: var(--page-section-gap) 16px clamp(24px, 5vw, 72px);
+  padding: var(--page-section-gap) 16px 24px;
 }
 
 .portfolio-page::before {
