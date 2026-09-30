@@ -38,6 +38,7 @@ const projects = (await getCollection('projects', isVisibleContent)).sort(
                 image={image}
                 imageSource={source}
                 links={project.data.links}
+                primaryUrl={project.data.liveUrl ?? project.data.links[0]?.url}
               />
             </li>
           );
