@@ -93,6 +93,10 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               <p class="type-body">Readable notes, metadata, and longer stories.</p>
               <code>VT323 · 400</code>
             </article>
+            <article>
+              <p class="type-text">Long-form posts and reviews read in a book face.</p>
+              <code>Alegreya · 400 / 700</code>
+            </article>
           </div>
           <h3 class="type-scale-heading">Type scale</h3>
           <ul class="type-scale" aria-label="Font-size tokens">
@@ -407,9 +411,18 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
   .swatch small {
     color: var(--ink-soft);
   }
+  .type-grid > article > code,
+  .type-scale code {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+  }
   .type-heading {
     font: 700 var(--text-2xl)/1 var(--font-heading);
     text-transform: uppercase;
+  }
+  .type-text {
+    font: 400 var(--text-xl)/1.2 var(--font-text);
   }
   .type-body {
     font: 400 var(--text-xl)/1.15 var(--font-body);

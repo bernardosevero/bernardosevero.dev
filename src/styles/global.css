@@ -344,6 +344,169 @@
     top: 18px;
     transform: rotate(55deg);
   }
+
+  /* Long-form prose: the "in-game book". Sentences use the text face; names, headings,
+     labels, and other chrome stay pixel type. Descendants use :where() so routes can
+     refine them without specificity contests. */
+  .prose {
+    /* Relative to the surrounding prose size, so they are scales rather than type-scale steps. */
+    --prose-code-size: 1.15em;
+    --prose-quote-size: 1.2em;
+
+    max-width: 68ch;
+    margin-inline: auto;
+    overflow-wrap: anywhere;
+    color: var(--ink);
+    font-family: var(--font-text);
+    font-size: clamp(var(--text-sm), 2.5vw, var(--text-md));
+    line-height: 1.6;
+  }
+  .prose :where(ul, ol, blockquote, table) {
+    margin: 0;
+  }
+  .prose > :where(* + *),
+  .prose :where(blockquote > * + *) {
+    margin-block-start: 0.8em;
+  }
+  .prose :where(h2) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-block-start: 1.6em;
+    color: var(--ink);
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .prose :where(h2)::before,
+  .prose :where(h2)::after {
+    content: '';
+    flex: none;
+    width: 8px;
+    height: 8px;
+    background: var(--ornament);
+    transform: rotate(45deg);
+  }
+  .prose :where(a) {
+    color: var(--green-dark);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .prose :where(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+  }
+  .prose :where(code) {
+    padding: 0 0.25em;
+    border: 2px solid var(--parchment-edge);
+    background: var(--parchment-light);
+    font-family: var(--font-body);
+    font-size: var(--prose-code-size);
+  }
+  .prose :where(ul, ol) {
+    padding: 0;
+    list-style: none;
+  }
+  .prose :where(ol) {
+    counter-reset: prose-step;
+  }
+  .prose :where(li) {
+    position: relative;
+    padding-inline-start: 44px;
+  }
+  .prose :where(li + li) {
+    margin-block-start: 0.4em;
+  }
+  .prose :where(ul > li)::before {
+    content: '';
+    position: absolute;
+    inset-block-start: calc(0.8em - 4.5px);
+    inset-inline-start: 12px;
+    width: 9px;
+    height: 9px;
+    background: var(--wood);
+    box-shadow: inset 2px 2px 0 var(--wood-light);
+    transform: rotate(45deg);
+  }
+  .prose :where(ol > li) {
+    counter-increment: prose-step;
+    min-height: 28px;
+  }
+  .prose :where(ol > li)::before {
+    content: counter(prose-step);
+    position: absolute;
+    inset-block-start: calc(0.8em - 14px);
+    inset-inline-start: 0;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--wood-dark);
+    background: var(--wood);
+    color: var(--on-green);
+    font-family: var(--font-heading);
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    line-height: 1;
+  }
+  /* Centered pull quote: a short ornament rule (line, diamond, line) above and below. */
+  .prose :where(blockquote) {
+    margin-block: 1.6em;
+    color: var(--wood-shadow);
+    font-size: var(--prose-quote-size);
+    font-style: italic;
+    text-align: center;
+  }
+  .prose :where(blockquote)::before,
+  .prose :where(blockquote)::after {
+    content: '';
+    display: block;
+    width: 104px;
+    height: 8px;
+    margin-inline: auto;
+    background: var(--ornament);
+    clip-path: polygon(
+      0 3px,
+      48px 3px,
+      52px 0,
+      56px 3px,
+      104px 3px,
+      104px 5px,
+      56px 5px,
+      52px 8px,
+      48px 5px,
+      0 5px
+    );
+  }
+  .prose :where(blockquote)::before {
+    margin-block-end: 0.8em;
+  }
+  .prose :where(blockquote)::after {
+    margin-block-start: 0.8em;
+  }
+  /* Wide tables scroll inside the article instead of widening the page. */
+  .prose :where(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    overflow-wrap: normal;
+  }
+  .prose :where(th, td) {
+    padding: 6px 10px;
+    border: 2px solid var(--parchment-edge);
+    text-align: start;
+    vertical-align: top;
+  }
+  .prose :where(th) {
+    background: var(--parchment-light);
+    font-family: var(--font-heading);
+  }
 }
 
 @layer utilities {
