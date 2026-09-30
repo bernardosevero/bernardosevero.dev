@@ -20,7 +20,7 @@ Run:
 npm run content:add-project -- --slug project-slug --title "Real project title"
 ```
 
-The command fails if the slug exists and creates a draft with prompts for the problem, constraints, decisions, contribution, outcome, and lessons. Replace every `TODO` before publishing. A published project requires these sections plus a real role and supportable outcomes. Add only outcomes you can support and remove confidential details.
+The command fails if the slug exists and creates a draft with prompts for the problem, constraints, decisions, contribution, outcome, and lessons. Replace every `TODO` before publishing. A published project requires these sections plus a real role and supportable outcomes. Add only outcomes you can support and remove confidential details. Project detail (case-study) pages were removed: the `/projects/` list links straight to external destinations. The case-study fields and Markdown bodies are kept as the owner's records but are not rendered.
 
 ## Books
 

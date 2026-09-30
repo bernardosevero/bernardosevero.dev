@@ -1,18 +1,12 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { cvAsset } from '../src/config/cv';
 
 const routes = [
   { path: 'about/', heading: 'About' },
   { path: 'projects/', heading: 'Projects' },
-  {
-    path: 'projects/full-stack-courses-alura/',
-    heading: 'Full-stack development courses for beginners',
-  },
-  {
-    path: 'projects/dsa-learning/',
-    heading: 'dsa-learning: spaced repetition for coding interviews',
-  },
   {
     path: 'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/',
     heading: 'I kept forgetting LeetCode problems, so I built a spaced-repetition trainer',
@@ -299,18 +293,9 @@ test('Projects list exposes verified destinations without case-study actions', a
   );
 });
 
-test('case studies omit list sections that have no items', async ({ page }) => {
-  await page.goto('./projects/full-stack-courses-alura/');
-  await expect(page.getByRole('heading', { level: 2, name: 'Problem' })).toBeVisible();
-  await expect(page.locator('.case-study ul:empty')).toHaveCount(0);
-});
-
-test('dsa-learning case study links to the live application', async ({ page }) => {
-  await page.goto('./projects/dsa-learning/');
-  await expect(page.getByRole('link', { name: 'open the live application' })).toHaveAttribute(
-    'href',
-    'https://dsa-learning.bernardosevero.dev/',
-  );
+test('the build ships no project detail pages', () => {
+  const projectsOutput = join(process.cwd(), 'dist', 'projects');
+  expect(readdirSync(projectsOutput)).toEqual(['index.html']);
 });
 
 test('Project card specimens expose linked and read-only states', async ({ page }) => {
@@ -336,8 +321,6 @@ for (const width of [390, 1586]) {
     for (const path of [
       'about/',
       'projects/',
-      'projects/full-stack-courses-alura/',
-      'projects/dsa-learning/',
       'posts/',
       'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/',
       'reading/',

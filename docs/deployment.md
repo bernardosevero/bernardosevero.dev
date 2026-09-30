@@ -45,6 +45,10 @@ Defaults use the custom domain and `/` base.
 
 Copy `.env.example` to `.env` when setting up a new checkout. Astro loads `SITE_URL` and `BASE_PATH` from this file; shell and CI values take precedence. Leave the PostHog values empty unless you want analytics from that build. The Cloudflare account ID and API token are deployment-only values, never public browser variables. The local `.env` is ignored by Git and does not configure GitHub Actions secrets automatically.
 
+### Removed-route redirects
+
+Removed routes are redirected through `public/_redirects` (Cloudflare Pages format), which ships in `dist/`. It currently sends `/projects/dsa-learning/` and `/projects/full-stack-courses-alura/` to `/projects/` with a 301. Use exact rules only: a `/projects/*` wildcard would also match `/projects/` and loop. Non-root base-path builds (GitHub Pages compatibility) do not use this file.
+
 ### Non-root compatibility
 
 To verify compatibility with the former GitHub Pages location in PowerShell (run in a fresh shell without existing `SITE_URL`/`BASE_PATH` overrides):
