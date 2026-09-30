@@ -29,6 +29,7 @@ experience:
   - company: Alura
     role: Instructor
     period: June 2022 — April 2023
+    logo: ./logos/alura.png
     description: Latin America's leading online tech school.
   - company: TAG Livros
     role: Software Engineer
