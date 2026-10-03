@@ -95,6 +95,15 @@ Replace the PDF at the same path to preserve its URL. Review the document for pu
 
 Low-frequency Home and About copy lives in `src/content/pages/`. The schema uses a `kind` discriminator so each page has an explicit contract. Do not move button behavior or layout configuration into prose files.
 
+Two entries exist, and each caller narrows by `kind` before reading fields:
+
+- `about.md` (`kind: about`) holds the CV facts. Besides the Character Sheet fields, it requires `location`, `headline`, `summary` (the CV summary paragraph) and `teaser` (one or two sentences for the Home preview). Each `experience` item requires `location` and at least one `highlights` bullet, and may set `employment` (for example `Freelance, part-time`) and a `tech` list. `skills` is a non-empty list of `{ group, items }`, and `education` is a list of `{ degree, school, location, period, coursework? }`. Keep experience in the CV's order. The Markdown body is the About me paragraph.
+- `home.md` (`kind: home`) has no body. It holds `greeting`, `intro`, `prompt` and exactly four `choices`, each a `label` and a `destination` from `projects`, `posts`, `books` or `about`.
+
+`summary` and `highlights` accept `**bold**` markers for metrics, and nothing else: no other Markdown, links or HTML. Layouts render them through `emphasisRuns` in `src/utils/format.ts`, never with `set:html` or `innerHTML`. An unpaired `**` stays literal text.
+
+Copy facts only from the published CV. Its phone number and email address are not published on the site: keep them out of content files, code, tests, commits and pull requests.
+
 About `tools` and profile `links` labels must be names listed in `src/config/character-sheet.ts`, which pairs each with its `PixelIcon.astro` artwork. The build rejects unknown names instead of rendering an empty icon tile. To add a tool, draw its icon first, then add its name and icon to that file.
 
 ### Company logos

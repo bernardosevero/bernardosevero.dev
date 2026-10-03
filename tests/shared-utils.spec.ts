@@ -2,7 +2,12 @@ import { test, expect } from '@playwright/test';
 import process from 'node:process';
 import { normalizeBasePath } from '../src/utils/paths';
 import { isVisibleContent } from '../src/utils/content';
-import { companyMonogram, formatCalendarDate, formatCount } from '../src/utils/format';
+import {
+  companyMonogram,
+  emphasisRuns,
+  formatCalendarDate,
+  formatCount,
+} from '../src/utils/format';
 import { getActiveNavigationItem } from '../src/config/navigation';
 import { selectProjectImage } from '../src/utils/project-image';
 import { chapterStatusText, outlineSections, summarizeReading } from '../src/utils/outline';
@@ -63,6 +68,37 @@ test('company monograms use the first letter of up to three words', () => {
   expect(companyMonogram('  one two   three four ')).toBe('OTT');
   expect(companyMonogram('   ')).toBe('');
   expect(companyMonogram('')).toBe('');
+});
+
+test('emphasis runs split paired bold markers and keep unpaired ones literal', () => {
+  const plain = (text: string) => ({ text, strong: false });
+  const strong = (text: string) => ({ text, strong: true });
+
+  expect(emphasisRuns('No emphasis here.')).toEqual([plain('No emphasis here.')]);
+  expect(emphasisRuns('With **7+ years** of work.')).toEqual([
+    plain('With '),
+    strong('7+ years'),
+    plain(' of work.'),
+  ]);
+  expect(emphasisRuns('Reached **12,300+** students rated **9.2/10**.')).toEqual([
+    plain('Reached '),
+    strong('12,300+'),
+    plain(' students rated '),
+    strong('9.2/10'),
+    plain('.'),
+  ]);
+  expect(emphasisRuns('**Doubled** resilience, **8 hours**')).toEqual([
+    strong('Doubled'),
+    plain(' resilience, '),
+    strong('8 hours'),
+  ]);
+  expect(emphasisRuns('A **bold** and a stray ** marker')).toEqual([
+    plain('A '),
+    strong('bold'),
+    plain(' and a stray ** marker'),
+  ]);
+  expect(emphasisRuns('**')).toEqual([plain('**')]);
+  expect(emphasisRuns('')).toEqual([]);
 });
 
 test('project images prefer the added image, then og:image, then the default', () => {
