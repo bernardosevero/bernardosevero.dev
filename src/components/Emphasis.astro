@@ -1,0 +1,12 @@
+---
+import { emphasisRuns } from '../utils/format';
+
+interface Props {
+  /** Content text whose paired `**…**` markers become <strong>; nothing else is parsed. */
+  text: string;
+}
+
+const runs = emphasisRuns(Astro.props.text);
+---
+
+{runs.map((run) => (run.strong ? <strong>{run.text}</strong> : run.text))}

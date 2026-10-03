@@ -1,0 +1,392 @@
+.cv-sheet .frame-surface {
+  padding: clamp(22px, 3.5vw, 40px) clamp(14px, 3.5vw, 48px);
+}
+
+.cv-header {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr) auto;
+  gap: 24px 32px;
+  align-items: center;
+  padding-bottom: 28px;
+  border-bottom: 3px solid var(--ornament);
+}
+
+.cv-portrait {
+  display: block;
+  width: 168px;
+  height: auto;
+  image-rendering: pixelated;
+  border: 3px solid var(--ornament);
+  box-shadow: 0 0 0 2px var(--parchment-light);
+}
+
+.cv-identity {
+  display: grid;
+  gap: 8px;
+}
+
+.cv-kicker,
+.cv-label {
+  color: var(--ink-soft);
+  font-family: var(--font-heading);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cv-name {
+  font-size: clamp(var(--text-2xl), 5vw, var(--text-4xl));
+  line-height: 0.95;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.cv-class {
+  font-size: var(--text-lg);
+  line-height: 1.1;
+}
+
+.cv-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: var(--text-md);
+}
+
+.cv-actions {
+  display: grid;
+  justify-items: end;
+  gap: 14px;
+}
+
+.cv-profiles {
+  display: flex;
+  gap: 10px;
+}
+
+.cv-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ornament);
+  font-size: clamp(var(--text-md), 2.3vw, var(--text-xl));
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cv-summary {
+  padding: 26px 0 8px;
+}
+
+.cv-summary p {
+  max-width: 72ch;
+  margin-top: 14px;
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.cv-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 40px;
+  align-items: start;
+  margin-top: 22px;
+}
+
+.cv-main {
+  display: grid;
+  gap: 30px;
+}
+
+.cv-education {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px 18px;
+  padding-top: 16px;
+  font-family: var(--font-text);
+  font-size: var(--text-xs);
+  line-height: 1.45;
+}
+
+.cv-education h3 {
+  margin: 0;
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  line-height: 1.25;
+}
+
+.cv-education__coursework {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.cv-education__period {
+  flex-shrink: 0;
+  align-self: flex-start;
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+
+.cv-quests {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 16px 0 0;
+  list-style: none;
+  font-family: var(--font-text);
+}
+
+.cv-quests a,
+.cv-quests__all a {
+  color: var(--green-dark);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.cv-quests a:hover,
+.cv-quests__all a:hover {
+  color: var(--green);
+}
+
+.cv-quests__title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.cv-quests__summary {
+  color: var(--wood-shadow);
+  font-size: var(--text-xs);
+}
+
+.cv-quests__empty {
+  padding-top: 16px;
+  font-family: var(--font-text);
+  font-size: var(--text-xs);
+}
+
+.cv-quests__all {
+  margin-top: 12px;
+  font-family: var(--font-heading);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+}
+
+.cv-sidebar {
+  display: grid;
+  gap: 20px;
+}
+
+.cv-box {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 2px solid var(--ornament);
+  background: #e2c68d55;
+}
+
+.cv-box .cv-heading {
+  font-size: var(--text-md);
+}
+
+.cv-skill-group h3 {
+  margin: 0;
+}
+
+.cv-skill-group {
+  display: grid;
+  gap: 8px;
+}
+
+/* The same meters as the Character Sheet; the label column fits the longest label. */
+.strength-list {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 9px 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.strength-list li {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  font-family: var(--font-heading);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+}
+
+.strength-meter {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+}
+
+.strength-meter i {
+  height: 14px;
+  border: 2px solid #aa8246;
+  background: #dac187;
+  box-shadow: inset 1px 1px #f3dfa9;
+}
+
+.strength-meter i[data-filled='true'] {
+  border-color: #24563e;
+  background: #348057;
+  box-shadow: inset 2px 2px #6db17c;
+}
+
+@media (width <= 1080px) {
+  .cv-header {
+    grid-template-columns: 136px minmax(0, 1fr);
+  }
+
+  .cv-portrait {
+    width: 136px;
+  }
+
+  .cv-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+  }
+}
+
+/* The sidebar follows Experience, Education, and Side quests in one column. */
+@media (width <= 900px) {
+  .cv-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (width <= 520px) {
+  .cv-header {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+  }
+
+  .cv-portrait {
+    width: 120px;
+  }
+
+  .cv-class {
+    font-size: var(--text-md);
+  }
+
+  .cv-meta {
+    align-items: flex-start;
+    font-size: var(--text-sm);
+  }
+
+  .cv-meta .pixel-icon {
+    margin-top: 2px;
+  }
+
+  .cv-heading {
+    gap: 6px;
+    font-size: var(--text-sm);
+  }
+
+  .cv-heading .pixel-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .cv-education {
+    flex-direction: column;
+  }
+
+  .cv-box {
+    padding: 16px 12px;
+  }
+
+  .strength-list {
+    column-gap: 7px;
+  }
+
+  .strength-meter {
+    gap: 2px;
+  }
+}
+
+/* A paper CV: plain black on white, no chrome, and no secondary RPG flavor. */
+@media print {
+  body,
+  .cv-sheet .frame-surface {
+    background: #fff;
+    color: #000;
+  }
+
+  .base-navigation,
+  .site-footer,
+  .cv-actions,
+  .cv-box--stats,
+  .cv-box--tools,
+  .cv-quests__all,
+  .cv-sheet > .iron-corner,
+  .cv-page::before,
+  .cv-page::after {
+    display: none;
+  }
+
+  .cv-page {
+    padding: 0;
+  }
+
+  .cv-sheet,
+  .cv-sheet::before,
+  .cv-sheet .frame-surface,
+  .cv-sheet .frame-surface::before {
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .cv-header {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  .cv-portrait {
+    width: 96px;
+    box-shadow: none;
+  }
+
+  .cv-kicker,
+  .cv-label,
+  .cv-meta,
+  .cv-education__coursework,
+  .cv-education__period,
+  .cv-quests__summary {
+    color: #000;
+  }
+
+  .cv-heading,
+  .cv-header {
+    border-color: #999;
+  }
+
+  .cv-box {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .cv-sheet .tag-list li {
+    border-color: #999;
+    background: #fff;
+    box-shadow: none;
+    color: #222;
+  }
+
+  .cv-quests a {
+    color: #000;
+  }
+}

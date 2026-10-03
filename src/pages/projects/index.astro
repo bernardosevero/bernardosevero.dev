@@ -5,6 +5,7 @@ import WoodFrame from '../../components/WoodFrame.astro';
 import Ornament from '../../components/Ornament.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { resolveProjectImage } from '../../utils/project-images';
+import { primaryProjectUrl } from '../../utils/project-links';
 import { getCollection } from 'astro:content';
 import '../../styles/portfolio.css';
 
@@ -38,7 +39,7 @@ const projects = (await getCollection('projects', isVisibleContent)).sort(
                 image={image}
                 imageSource={source}
                 links={project.data.links}
-                primaryUrl={project.data.liveUrl ?? project.data.links[0]?.url}
+                primaryUrl={primaryProjectUrl(project.data)}
               />
             </li>
           );

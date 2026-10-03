@@ -15,7 +15,11 @@ import { defaultProjectImage } from '../utils/project-images';
 import ChapterBar from '../components/ChapterBar.astro';
 import type { OutlineSection } from '../utils/outline';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
+import CvExperience from '../components/CvExperience.astro';
 import '../styles/portfolio.css';
+import '../styles/social-link.css';
+// The Experience entry specimen keeps the Character Sheet timeline styles.
+import '../styles/about.css';
 
 const colorTokens = [
   '--ink',
@@ -161,6 +165,8 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
                 <PixelIcon name="star" />
                 <PixelIcon name="wrench" />
                 <PixelIcon name="book" />
+                <PixelIcon name="cap" />
+                <PixelIcon name="pin" />
               </div>
               <p>
                 Tool marks keep their distinct colors. Section artwork shares walnut outlines,
@@ -202,6 +208,18 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
                   shown here.
                 </p>
               )}
+            </article>
+            <article>
+              <h3>CV download button</h3>
+              {cvAsset ? (
+                <CvDownloadLink variant="button" />
+              ) : (
+                <p>The button variant stays hidden until the public PDF is supplied.</p>
+              )}
+              <p>
+                The CV page's primary action: the same native download as the icon, labelled as an
+                RPG button.
+              </p>
             </article>
             <article class="navigation-specimen" aria-labelledby="navigation-specimen-heading">
               <h3 id="navigation-specimen-heading">Site navigation</h3>
@@ -298,17 +316,38 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               </p>
             </article>
             <article>
+              <h3>CV job entry</h3>
+              <CvExperience
+                company="Example Company"
+                role="Example role"
+                employment="Part-time"
+                period="2020 — 2022"
+                location="Example City"
+                description="Static specimen data with the monogram fallback tile."
+                highlights={['Plain highlight text.', 'A highlight with a **bold metric**.']}
+                tech={['React', 'Go']}
+              />
+              <p>
+                One role on the CV page: company tile, role and dates, italic description, diamond
+                highlights with bold metrics, and soft tech chips.
+              </p>
+            </article>
+            <article>
               <h3>Tags and status</h3>
               <ul class="tag-list">
                 <li>React</li>
                 <li>Go</li>
+              </ul>
+              <ul class="tag-list tag-list--soft">
+                <li>VS Code</li>
+                <li>Docker</li>
               </ul>
               <p>
                 <span class="status-badge">Finished</span>
               </p>
               <p>
                 Collection metadata uses the same concise labels across project, post, and reading
-                routes.
+                routes. The soft variant marks secondary lists, such as the tech used in a role.
               </p>
             </article>
             <article>

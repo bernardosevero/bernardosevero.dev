@@ -1,0 +1,24 @@
+/* Square profile and CV actions shared by the Character Sheet, the CV page, and /system/. */
+.social-link {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 2px solid var(--parchment-edge);
+  border-radius: 4px;
+  background: var(--parchment);
+  box-shadow:
+    inset 2px 2px var(--parchment-light),
+    0 3px var(--ornament);
+  text-decoration: none;
+}
+.social-link:hover {
+  background: var(--parchment-light);
+  border-color: var(--wood);
+}
+.social-link:active {
+  translate: 0 2px;
+  box-shadow:
+    inset 2px 2px var(--green-shade),
+    0 1px var(--button-shadow);
+}

@@ -2,6 +2,7 @@
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 import type { ProjectImageSource } from '../utils/project-image';
+import { getDestinationType } from '../utils/project-links';
 
 interface Props {
   title: string;
@@ -14,19 +15,6 @@ interface Props {
 }
 
 const { title, summary, image, imageSource, links = [], primaryUrl } = Astro.props;
-
-// Verified public hosts and the analytics destination type each one reports.
-const destinationTypes = new Map([
-  ['github.com', 'source_repository'],
-  ['www.alura.com.br', 'published_formation'],
-  ['dsa-learning.bernardosevero.dev', 'live_application'],
-]);
-
-function getDestinationType(value: string): string | undefined {
-  const url = URL.parse(value);
-  if (url?.protocol !== 'https:') return undefined;
-  return destinationTypes.get(url.hostname);
-}
 
 const verifiedLinks = links.flatMap((link) => {
   const destinationType = getDestinationType(link.url);

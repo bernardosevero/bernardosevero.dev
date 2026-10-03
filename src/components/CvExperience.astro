@@ -1,0 +1,156 @@
+---
+import type { ImageMetadata } from 'astro';
+import CompanyTile from './CompanyTile.astro';
+import Emphasis from './Emphasis.astro';
+
+interface Props {
+  company: string;
+  role: string;
+  period: string;
+  location: string;
+  description: string;
+  highlights: string[];
+  tech?: string[];
+  employment?: string | undefined;
+  logo?: ImageMetadata | undefined;
+}
+
+const {
+  company,
+  role,
+  period,
+  location,
+  description,
+  highlights,
+  tech = [],
+  employment,
+  logo,
+} = Astro.props;
+const roleLine = employment ? `${role} · ${employment}` : role;
+---
+
+<article class="cv-job">
+  <div class="cv-job__heading">
+    <CompanyTile company={company} logo={logo} />
+    <div class="cv-job__title">
+      <h3>{company}</h3>
+      <p class="cv-job__role">{roleLine}</p>
+    </div>
+    <div class="cv-job__when">
+      <p>{period}</p>
+      <p>{location}</p>
+    </div>
+  </div>
+  <p class="cv-job__description">{description}</p>
+  <ul class="cv-job__highlights">
+    {highlights.map((highlight) => (
+      <li>
+        <Emphasis text={highlight} />
+      </li>
+    ))}
+  </ul>
+  {tech.length > 0 && (
+    <ul class="tag-list tag-list--soft" aria-label={`Tech used at ${company}`}>
+      {tech.map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
+  )}
+</article>
+
+<style>
+  .cv-job {
+    display: grid;
+    gap: 10px;
+    padding: 22px 0;
+    border-bottom: 2px dashed var(--ornament);
+  }
+
+  .cv-job:last-child {
+    border-bottom: 0;
+  }
+
+  .cv-job__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+  }
+
+  .cv-job__title {
+    flex: 1 1 14rem;
+  }
+
+  .cv-job h3 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: var(--text-md);
+    line-height: 1.1;
+  }
+
+  .cv-job__role {
+    font-size: var(--text-md);
+    line-height: 1;
+  }
+
+  .cv-job__when {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    line-height: 1.15;
+    text-align: right;
+  }
+
+  .cv-job__description {
+    color: var(--ink-soft);
+    font-family: var(--font-text);
+    font-size: var(--text-xs);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .cv-job__highlights {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cv-job__highlights li {
+    position: relative;
+    padding-left: 24px;
+    font-family: var(--font-text);
+    font-size: var(--text-xs);
+    line-height: 1.5;
+  }
+
+  .cv-job__highlights li::before {
+    content: '';
+    position: absolute;
+    top: 0.6em;
+    left: 3px;
+    width: 8px;
+    height: 8px;
+    background: var(--wood);
+    box-shadow: inset 2px 2px var(--wood-light);
+    transform: rotate(45deg);
+  }
+
+  @media (width <= 520px) {
+    .cv-job__when {
+      flex-basis: 100%;
+      text-align: left;
+    }
+  }
+
+  @media print {
+    .cv-job {
+      break-inside: avoid;
+    }
+
+    .cv-job__when,
+    .cv-job__description {
+      color: #000;
+    }
+  }
+</style>
