@@ -16,6 +16,7 @@ import ChapterBar from '../components/ChapterBar.astro';
 import type { OutlineSection } from '../utils/outline';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
 import CvExperience from '../components/CvExperience.astro';
+import HomeDialogue from '../components/HomeDialogue.astro';
 import '../styles/portfolio.css';
 import '../styles/social-link.css';
 // The Experience entry specimen keeps the Character Sheet timeline styles.
@@ -228,6 +229,31 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
                 actual page menus are links.
               </p>
               <SiteNavigation pathname={`${base}projects/`} preview />
+            </article>
+            <article
+              class="home-dialogue-specimen"
+              aria-labelledby="home-dialogue-specimen-heading"
+            >
+              <h3 id="home-dialogue-specimen-heading">Home dialogue</h3>
+              <div class="home-dialogue-specimen__stage">
+                <HomeDialogue
+                  preview
+                  greeting="Welcome, traveler!"
+                  intro="Static specimen text in its resting state, with no typing."
+                  prompt="Where would you like to go?"
+                  choices={[
+                    { label: 'First choice', pageName: 'Projects', href: '#' },
+                    { label: 'Second choice', pageName: 'Blog', href: '#' },
+                    { label: 'Third choice', pageName: 'Books', href: '#' },
+                    { label: 'Fourth choice', pageName: 'About', href: '#' },
+                  ]}
+                />
+              </div>
+              <p>
+                The Home greeting: name plate, bobbing portrait, and four choices with a pixel
+                cursor on the hovered, focused, or first option. On Home the text types in; this
+                static specimen has no links or typing.
+              </p>
             </article>
             <article>
               <h3>Project cards</h3>
@@ -556,6 +582,15 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
     padding: 16px 4px;
+  }
+  /* Full width so both specimens show the layout production uses at this viewport. */
+  .navigation-specimen,
+  .home-dialogue-specimen {
+    grid-column: 1 / -1;
+  }
+  /* Room for the name plate and phone portrait, which overlap the frame's top edge. */
+  .home-dialogue-specimen__stage {
+    padding-top: 48px;
   }
   .footer-specimen {
     padding-top: 24px;

@@ -25,13 +25,14 @@ The project is a statically generated Astro portfolio. Content collections provi
 4. Astro renders static HTML with no content API required in the browser.
 5. GitHub Actions checks formatting, CSS lint, and types, builds through Playwright, tests, and uploads the verified root-path `dist/` to Cloudflare Pages after both root and GitHub Pages compatibility suites pass. Pull requests validate without deploying.
 
-Home and About share `CharacterSheet.astro` and read `src/content/pages/about.md`. Base-path normalization lives in `src/utils/paths.ts`; `src/utils/content.ts` excludes drafts in every environment. There is no draft-preview mode. The design-system page imports production components and reads CSS token values from the browser.
+Home renders the village greeting from `src/content/pages/home.md`; About renders the CV page (`CvSheet.astro`) from `src/content/pages/about.md`. Base-path normalization lives in `src/utils/paths.ts`; `src/utils/content.ts` excludes drafts in every environment. There is no draft-preview mode. The design-system page imports production components and reads CSS token values from the browser.
 
 ## Route contract
 
 | Route | Purpose |
 | --- | --- |
-| `/`, `/about/` | Shared Character Sheet: profile, experience, specialties, tools, contact |
+| `/` | Home: animated village scene and RPG dialogue with four destinations |
+| `/about/` | CV page: profile, experience, education, side quests, skills, stats, and CV download |
 | `/posts/`, `/posts/[slug]/` | Blog index (kicker "Journal") with topic filters and individual articles |
 | `/projects/` | Quest Log list; cards link directly to live apps, courses, and repositories. There are no project detail pages |
 | `/reading/` | Reading Codex: reading, finished, wishlist, optional ratings/reviews |

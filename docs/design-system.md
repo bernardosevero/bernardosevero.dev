@@ -28,7 +28,7 @@ Revisit this decision only with explicit user direction. Do not add a framework 
 
 ## Visual source of truth
 
-Use production tokens, components, and live `/system/` specimens when changing UI. Home still renders the Character Sheet; About is the CV page. Every content route uses the top navigation from `BaseLayout`.
+Use production tokens, components, and live `/system/` specimens when changing UI. Home is the village greeting with the RPG dialogue; About is the CV page. Every content route uses the top navigation from `BaseLayout`.
 
 Preserve hierarchy, density, proportions, timber, parchment, green actions, gold selection cues, and the medieval village atmosphere. Avoid generic dashboards, terminal aesthetics, glassmorphism, and cyberpunk motifs. Raster assets may supply scenery, texture, and illustration; text, navigation, controls, lists, ratings, and statuses remain semantic HTML.
 
@@ -124,7 +124,7 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 ### Site navigation
 
-`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's five destinations: About, Projects, Blog, Books, and System. It uses real anchors, derives the active section from the current route by matching each item's path (About is the fallback), and renders on every public content route. All content pages, including Home, About, and Books, use the same top bar from `BaseLayout`. Navigation stays in normal flow with a token-based gap before content. Container queries use five columns when the menu has room and two columns in narrow containers. There is one navigation layout, without a redundant bar/rail variant. Its 54px minimum link height is preserved at mobile sizes. The documentation-only `preview` mode renders static spans with identical production classes, so its specimen never navigates away.
+`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's five destinations: About (`about/`), Projects, Blog, Books, and System. A 54px Home tile (the pixelated wizard portrait in a 3px `--ornament` frame, `aria-label="Home"`) starts the bar before the five buttons and links to the site root. It uses real anchors and derives the active section from the current route by matching each item's path; the root and unknown routes resolve to `home`, which marks the Home tile `aria-current="page"` and no button. It renders on every public content route. All content pages, including Home, About, and Books, use the same top bar from `BaseLayout`. Navigation stays in normal flow with a token-based gap before content. The grid is `54px repeat(5, minmax(0, 1fr))` when the menu has room and `54px repeat(2, minmax(0, 1fr))` in narrow containers, where the tile spans all three button rows. There is one navigation layout, without a redundant bar/rail variant. Its 54px minimum link height is preserved at mobile sizes. The documentation-only `preview` mode renders static spans with identical production classes, so its specimen never navigates away.
 
 ### Reading Codex
 
@@ -162,7 +162,7 @@ Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green act
 
 ### Pixel icons
 
-The homepage renders `src/layouts/CharacterSheet.astro`, backed by the About content entry; `/about/` renders the CV page (see below). Production content pages use the shared navigation for page switching; redundant return links are not rendered. `/system/` retains a return link as a documentation-page escape hatch and specimen. The homepage menu retains Reading instead of a redundant home link. The sheet stacks its columns at intermediate widths to preserve readability.
+`src/layouts/CharacterSheet.astro` is no longer routed and is kept only until its planned removal. Production content pages use the shared navigation for page switching; redundant return links are not rendered. `/system/` retains a return link as a documentation-page escape hatch and specimen.
 
 `PixelIcon.astro` contains multicolor SVG artwork for the character sheet, tool tiles, and professional profile links. Tool marks retain recognizable colors; the briefcase, star, wrench, book, and graduation cap share dark walnut outlines, bronze shading, and gold highlights drawn from the About reference. The walnut `pin` marks a location in metadata lines. The AWS illustration is a cloud symbol with an orange smile, not an official logo. Artwork is independent of CSS geometry; CSS controls its size and surrounding tile. Decorative instances are hidden from assistive technology; icon-only controls must provide an accessible name and a visible tooltip or nearby label. The live inventory shows both icon families.
 
@@ -173,6 +173,27 @@ The optional `CvDownloadLink.astro` has two variants. `icon` (the default) reuse
 ### Company tile
 
 `CompanyTile.astro` renders the 40px tile and owns its styles. `ExperienceEntry.astro` (Character Sheet timeline) and `CvExperience.astro` (CV page) both use it. `ExperienceEntry` renders a row with the tile, then the company name (`h3`) with role and period, followed by the description; its timeline diamond alignment (centered on the 40px row) lives in `about.css`. The tile has a 2px `--wood-dark` border, `--parchment-light` fill, and the standard inset and drop shadows. A supplied logo renders at 28px with `object-fit: contain` and keeps its own colors; without one, the tile shows a monogram from `companyMonogram()` in `src/utils/format.ts` (first letter of up to three words, `--font-heading` 700 at `--text-2xs`, `--ink-soft`). Both forms are decorative (`alt=""` or `aria-hidden="true"`) because the company name sits beside the tile. The tile stays 40px on phones. `/system/` shows static monogram specimens in both entries. See `docs/content.md` for adding logos.
+
+### Home dialogue
+
+`/` renders `src/pages/index.astro`: the village backdrop as the scene, a decorative layer, and `HomeDialogue.astro`, whose copy comes from the `home` content entry. Each choice maps its `destination` to a navigation item for its `href` and page name. The first screen fills the viewport below the navigation (`min-height: calc(100svh - var(--home-chrome))`, never `height` or `overflow: hidden`) and anchors the dialogue to its bottom. `--home-chrome` is the page top space, the measured navigation height for each navigation layout, and the section gap; re-measure it when the navigation's height changes.
+
+The dialogue is a `WoodFrame` with a green `Bernardo` name plate on its top edge, a 156px bobbing portrait, and a parchment text area: the greeting as the `h1`, the intro, the prompt, and the four choices as real links in a two-column grid. Each choice shows a pixel ▶ cursor when hovered or focused, and the first choice shows it when none is active. At `<= 560px` the portrait shrinks to 72px and joins the plate in a row overlapping the frame's top edge, the choices stack in one column (at least 44px tall), and the prompt is visually hidden but still read aloud. Content taller than the first screen makes the page scroll; text and touch targets never shrink further.
+
+`src/scripts/home-dialogue.ts` is progressive enhancement. The server renders the complete text and choices. The script types the text at 28ms per character into an `aria-hidden` copy layered over the real text, which keeps its layout and stays readable to assistive technology. It hides the choices until typing ends and adds a `Skip ▸▸` button. Skip, any key press, or any click inside the dialogue completes the text at once; listeners stay on the dialogue, and no timer runs after completion. Missing markup throws before enhancing, leaving the server-rendered dialogue usable. `/system/` shows a static `preview` specimen with no heading, links, or typing.
+
+Motion inventory, all CSS animating only `transform` and `opacity`:
+
+| Element | Motion |
+| --- | --- |
+| Backdrop and decorative layer | Ken Burns drift to `scale(1.07) translate(-1.5%, -1%)`, 36s, `ease-in-out`, infinite alternate |
+| Chimney smoke | Three 12px squares rising and fading, 4.5s, staggered 1.5s |
+| Lantern glow | 44px radial gold pulse, 2.6s |
+| Fireflies | Ten 6px gold squares (four on phones, with no smoke), 7s float, staggered |
+| Portrait | 3px bob, `steps(2)` |
+| Choice cursor and caret | Pixel nudge and blinking ▼ caret |
+
+The decorative layer is `aria-hidden` and ignores pointer events. Its inner box is sized like the cover-fitted art, so percentage positions stay over the left house and lantern at any viewport. With `prefers-reduced-motion: reduce`, nothing moves: the global rule stops animations, the decorative layer is hidden, and the script leaves the full text and choices in place with no Skip button. Without JavaScript the dialogue is complete and its links work.
 
 ### CV page
 
@@ -210,10 +231,12 @@ Write queries in range syntax (`width <= 520px`, `width > 820px`) so adjacent ra
 | Viewport | `<= 560px` | Outer shell: page and navigation side gutters shrink to 8px |
 | Viewport | `<= 760px` | `/system/` specimen grid switches to auto-fit columns |
 | Viewport | `> 820px`, `<= 1200px`, `<= 1080px` | Character Sheet: desktop spacing, one stacked column, then compact identity and tag sizing |
+| Viewport | `<= 838px`, `<= 520px` | Home: `--home-chrome` follows the two-column navigation, then its phone padding |
+| Viewport | `<= 560px` | Home dialogue: stacked speaker row, one choice column, hidden prompt line, fewer decorations |
 | Viewport | `<= 1080px`, `<= 900px`, `<= 520px` | CV page: header actions wrap below the name, sidebar follows the main column, then a stacked header |
 | Container | `<= 850px`, `<= 650px` | Reading Codex: three-column shelf, then two columns with stacked panels |
 | Container | `<= 650px` | `BookTile` and `BookRating` compact sizing inside the Codex |
-| Container | `<= 760px` | `SiteNavigation` switches from five to two columns |
+| Container | `<= 760px` | `SiteNavigation` switches from five to two button columns beside the Home tile |
 
 Prefer container queries for components whose width depends on their parent. Add a new value only when content breaks between the existing ones, and record it here.
 

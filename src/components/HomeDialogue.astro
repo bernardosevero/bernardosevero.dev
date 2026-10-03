@@ -1,0 +1,340 @@
+---
+import { Image } from 'astro:assets';
+import WoodFrame from './WoodFrame.astro';
+import wizardPortrait from '../assets/bernardo-wizard.png';
+
+export interface DialogueChoice {
+  label: string;
+  /** Destination page name shown beside the label, e.g. `Projects`. */
+  pageName: string;
+  href: string;
+}
+
+interface Props {
+  greeting: string;
+  intro: string;
+  prompt: string;
+  choices: DialogueChoice[];
+  /** Static `/system/` specimen: no heading, links, or typewriter. */
+  preview?: boolean;
+}
+
+const { greeting, intro, prompt, choices, preview = false } = Astro.props;
+const Greeting = preview ? 'p' : 'h1';
+const Choices = preview ? 'div' : 'nav';
+const Choice = preview ? 'span' : 'a';
+const promptId = preview ? undefined : 'home-dialogue-prompt';
+---
+
+<div class="home-dialogue" data-home-dialogue={preview ? undefined : ''}>
+  <WoodFrame class="home-dialogue__frame" parchment={false}>
+    <div class="home-dialogue__speaker">
+      <Image
+        class="home-dialogue__portrait"
+        src={wizardPortrait}
+        alt="Bernardo wearing round glasses and a green-and-gold wizard costume, illustrated in pixel art."
+        width={156}
+        densities={[1, 2]}
+        format="webp"
+        loading="eager"
+      />
+      <span class="home-dialogue__plate" aria-hidden="true">
+        Bernardo
+      </span>
+    </div>
+    <div class="home-dialogue__parchment">
+      <Greeting class="home-dialogue__line home-dialogue__greeting" data-dialogue-line>
+        <span class="home-dialogue__full">{greeting}</span>
+      </Greeting>
+      <p class="home-dialogue__line home-dialogue__intro" data-dialogue-line>
+        <span class="home-dialogue__full">{intro}</span>
+      </p>
+      <p id={promptId} class="home-dialogue__line home-dialogue__prompt" data-dialogue-line>
+        <span class="home-dialogue__full">{prompt}</span>
+      </p>
+      <Choices class="home-dialogue__choices" aria-labelledby={promptId} data-dialogue-choices>
+        {choices.map((choice) => (
+          <Choice class="home-dialogue__choice" href={preview ? undefined : choice.href}>
+            <span class="home-dialogue__cursor" aria-hidden="true"></span>
+            <span class="home-dialogue__label">{choice.label}</span>
+            <span class="home-dialogue__page">{choice.pageName}</span>
+          </Choice>
+        ))}
+      </Choices>
+    </div>
+  </WoodFrame>
+</div>
+
+<script>
+  import { enhanceHomeDialogues } from '../scripts/home-dialogue';
+
+  enhanceHomeDialogues();
+</script>
+
+<style>
+  .home-dialogue {
+    width: min(980px, 100%);
+    margin-inline: auto;
+  }
+
+  .home-dialogue :global(.home-dialogue__frame) {
+    padding: 16px;
+  }
+
+  .home-dialogue :global(.home-dialogue__frame > .frame-surface) {
+    display: grid;
+    grid-template-columns: 156px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .home-dialogue__plate {
+    position: absolute;
+    top: -45px;
+    left: 9px;
+    z-index: 3;
+    padding: 6px 16px 7px;
+    border: 3px solid var(--green-dark);
+    background: linear-gradient(#519f6e, #419164);
+    box-shadow:
+      inset 0 3px var(--green-highlight),
+      0 3px var(--button-shadow);
+    color: var(--on-green);
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-shadow: 2px 2px #193e2b;
+    text-transform: uppercase;
+  }
+
+  .home-dialogue__portrait {
+    display: block;
+    box-sizing: border-box;
+    width: 156px;
+    height: auto;
+    border: 3px solid var(--ornament);
+    background: var(--green-shade);
+    box-shadow:
+      0 0 0 2px var(--parchment-light),
+      0 0 0 5px var(--wood-dark);
+    image-rendering: pixelated;
+    animation: home-dialogue-bob 2.4s steps(2, end) infinite;
+  }
+
+  .home-dialogue__parchment {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 24px 16px;
+    border: 2px solid var(--parchment-edge);
+    background: var(--surface-parchment);
+    box-shadow:
+      0 0 0 2px var(--wood-dark),
+      inset 0 0 0 4px #f8e4af,
+      inset 0 0 26px #ba81333d;
+  }
+
+  .home-dialogue__line {
+    position: relative;
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+
+  .home-dialogue__greeting {
+    font-size: var(--text-xl);
+    line-height: 1.15;
+  }
+
+  .home-dialogue__intro,
+  .home-dialogue__prompt {
+    font-size: var(--text-lg);
+    line-height: 1.25;
+  }
+
+  /* While typing, the real text keeps its layout and stays readable to assistive
+     technology; the aria-hidden copy on top shows the characters typed so far. */
+  .home-dialogue[data-typing] .home-dialogue__full {
+    opacity: 0;
+  }
+
+  .home-dialogue :global(.home-dialogue__typed) {
+    position: absolute;
+    inset: 0;
+  }
+
+  .home-dialogue :global(.home-dialogue__caret) {
+    display: inline-block;
+    margin-left: 4px;
+    color: var(--wood);
+    font-size: var(--text-xs);
+    animation: home-dialogue-blink 1s steps(1, end) infinite;
+  }
+
+  .home-dialogue[data-typing] .home-dialogue__choices {
+    visibility: hidden;
+  }
+
+  /* The default cursor sets its own visibility, so it needs hiding separately. */
+  .home-dialogue[data-typing] .home-dialogue__cursor {
+    opacity: 0;
+  }
+
+  .home-dialogue__choices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 18px;
+    margin-top: 2px;
+  }
+
+  .home-dialogue__choice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 6px 10px;
+    color: var(--ink);
+    font-size: var(--text-lg);
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  a.home-dialogue__choice:hover,
+  a.home-dialogue__choice:focus-visible {
+    background: var(--parchment-light);
+    box-shadow: inset 0 0 0 2px var(--parchment-edge);
+    color: var(--green-dark);
+  }
+
+  a.home-dialogue__choice:focus-visible {
+    outline-offset: 2px;
+  }
+
+  .home-dialogue__cursor {
+    flex: none;
+    width: 14px;
+    height: 16px;
+    background: var(--wood);
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    visibility: hidden;
+    animation: home-dialogue-nudge 0.8s steps(2, end) infinite;
+  }
+
+  .home-dialogue__choice:hover .home-dialogue__cursor,
+  .home-dialogue__choice:focus-visible .home-dialogue__cursor,
+  .home-dialogue__choices:not(:has(:hover, :focus-visible))
+    .home-dialogue__choice:first-child
+    .home-dialogue__cursor {
+    visibility: visible;
+  }
+
+  .home-dialogue__page {
+    margin-left: auto;
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    text-align: right;
+  }
+
+  .home-dialogue :global(.home-dialogue__skip) {
+    align-self: flex-end;
+    min-height: 44px;
+    padding: 4px 6px;
+    border: 0;
+    background: none;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: var(--text-sm);
+  }
+
+  @keyframes home-dialogue-bob {
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  @keyframes home-dialogue-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes home-dialogue-nudge {
+    50% {
+      transform: translateX(4px);
+    }
+  }
+
+  @media (width <= 560px) {
+    .home-dialogue :global(.home-dialogue__frame) {
+      padding: 10px;
+    }
+
+    .home-dialogue :global(.home-dialogue__frame > .frame-surface) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    /* The portrait and plate sit in one row that overlaps the frame's top edge. */
+    .home-dialogue__speaker {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-top: -44px;
+    }
+
+    .home-dialogue__plate {
+      position: static;
+      padding: 5px 12px 6px;
+      font-size: var(--text-xs);
+    }
+
+    .home-dialogue__portrait {
+      width: 72px;
+    }
+
+    .home-dialogue__parchment {
+      gap: 8px;
+      padding: 12px 12px 8px;
+    }
+
+    .home-dialogue__greeting {
+      font-size: var(--text-lg);
+    }
+
+    .home-dialogue__intro {
+      font-size: var(--text-md);
+    }
+
+    /* Same rules as the shared .sr-only utility: hidden on screen, still read aloud. */
+    .home-dialogue__prompt {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .home-dialogue__choices {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      padding-top: 6px;
+      border-top: 2px dashed var(--ornament);
+    }
+
+    .home-dialogue__choice {
+      padding-inline: 6px;
+      font-size: var(--text-md);
+    }
+
+    .home-dialogue__page {
+      font-size: var(--text-xs);
+    }
+  }
+</style>
