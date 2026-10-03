@@ -9,6 +9,7 @@ import {
   formatCount,
 } from '../src/utils/format';
 import { getActiveNavigationItem, getNavigationItem } from '../src/config/navigation';
+import { latestPosts, latestProject, readingDesk } from '../src/utils/home-previews';
 import { selectProjectImage } from '../src/utils/project-image';
 import { chapterStatusText, outlineSections, summarizeReading } from '../src/utils/outline';
 
@@ -191,4 +192,57 @@ test('chapter status labels show position, time left, and completion', () => {
   expect(chapterStatusText({ percent: 100, minutesLeft: 0, current: 5 }, 6, labels).remaining).toBe(
     '100% · Finished',
   );
+});
+
+test('latest posts are newest first and limited to the requested count', () => {
+  const post = (id: string, date: string) => ({ id, data: { publishedAt: new Date(date) } });
+  const posts = [post('old', '2026-01-01'), post('new', '2026-09-29'), post('mid', '2026-05-01')];
+  expect(latestPosts(posts, 2).map(({ id }) => id)).toEqual(['new', 'mid']);
+  expect(latestPosts(posts, 5)).toHaveLength(3);
+  expect(latestPosts([], 2)).toEqual([]);
+  expect(posts.map(({ id }) => id)).toEqual(['old', 'new', 'mid']);
+});
+
+test('the latest project is the newest dated one, undated last, featured breaking ties', () => {
+  const project = (id: string, featured: boolean, date?: string) => ({
+    id,
+    data: date ? { featured, publishedAt: new Date(date) } : { featured },
+  });
+  expect(
+    latestProject([
+      project('undated-featured', true),
+      project('older', true, '2026-01-01'),
+      project('newest', false, '2026-09-29'),
+    ])?.id,
+  ).toBe('newest');
+  expect(
+    latestProject([project('plain', false, '2026-09-29'), project('star', true, '2026-09-29')])?.id,
+  ).toBe('star');
+  expect(latestProject([project('plain', false), project('star', true)])?.id).toBe('star');
+  expect(latestProject([])).toBeUndefined();
+});
+
+test('the reading desk shows the current book and the two most recently finished', () => {
+  const book = (id: string, status: 'reading' | 'finished' | 'wishlist', finished?: string) => ({
+    id,
+    data: finished ? { status, finishedAt: new Date(finished) } : { status },
+  });
+  const desk = readingDesk(
+    [
+      book('wish', 'wishlist'),
+      book('first-read', 'reading'),
+      book('second-read', 'reading'),
+      book('undated', 'finished'),
+      book('old', 'finished', '2025-01-01'),
+      book('recent', 'finished', '2026-09-22'),
+      book('reviewed', 'finished', '2026-09-06'),
+    ],
+    new Set(['reviewed', 'old']),
+  );
+  expect(desk.current?.id).toBe('first-read');
+  expect(desk.finished.map(({ book: { id }, hasReview }) => [id, hasReview])).toEqual([
+    ['recent', false],
+    ['reviewed', true],
+  ]);
+  expect(readingDesk([book('wish', 'wishlist')], new Set())).toEqual({ finished: [] });
 });

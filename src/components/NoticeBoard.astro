@@ -1,0 +1,142 @@
+---
+import WoodFrame from './WoodFrame.astro';
+
+interface Props {
+  heading: string;
+  /** Static `/system/` specimen: no section landmark, id, or entrance animation. */
+  preview?: boolean;
+}
+
+const { heading, preview = false } = Astro.props;
+---
+
+<section
+  id={preview ? undefined : 'news'}
+  class="notice-board"
+  aria-labelledby={preview ? undefined : 'news-heading'}
+  data-notice-board={preview ? undefined : ''}
+>
+  <WoodFrame class="notice-board__frame" parchment={false}>
+    <div class="notice-board__title">
+      <span aria-hidden="true"></span>
+      <h2 id={preview ? undefined : 'news-heading'}>{heading}</h2>
+      <span aria-hidden="true"></span>
+    </div>
+    <div class="notice-board__grid">
+      <slot />
+    </div>
+  </WoodFrame>
+</section>
+
+<script>
+  // One class on the board starts the drop-in once it scrolls into view. Without
+  // JavaScript, or with reduced motion, the notes simply stay visible.
+  function watchNoticeBoards(): void {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const boards = document.querySelectorAll<HTMLElement>('[data-notice-board]');
+    if (boards.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('notice-board--arrived');
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.15 },
+    );
+    for (const board of boards) observer.observe(board);
+  }
+
+  watchNoticeBoards();
+</script>
+
+<style>
+  .notice-board {
+    scroll-margin-top: var(--page-top-space);
+  }
+
+  .notice-board :global(.notice-board__frame) {
+    padding: clamp(24px, 4vw, 44px) clamp(16px, 4vw, 48px) clamp(28px, 4vw, 52px);
+  }
+
+  .notice-board__title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+
+  .notice-board__title span {
+    flex: 0 1 120px;
+    height: 3px;
+    background: #e2c98f;
+  }
+
+  .notice-board__title h2 {
+    margin: 0;
+    color: var(--on-green);
+    font-size: clamp(var(--text-lg), 4vw, var(--text-2xl));
+    line-height: 1;
+    text-align: center;
+    text-shadow: 3px 3px var(--wood-dark);
+    text-transform: uppercase;
+  }
+
+  .notice-board__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 44px;
+  }
+
+  .notice-board__grid > :global(*:nth-child(1)) {
+    --note-rotation: -1.2deg;
+  }
+
+  .notice-board__grid > :global(*:nth-child(2)) {
+    --note-rotation: 1deg;
+  }
+
+  .notice-board__grid > :global(*:nth-child(3)) {
+    --note-rotation: 0.8deg;
+  }
+
+  .notice-board__grid > :global(*:nth-child(4)) {
+    --note-rotation: -0.9deg;
+  }
+
+  .notice-board--arrived .notice-board__grid > :global(*) {
+    animation: notice-board-drop 600ms cubic-bezier(0.2, 0.9, 0.3, 1.3) backwards;
+  }
+
+  .notice-board--arrived .notice-board__grid > :global(*:nth-child(2)) {
+    animation-delay: 150ms;
+  }
+
+  .notice-board--arrived .notice-board__grid > :global(*:nth-child(3)) {
+    animation-delay: 300ms;
+  }
+
+  .notice-board--arrived .notice-board__grid > :global(*:nth-child(4)) {
+    animation-delay: 450ms;
+  }
+
+  @keyframes notice-board-drop {
+    from {
+      opacity: 0;
+      transform: translateY(-36px) rotate(0deg);
+    }
+  }
+
+  @media (width <= 760px) {
+    .notice-board__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .notice-board__title {
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+  }
+</style>

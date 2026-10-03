@@ -1,0 +1,105 @@
+---
+interface Props {
+  kicker: string;
+}
+
+const { kicker } = Astro.props;
+---
+
+<article class="notice-note">
+  <span class="notice-note__nail" aria-hidden="true"></span>
+  <h3 class="notice-note__kicker">{kicker}</h3>
+  <div class="notice-note__content">
+    <slot />
+  </div>
+  {Astro.slots.has('actions') && (
+    <div class="notice-note__actions">
+      <slot name="actions" />
+    </div>
+  )}
+</article>
+
+<style>
+  .notice-note {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 30px 26px 24px;
+    border: 2px solid var(--parchment-edge);
+    background: radial-gradient(ellipse at 40% 30%, #fff4d0, transparent 70%), #f3dfa6;
+    box-shadow:
+      inset 0 0 22px #ba813340,
+      0 6px 0 #2a201b55,
+      0 14px 22px #17282050;
+    color: var(--ink);
+    transform: rotate(var(--note-rotation, 0deg));
+    transition: transform 200ms ease;
+    overflow-wrap: anywhere;
+  }
+
+  .notice-note:hover {
+    transform: rotate(0deg) translateY(-6px);
+  }
+
+  .notice-note__nail {
+    position: absolute;
+    top: -9px;
+    left: calc(50% - 9px);
+    box-sizing: border-box;
+    width: 18px;
+    height: 18px;
+    border: 3px solid #292522;
+    background: #737571;
+    box-shadow:
+      inset 2px 2px #c0c1b7,
+      2px 3px #261b13aa;
+  }
+
+  .notice-note__kicker {
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--font-heading);
+    font-size: var(--text-2xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .notice-note__content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .notice-note__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 22px;
+    margin-top: auto;
+  }
+
+  /* Action links share the pixel style; the CV button keeps its own RPG look. */
+  .notice-note__actions :global(a:not(.rpg-button)) {
+    color: var(--green-dark);
+    font-family: var(--font-heading);
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    text-decoration-thickness: 2px;
+    text-transform: uppercase;
+    text-underline-offset: 4px;
+  }
+
+  .notice-note__actions :global(a:not(.rpg-button):hover) {
+    color: var(--green);
+  }
+
+  /* Hover lifts the note but keeps its rotation when motion is reduced. */
+  @media (prefers-reduced-motion: reduce) {
+    .notice-note:hover {
+      transform: rotate(var(--note-rotation, 0deg)) translateY(-6px);
+    }
+  }
+</style>

@@ -1,6 +1,6 @@
 ---
 import type { ImageMetadata } from 'astro';
-import { Image } from 'astro:assets';
+import ProjectImageFrame from './ProjectImageFrame.astro';
 import type { ProjectImageSource } from '../utils/project-image';
 import { getDestinationType } from '../utils/project-links';
 
@@ -20,36 +20,16 @@ const verifiedLinks = links.flatMap((link) => {
   const destinationType = getDestinationType(link.url);
   return destinationType ? [{ ...link, destinationType }] : [];
 });
-
-// Decorative in both states: the linked image repeats a destination already listed as text.
-const imageProps = {
-  src: image,
-  alt: '',
-  widths: [304, 608],
-  sizes: '(max-width: 800px) 100vw, 304px',
-  loading: 'lazy' as const,
-};
-
-const primaryDestinationType = primaryUrl ? getDestinationType(primaryUrl) : undefined;
 ---
 
 <article class="project-card">
   <div class="project-card__layout">
-    <div class="project-card__image" data-image-source={imageSource}>
-      {primaryUrl && primaryDestinationType ? (
-        <a
-          href={primaryUrl}
-          tabindex="-1"
-          aria-hidden="true"
-          data-project-destination={primaryDestinationType}
-          data-project-trigger="image"
-        >
-          <Image {...imageProps} />
-        </a>
-      ) : (
-        <Image {...imageProps} />
-      )}
-    </div>
+    <ProjectImageFrame
+      image={image}
+      imageSource={imageSource}
+      primaryUrl={primaryUrl}
+      sizes="(max-width: 800px) 100vw, 304px"
+    />
     <div class="project-card__body">
       <h2>{title}</h2>
       <p>{summary}</p>
@@ -106,43 +86,6 @@ const primaryDestinationType = primaryUrl ? getDestinationType(primaryUrl) : und
   .project-card__layout {
     display: grid;
     gap: 18px;
-  }
-
-  .project-card__image {
-    position: relative;
-    aspect-ratio: 1200 / 630;
-    border: 3px solid var(--wood-dark);
-    box-shadow:
-      0 3px var(--wood-shadow),
-      3px 0 var(--parchment-edge);
-    overflow: hidden;
-  }
-
-  /* The inner highlight sits above the image, which would otherwise cover an inset shadow. */
-  .project-card__image::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 0 3px var(--parchment-light);
-    pointer-events: none;
-  }
-
-  /* The image link duplicates a listed link, so it is hidden from keyboard and assistive tech. */
-  .project-card__image a {
-    display: block;
-    height: 100%;
-    cursor: pointer;
-  }
-
-  .project-card__image:has(a:hover) {
-    border-color: var(--gold);
-  }
-
-  .project-card__image img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 
   .project-card p {

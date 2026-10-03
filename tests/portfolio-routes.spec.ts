@@ -410,7 +410,7 @@ test('project cards show one decorative image beside the text on desktop and abo
     await page.setViewportSize({ width, height: 992 });
     await page.goto('./projects/');
     for (const card of await cards.all()) {
-      const image = card.locator('.project-card__image img');
+      const image = card.locator('.project-image img');
       await expect(image).toHaveCount(1);
       await expect(image).toHaveAttribute('alt', '');
       await image.scrollIntoViewIfNeeded();
@@ -464,7 +464,7 @@ test('project card images link to the main destination without adding a focus st
   for (const destination of imageLinkDestinations) {
     const imageLink = cards
       .filter({ has: page.getByRole('heading', { name: destination.title }) })
-      .locator('.project-card__image a');
+      .locator('.project-image a');
     await expect(imageLink).toHaveCount(1);
     await expect(imageLink).toHaveAttribute('href', destination.href);
     await expect(imageLink).toHaveAttribute('tabindex', '-1');
@@ -483,7 +483,7 @@ test('project card images link to the main destination without adding a focus st
       probe.remove();
       return color;
     }, token);
-  const frame = cards.first().locator('.project-card__image');
+  const frame = cards.first().locator('.project-image');
   const frameBorder = () => frame.evaluate((element) => getComputedStyle(element).borderTopColor);
   expect(await frameBorder()).toBe(await tokenColor('--wood-dark'));
   await frame.locator('a').hover();
@@ -539,7 +539,7 @@ test('project card image links report the image trigger to analytics', async ({ 
   const card = page.locator('.project-card').filter({
     has: page.getByRole('heading', { name: imageLinkDestinations[0].title }),
   });
-  await card.locator('.project-card__image a').click();
+  await card.locator('.project-image a').click();
   await card.getByRole('link', { name: /Open the app/ }).click();
   const events = await page.evaluate(() =>
     'capturedEvents' in window ? window.capturedEvents : undefined,
@@ -612,13 +612,13 @@ test('Project card specimens expose linked and read-only states', async ({ page 
   const specimens = page.locator('.project-card');
   const linkedImage = specimens
     .filter({ has: page.getByRole('heading', { name: 'Portfolio source' }) })
-    .locator('.project-card__image a');
+    .locator('.project-image a');
   await expect(linkedImage).toHaveAttribute('href', 'https://dsa-learning.bernardosevero.dev/');
   await expect(linkedImage).toHaveAttribute('tabindex', '-1');
   await expect(linkedImage).toHaveAttribute('aria-hidden', 'true');
   const readOnlyImage = specimens
     .filter({ has: page.getByRole('heading', { name: 'Repository unavailable' }) })
-    .locator('.project-card__image img');
+    .locator('.project-image img');
   await expect(readOnlyImage).toHaveCount(1);
   expect(await readOnlyImage.evaluate((image) => image.closest('a') === null)).toBe(true);
 });
@@ -630,9 +630,7 @@ for (const width of [390, 1586]) {
     await page.setViewportSize({ width, height: 992 });
     for (const path of ['projects/', 'system/']) {
       await page.goto(`./${path}`, { waitUntil: 'domcontentloaded' });
-      await expect(
-        page.locator('.project-card__image a[aria-hidden="true"]').first(),
-      ).toBeVisible();
+      await expect(page.locator('.project-image a[aria-hidden="true"]').first()).toBeVisible();
       const accessibility = await new AxeBuilder({ page })
         .include('.project-card')
         .withRules(['aria-hidden-focus'])

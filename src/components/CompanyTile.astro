@@ -6,17 +6,24 @@ import { companyMonogram } from '../utils/format';
 interface Props {
   company: string;
   logo?: ImageMetadata | undefined;
+  /** Name the tile for assistive technology when no company name sits beside it. */
+  labelled?: boolean;
 }
 
-// Decorative in both forms: the company name always sits beside the tile.
-const { company, logo } = Astro.props;
+// Decorative by default: the company name usually sits beside the tile.
+const { company, logo, labelled = false } = Astro.props;
 ---
 
 <span class="company-tile">
-  {logo ? (
-    <Image src={logo} alt="" width={28} height={28} />
-  ) : (
-    <span aria-hidden="true">{companyMonogram(company)}</span>
+  {logo && <Image src={logo} alt={labelled ? company : ''} width={28} height={28} />}
+  {!logo && (
+    <span
+      role={labelled ? 'img' : undefined}
+      aria-label={labelled ? company : undefined}
+      aria-hidden={labelled ? undefined : 'true'}
+    >
+      {companyMonogram(company)}
+    </span>
   )}
 </span>
 

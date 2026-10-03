@@ -1,9 +1,19 @@
 ---
 import PortfolioPage from '../layouts/PortfolioPage.astro';
 import HomeDialogue, { type DialogueChoice } from '../components/HomeDialogue.astro';
-import { getNavigationItem } from '../config/navigation';
+import NoticeBoard from '../components/NoticeBoard.astro';
+import NoticeNote from '../components/NoticeNote.astro';
+import ProjectImageFrame from '../components/ProjectImageFrame.astro';
+import CompanyTile from '../components/CompanyTile.astro';
+import CvDownloadLink from '../components/CvDownloadLink.astro';
+import { getNavigationItem, type NavigationItemId } from '../config/navigation';
+import { isVisibleContent } from '../utils/content';
+import { formatCalendarDate } from '../utils/format';
+import { latestPosts, latestProject, readingDesk } from '../utils/home-previews';
+import { getDestinationType, primaryProjectUrl } from '../utils/project-links';
+import { resolveProjectImage } from '../utils/project-images';
 import { basePath } from '../utils/paths';
-import { getEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import '../styles/portfolio.css';
 
 const home = await getEntry('pages', 'home');
@@ -15,6 +25,28 @@ const choices: DialogueChoice[] = home.data.choices.map(({ label, destination })
   const item = getNavigationItem(destination);
   return { label, pageName: item.label, href: `${basePath}${item.path}` };
 });
+
+const about = await getEntry('pages', 'about');
+if (!about || about.data.kind !== 'about')
+  throw new Error('The About content entry is missing or invalid.');
+const sectionHref = (id: NavigationItemId) => `${basePath}${getNavigationItem(id).path}`;
+
+// Notice board previews, read at build time from visible (non-draft) entries only.
+const posts = latestPosts(await getCollection('posts', isVisibleContent), 2);
+
+const project = latestProject(await getCollection('projects', isVisibleContent));
+const projectUrl = project ? primaryProjectUrl(project.data) : undefined;
+const projectDestination = projectUrl ? getDestinationType(projectUrl) : undefined;
+const projectImage = project ? resolveProjectImage(project.id, project.data.image) : undefined;
+const projectActionLabel = projectDestination === 'live_application' ? 'Open the app' : 'Open';
+
+const reviewIds = new Set(
+  (await getCollection('bookReviews'))
+    .filter((review) => review.body?.trim())
+    .map((review) => review.id),
+);
+const desk = readingDesk(await getCollection('books', isVisibleContent), reviewIds);
+const currentCover = desk.current?.data.coverUrl;
 
 // Positions are percentages of the village art, tuned over the left house and lantern.
 // Phones crop the cover-fitted art to its middle third, so the four fireflies kept
@@ -58,7 +90,149 @@ const fireflies = [
   </div>
   <div class="home-first-screen">
     <HomeDialogue greeting={greeting} intro={intro} prompt={prompt} choices={choices} />
+    <a class="home-scroll-hint" href="#news">
+      News from the village
+      <svg width="22" height="16" viewBox="0 0 22 16" aria-hidden="true" focusable="false">
+        <path d="M2 2h4v4h4v4h2V6h4V2h4v4h-4v4h-4v4h-2v-4H6V6H2Z" fill="currentColor"></path>
+      </svg>
+    </a>
   </div>
+
+  <NoticeBoard heading="News from the village">
+    <NoticeNote kicker="Fresh from the blog">
+      {posts.length === 0 && <p class="home-note__text">No posts yet.</p>}
+      {posts.map((post, index) => (
+        <div>
+          <p class="home-note__meta">
+            {formatCalendarDate(post.data.publishedAt, 'short')} · {post.data.readingMinutes} min
+            read
+          </p>
+          <p class="home-note__title">
+            <a href={`${basePath}posts/${post.id}/`}>{post.data.title}</a>
+          </p>
+          {index === 0 && <p class="home-note__text">{post.data.description}</p>}
+        </div>
+      ))}
+      <Fragment slot="actions">
+        <a href={sectionHref('posts')}>
+          All posts <span aria-hidden="true">→</span>
+        </a>
+      </Fragment>
+    </NoticeNote>
+
+    <NoticeNote kicker="Latest quest">
+      {project && projectImage ? (
+        <>
+          <ProjectImageFrame
+            image={projectImage.image}
+            imageSource={projectImage.source}
+            primaryUrl={projectUrl}
+            sizes="(max-width: 760px) 90vw, 460px"
+          />
+          <p class="home-note__title">{project.data.title}</p>
+          <p class="home-note__text">{project.data.summary}</p>
+        </>
+      ) : (
+        <p class="home-note__text">No published projects yet.</p>
+      )}
+      <Fragment slot="actions">
+        {projectUrl && projectDestination && (
+          <a href={projectUrl}>
+            {projectActionLabel} <span aria-hidden="true">↗</span>
+          </a>
+        )}
+        <a href={sectionHref('projects')}>
+          All projects <span aria-hidden="true">→</span>
+        </a>
+      </Fragment>
+    </NoticeNote>
+
+    <NoticeNote kicker="On the reading desk">
+      {desk.current && (
+        <div class="home-note__book">
+          {currentCover && (
+            <img
+              class="home-note__cover"
+              src={currentCover}
+              alt=""
+              width="64"
+              height="96"
+              loading="lazy"
+            />
+          )}
+          {!currentCover && (
+            <svg
+              class="home-note__book-icon"
+              width="64"
+              height="80"
+              viewBox="0 0 16 20"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M2 1h11v16H2Z" fill="#2e704d"></path>
+              <path d="M3 2h9v14H3Z" fill="#429365"></path>
+              <path d="M2 17h12v2H3Z" fill="#f9e5b1"></path>
+              <path d="M13 2h1v16h-1Z" fill="#173e2d"></path>
+              <path d="M5 5h5v1H5Zm0 2h5v1H5Z" fill="#f8c454"></path>
+              <path d="M7 1h2v6l-1-1-1 1Z" fill="#a33b2b"></path>
+            </svg>
+          )}
+          <div>
+            <p class="home-note__meta">Reading now</p>
+            <p class="home-note__title">{desk.current.data.title}</p>
+            <p class="home-note__text">{desk.current.data.author}</p>
+          </div>
+        </div>
+      )}
+      {!desk.current && <p class="home-note__text">Nothing on the desk right now.</p>}
+      <div class="home-note__finished">
+        <p class="home-note__meta">Recently finished</p>
+        {desk.finished.length === 0 && <p class="home-note__text">No finished books yet.</p>}
+        {desk.finished.map(({ book, hasReview }) => (
+          <p class="home-note__text">
+            <strong>{book.data.title}</strong> · {book.data.author}
+            {book.data.rating !== undefined && (
+              <>
+                {' · '}
+                <span class="home-note__star" aria-hidden="true"></span>
+                <span aria-hidden="true">{book.data.rating}</span>
+                <span class="sr-only">{book.data.rating} out of 5 stars</span>
+              </>
+            )}
+            {hasReview && (
+              <>
+                {' · '}
+                <a href={`${basePath}reading/${book.id}/`}>read the review</a>
+              </>
+            )}
+          </p>
+        ))}
+      </div>
+      <Fragment slot="actions">
+        <a href={sectionHref('books')}>
+          Visit the library <span aria-hidden="true">→</span>
+        </a>
+      </Fragment>
+    </NoticeNote>
+
+    <NoticeNote kicker="Character sheet">
+      <p class="home-note__title">{about.data.headline}</p>
+      <p class="home-note__text">{about.data.teaser}</p>
+      <ul class="home-note__companies" aria-label="Past and current companies">
+        {about.data.experience.map(({ company, logo }) => (
+          <li>
+            <CompanyTile company={company} logo={logo} labelled />
+          </li>
+        ))}
+      </ul>
+      <Fragment slot="actions">
+        <CvDownloadLink variant="button" />
+        <a href={sectionHref('about')}>
+          Read the full sheet <span aria-hidden="true">→</span>
+        </a>
+      </Fragment>
+    </NoticeNote>
+  </NoticeBoard>
 </PortfolioPage>
 
 <style>
@@ -93,8 +267,134 @@ const fireflies = [
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    gap: clamp(12px, 3vh, 28px);
     min-height: calc(100svh - var(--home-chrome));
-    padding-bottom: clamp(16px, 6vh, 64px);
+    padding-bottom: 12px;
+  }
+
+  .home-scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    align-self: center;
+    color: var(--on-green);
+    font-size: var(--text-md);
+    text-decoration: none;
+    text-shadow: 2px 2px #172820;
+  }
+
+  .home-scroll-hint svg {
+    animation: home-hop 1.4s ease-in-out infinite;
+  }
+
+  .home-scroll-hint:hover {
+    color: var(--gold-highlight);
+  }
+
+  @keyframes home-hop {
+    50% {
+      transform: translateY(6px);
+    }
+  }
+
+  /* The board starts below the first screen, with the shared page gap. */
+  :global(.home-shell) > :global(.notice-board) {
+    margin-top: var(--page-section-gap);
+  }
+
+  .home-note__meta {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    line-height: 1;
+  }
+
+  .home-note__title {
+    margin-top: 4px;
+    font-family: var(--font-text);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .home-note__title a {
+    color: var(--ink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .home-note__title a:hover {
+    color: var(--green-dark);
+  }
+
+  .home-note__text {
+    margin-top: 4px;
+    color: var(--wood-shadow);
+    font-family: var(--font-text);
+    font-size: var(--text-xs);
+    line-height: 1.45;
+  }
+
+  .home-note__text a {
+    color: var(--green-dark);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .home-note__book {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+  }
+
+  .home-note__cover {
+    display: block;
+    width: 64px;
+    height: auto;
+    border: 2px solid var(--wood-dark);
+    box-shadow: 0 3px var(--wood-shadow);
+  }
+
+  .home-note__book-icon {
+    image-rendering: pixelated;
+  }
+
+  .home-note__finished {
+    display: grid;
+    gap: 6px;
+    padding-top: 12px;
+    border-top: 2px dashed var(--parchment-edge);
+  }
+
+  .home-note__star {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background: var(--gold);
+    clip-path: polygon(
+      50% 0,
+      63% 36%,
+      100% 38%,
+      70% 61%,
+      80% 100%,
+      50% 77%,
+      20% 100%,
+      30% 61%,
+      0 38%,
+      37% 36%
+    );
+    vertical-align: -1px;
+  }
+
+  .home-note__companies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   /* The scene layer drifts with the backdrop. Its inner box is sized like the
@@ -217,11 +517,14 @@ const fireflies = [
     }
   }
 
-  @media (width <= 560px) {
-    .home-first-screen {
-      padding-bottom: 12px;
+  /* The scroll hint is the first thing dropped when the first screen is crowded. */
+  @media (width <= 560px), (height < 700px) {
+    .home-scroll-hint {
+      display: none;
     }
+  }
 
+  @media (width <= 560px) {
     .home-scene__smoke,
     .home-scene__firefly:nth-child(n + 9) {
       display: none;
