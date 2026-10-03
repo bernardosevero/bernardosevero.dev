@@ -1,5 +1,243 @@
 ---
-import CharacterSheet from '../layouts/CharacterSheet.astro';
+import PortfolioPage from '../layouts/PortfolioPage.astro';
+import HomeDialogue, { type DialogueChoice } from '../components/HomeDialogue.astro';
+import { getNavigationItem } from '../config/navigation';
+import { basePath } from '../utils/paths';
+import { getEntry } from 'astro:content';
+import '../styles/portfolio.css';
+
+const home = await getEntry('pages', 'home');
+if (!home || home.data.kind !== 'home')
+  throw new Error('The Home content entry is missing or invalid.');
+const { greeting, intro, prompt } = home.data;
+
+const choices: DialogueChoice[] = home.data.choices.map(({ label, destination }) => {
+  const item = getNavigationItem(destination);
+  return { label, pageName: item.label, href: `${basePath}${item.path}` };
+});
+
+// Positions are percentages of the village art, tuned over the left house and lantern.
+// Phones crop the cover-fitted art to its middle third, so the four fireflies kept
+// there use `phone` positions inside that band.
+const fireflies = [
+  { left: 9, top: 47, phone: { left: 40, top: 44 } },
+  { left: 21, top: 38, phone: { left: 56, top: 36 } },
+  { left: 14, top: 62, phone: { left: 46, top: 60 } },
+  { left: 31, top: 55, phone: { left: 60, top: 52 } },
+  { left: 6, top: 30 },
+  { left: 26, top: 70 },
+  { left: 37, top: 41 },
+  { left: 18, top: 79 },
+  { left: 41, top: 66 },
+  { left: 3, top: 58 },
+];
 ---
 
-<CharacterSheet />
+<PortfolioPage
+  title="Bernardo Severo — Product Engineer"
+  description={intro}
+  mainClass="home-page"
+  shellClass="home-shell"
+>
+  <div class="home-scene" aria-hidden="true">
+    <div class="home-scene__art">
+      <span class="home-scene__glow"></span>
+      {[0, 1, 2].map((index) => (
+        <span class="home-scene__smoke" style={`--delay: ${index * 1.5}s`}></span>
+      ))}
+      {fireflies.map(({ left, top, phone }, index) => (
+        <span
+          class="home-scene__firefly"
+          style={[
+            `--left: ${left}%; --top: ${top}%; --delay: ${index * 0.7}s`,
+            phone ? `--phone-left: ${phone.left}%; --phone-top: ${phone.top}%` : '',
+          ].join('; ')}
+        ></span>
+      ))}
+    </div>
+  </div>
+  <div class="home-first-screen">
+    <HomeDialogue greeting={greeting} intro={intro} prompt={prompt} choices={choices} />
+  </div>
+</PortfolioPage>
+
+<style>
+  /* Everything above the first screen: the page top space, the rendered navigation,
+     and the gap before content. Navigation heights measured in Chromium with loaded
+     fonts: 128px in the six-column layout, 256px in the two-column layout, and 248px
+     once the phone-density navigation padding applies at 520px. */
+  :global(.home-page) {
+    --home-chrome: calc(var(--page-top-space) + 128px + var(--page-section-gap));
+  }
+
+  /* SiteNavigation switches to two columns when its 760px container query matches,
+     which happens at viewports up to 838px (frame padding plus 32px page gutters). */
+  @media (width <= 838px) {
+    :global(.home-page) {
+      --home-chrome: calc(var(--page-top-space) + 256px + var(--page-section-gap));
+    }
+  }
+
+  @media (width <= 520px) {
+    :global(.home-page) {
+      --home-chrome: calc(var(--page-top-space) + 248px + var(--page-section-gap));
+    }
+  }
+
+  :global(.home-page)::before {
+    transform-origin: 30% 40%;
+    animation: home-drift 36s ease-in-out infinite alternate;
+  }
+
+  .home-first-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: calc(100svh - var(--home-chrome));
+    padding-bottom: clamp(16px, 6vh, 64px);
+  }
+
+  /* The scene layer drifts with the backdrop. Its inner box is sized like the
+     cover-fitted village art, so percentage positions land on the same pixels. */
+  .home-scene {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    container-type: size;
+    pointer-events: none;
+    transform-origin: 30% 40%;
+    animation: home-drift 36s ease-in-out infinite alternate;
+  }
+
+  .home-scene__art {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100cqw, calc(100cqh * 1584 / 993));
+    aspect-ratio: 1584 / 993;
+    translate: -50% -50%;
+  }
+
+  .home-scene__glow {
+    position: absolute;
+    top: 20%;
+    left: 16.4%;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: radial-gradient(#fff0a0cc, #f8c45400 70%);
+    translate: -50% -50%;
+    animation: home-glow 2.6s ease-in-out infinite alternate;
+  }
+
+  .home-scene__smoke {
+    position: absolute;
+    top: 25.6%;
+    left: 26.9%;
+    width: 12px;
+    height: 12px;
+    background: #e9e2cf;
+    opacity: 0;
+    animation: home-smoke 4.5s linear var(--delay) infinite;
+  }
+
+  .home-scene__firefly {
+    position: absolute;
+    top: var(--top);
+    left: var(--left);
+    width: 6px;
+    height: 6px;
+    background: var(--gold-highlight);
+    box-shadow:
+      0 0 0 2px #f8c45466,
+      0 0 12px 4px #f8c45455;
+    opacity: 0;
+    animation: home-firefly 7s ease-in-out var(--delay) infinite;
+  }
+
+  @keyframes home-drift {
+    from {
+      transform: scale(1);
+    }
+
+    to {
+      transform: scale(1.07) translate(-1.5%, -1%);
+    }
+  }
+
+  @keyframes home-glow {
+    from {
+      opacity: 0.35;
+      transform: scale(0.9);
+    }
+
+    to {
+      opacity: 0.85;
+      transform: scale(1.15);
+    }
+  }
+
+  @keyframes home-smoke {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0.6);
+    }
+
+    15% {
+      opacity: 0.75;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(16px, -70px) scale(1.6);
+    }
+  }
+
+  @keyframes home-firefly {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0);
+    }
+
+    20% {
+      opacity: 1;
+    }
+
+    50% {
+      transform: translate(18px, -26px);
+    }
+
+    80% {
+      opacity: 0.9;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(-10px, -52px);
+    }
+  }
+
+  @media (width <= 560px) {
+    .home-first-screen {
+      padding-bottom: 12px;
+    }
+
+    .home-scene__smoke,
+    .home-scene__firefly:nth-child(n + 9) {
+      display: none;
+    }
+
+    .home-scene__firefly {
+      top: var(--phone-top, var(--top));
+      left: var(--phone-left, var(--left));
+    }
+  }
+
+  /* The global rule stops every animation; the static glow would remain, so the
+     whole decorative layer leaves with the motion. */
+  @media (prefers-reduced-motion: reduce) {
+    .home-scene {
+      display: none;
+    }
+  }
+</style>

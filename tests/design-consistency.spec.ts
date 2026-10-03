@@ -42,6 +42,7 @@ for (const width of [320, 390, 760, 1024, 1586]) {
     await page.setViewportSize({ width, height: 992 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     let baseline: unknown;
+    let materialBaseline: unknown;
     let projectNavigation: Awaited<ReturnType<typeof navigationAppearance>> | undefined;
     for (const route of [
       '',
@@ -58,7 +59,8 @@ for (const width of [320, 390, 760, 1024, 1586]) {
       await page.evaluate(() => document.fonts.ready);
       await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(1);
       const menu = page.getByRole('navigation', { name: 'Main navigation' });
-      await expect(menu.getByRole('link')).toHaveCount(5);
+      // Five section buttons plus the Home tile.
+      await expect(menu.getByRole('link')).toHaveCount(6);
       await expect(menu.locator('button')).toHaveCount(0);
       await expect(menu.locator('[aria-current="page"]')).toHaveCount(1);
       await expect(page.getByRole('link', { name: /Return to the Personal Log/ })).toHaveCount(0);
@@ -81,17 +83,19 @@ for (const width of [320, 390, 760, 1024, 1586]) {
       await page.mouse.move(0, 0);
       const geometry = await page.evaluate(() => {
         const navigation = document.querySelector('.base-navigation')!;
+        // Home's first screen holds the dialogue instead of a page-wide content frame.
         const frame = document.querySelector(
-          '.portfolio-shell > .wood-frame, .portfolio-shell .codex-frame',
+          '.portfolio-shell > .wood-frame, .portfolio-shell .codex-frame, .portfolio-shell > .home-first-screen',
         )!;
+        const contentFrame = !frame.matches('.home-first-screen');
         const bounds = navigation.getBoundingClientRect();
         const content = frame.getBoundingClientRect();
         const background = getComputedStyle(document.querySelector('.portfolio-page')!, '::before');
         const vignette = getComputedStyle(document.querySelector('.portfolio-page')!, '::after');
         const timber = getComputedStyle(frame);
-        const surface = getComputedStyle(
-          frame.querySelector('.codex-parchment') ?? frame.querySelector('.frame-surface')!,
-        );
+        const surfaceElement =
+          frame.querySelector('.codex-parchment') ?? frame.querySelector('.frame-surface');
+        const surface = surfaceElement ? getComputedStyle(surfaceElement) : undefined;
         const gap = parseFloat(
           getComputedStyle(document.documentElement).getPropertyValue('--page-section-gap'),
         );
@@ -109,12 +113,21 @@ for (const width of [320, 390, 760, 1024, 1586]) {
           backgroundOpacity: background.opacity,
           vignette: vignette.backgroundImage,
           vignetteOpacity: vignette.opacity,
-          timber: [timber.padding, timber.borderWidth, timber.backgroundImage],
-          parchment: [surface.backgroundImage, surface.backgroundColor, surface.opacity],
+          material: contentFrame
+            ? {
+                timber: [timber.padding, timber.borderWidth, timber.backgroundImage],
+                parchment: [surface?.backgroundImage, surface?.backgroundColor, surface?.opacity],
+              }
+            : undefined,
         };
       });
-      if (baseline) expect(geometry).toEqual(baseline);
-      else baseline = geometry;
+      const { material, ...shared } = geometry;
+      if (baseline) expect(shared).toEqual(baseline);
+      else baseline = shared;
+      if (material) {
+        if (materialBaseline) expect(material).toEqual(materialBaseline);
+        else materialBaseline = material;
+      }
       if (route === 'projects/')
         projectNavigation = await navigationAppearance(page.locator('.site-navigation'));
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
@@ -135,7 +148,7 @@ for (const width of [320, 390, 760, 1024, 1586]) {
     await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(1);
     await expect(
       page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link'),
-    ).toHaveCount(5);
+    ).toHaveCount(6);
     await expect(
       page.getByRole('navigation', { name: 'Main navigation' }).locator('[aria-current="page"]'),
     ).toHaveCount(1);

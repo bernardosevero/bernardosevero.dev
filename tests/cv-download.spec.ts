@@ -14,7 +14,8 @@ const asset: CvAsset = {
   downloadName: 'bernardo-severo-cv.pdf',
 };
 const run = promisify(execFile);
-const cvLinkCounts: Record<string, number> = { './': 1, './about/': 1, './system/': 2 };
+// Home's dialogue has no CV action; System shows both variants.
+const cvLinkCounts: Record<string, number> = { './': 0, './about/': 1, './system/': 2 };
 
 // A blank PDF created only inside isolated test output, never in public/.
 function pdfFixture(): Buffer {
@@ -63,6 +64,7 @@ test('production CV availability matches explicit configuration without JavaScri
       // System shows the icon and button variants; content pages show one action.
       const links = page.getByRole('link', { name: 'Download CV (PDF)', exact: true });
       await expect(links).toHaveCount(cvAsset ? cvLinkCounts[route] : 0);
+      if (route === './') continue;
       const link = links.first();
       if (cvAsset) {
         const response = await context.request.get((await link.getAttribute('href')) || '');
@@ -159,7 +161,11 @@ for (const base of ['/', '/bernardosevero.dev/']) {
           page.on('response', (response) => {
             if (response.status() >= 400) failures.push(response.url());
           });
-          for (const route of ['', 'about/', 'system/']) {
+          await page.goto(`${origin}${base}`);
+          await expect(
+            page.getByRole('link', { name: 'Download CV (PDF)', exact: true }),
+          ).toHaveCount(0);
+          for (const route of ['about/', 'system/']) {
             await page.goto(`${origin}${base}${route}`);
             const links = page.getByRole('link', { name: 'Download CV (PDF)', exact: true });
             await expect(links).toHaveCount(cvLinkCounts[`./${route}`]);
@@ -188,16 +194,11 @@ for (const base of ['/', '/bernardosevero.dev/']) {
                 await expect(profile).toHaveAttribute('target', '_blank');
                 await expect(profile).toHaveAttribute('rel', 'noreferrer');
               }
-              // Home keeps the CV after GitHub; on the About CV page the button leads the actions.
-              if (route === 'about/') {
-                await link.focus();
-                await page.keyboard.press('Tab');
-                await expect(linkedIn).toBeFocused();
-                await page.keyboard.press('Shift+Tab');
-              } else {
-                await github.focus();
-                await page.keyboard.press('Tab');
-              }
+              // On the About CV page the button leads the actions.
+              await link.focus();
+              await page.keyboard.press('Tab');
+              await expect(linkedIn).toBeFocused();
+              await page.keyboard.press('Shift+Tab');
             } else await link.focus();
             await expect(link).toBeFocused();
             expect(
@@ -221,30 +222,13 @@ for (const base of ['/', '/bernardosevero.dev/']) {
                 expect(
                   await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
                 ).toBe(true);
-                if (route === '') {
-                  const heading = (await page
-                    .getByRole('heading', { name: 'About me', exact: true })
-                    .boundingBox())!;
-                  for (const action of await page.locator('#contact a').all()) {
-                    const box = (await action.boundingBox())!;
-                    expect(box.width).toBeGreaterThanOrEqual(40);
-                    expect(box.height).toBeGreaterThanOrEqual(40);
-                    expect(
-                      box.x >= heading.x + heading.width || box.y >= heading.y + heading.height,
-                    ).toBe(true);
-                  }
-                }
                 if ([320, 375, 1586].includes(width)) {
-                  const specimenSelectors: Record<string, string> = {
-                    '': '.about-heading-row',
-                    'about/': '#contact',
-                  };
                   const specimen =
                     route === 'system/'
                       ? page.locator('article').filter({ has: link }).first()
-                      : page.locator(specimenSelectors[route] ?? '#contact');
+                      : page.locator('#contact');
                   await specimen.screenshot({
-                    path: testInfo.outputPath(`${route.replace('/', '') || 'home'}-${width}.png`),
+                    path: testInfo.outputPath(`${route.replace('/', '')}-${width}.png`),
                   });
                 }
               }

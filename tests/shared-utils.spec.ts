@@ -8,7 +8,7 @@ import {
   formatCalendarDate,
   formatCount,
 } from '../src/utils/format';
-import { getActiveNavigationItem } from '../src/config/navigation';
+import { getActiveNavigationItem, getNavigationItem } from '../src/config/navigation';
 import { selectProjectImage } from '../src/utils/project-image';
 import { chapterStatusText, outlineSections, summarizeReading } from '../src/utils/outline';
 
@@ -18,17 +18,23 @@ test('base paths preserve root and GitHub Pages navigation', () => {
     expect(base).toBe(path === '/' ? '/' : '/bernardosevero.dev/');
     expect(getActiveNavigationItem(`${base}reading/example/`, path)).toBe('books');
     expect(getActiveNavigationItem(`${base}projects/example/`, path)).toBe('projects');
-    expect(getActiveNavigationItem(base, path)).toBe('about');
+    expect(getActiveNavigationItem(base, path)).toBe('home');
   }
 });
 
-test('each navigation item owns its routes and About is the fallback', () => {
+test('each navigation item owns its routes and Home covers the root and unknown routes', () => {
   for (const base of ['/', '/bernardosevero.dev/']) {
     expect(getActiveNavigationItem(`${base}posts/example/`, base)).toBe('posts');
     expect(getActiveNavigationItem(`${base}system/`, base)).toBe('system');
     expect(getActiveNavigationItem(`${base}about/`, base)).toBe('about');
-    expect(getActiveNavigationItem(`${base}missing/`, base)).toBe('about');
+    expect(getActiveNavigationItem(base, base)).toBe('home');
+    expect(getActiveNavigationItem(`${base}missing/`, base)).toBe('home');
   }
+});
+
+test('navigation items resolve by id', () => {
+  expect(getNavigationItem('books')).toEqual({ id: 'books', label: 'Books', path: 'reading/' });
+  expect(getNavigationItem('about').path).toBe('about/');
 });
 
 test('drafts are excluded even when old content requests a preview', () => {
