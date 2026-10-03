@@ -79,14 +79,21 @@ const bookReviews = defineCollection({
   loader: glob({ base: './src/content/book-reviews', pattern: '**/*.md' }),
 });
 
+// Home choices may only point at public sections; the System specimen route stays out.
+const homeDestinations = ['projects', 'posts', 'books', 'about'] as const;
+
 const pages = defineCollection({
   loader: glob({ base: './src/content/pages', pattern: '**/*.md' }),
-  schema: ({ image }) =>
-    z.object({
+  schema: ({ image }) => {
+    const aboutSchema = z.object({
       kind: z.literal('about'),
       name: z.string(),
       title: z.string(),
       base: z.string(),
+      location: z.string(),
+      headline: z.string(),
+      summary: z.string(),
+      teaser: z.string(),
       focus: z.array(z.string()),
       description: z.string(),
       strengths: z.array(
@@ -102,8 +109,31 @@ const pages = defineCollection({
           period: z.string(),
           description: z.string(),
           logo: image().optional(),
+          location: z.string(),
+          employment: z.string().optional(),
+          highlights: z.array(z.string()).min(1),
+          tech: z.array(z.string()).default([]),
         }),
       ),
+      skills: z
+        .array(
+          z.object({
+            group: z.string(),
+            items: z.array(z.string()).min(1),
+          }),
+        )
+        .min(1),
+      education: z
+        .array(
+          z.object({
+            degree: z.string(),
+            school: z.string(),
+            location: z.string(),
+            period: z.string(),
+            coursework: z.string().optional(),
+          }),
+        )
+        .default([]),
       specializations: z.array(z.string()),
       tools: z.array(z.enum(toolNames)),
       links: z.array(
@@ -112,7 +142,25 @@ const pages = defineCollection({
           url: z.url(),
         }),
       ),
-    }),
+    });
+
+    const homeSchema = z.object({
+      kind: z.literal('home'),
+      greeting: z.string(),
+      intro: z.string(),
+      prompt: z.string(),
+      choices: z
+        .array(
+          z.object({
+            label: z.string(),
+            destination: z.enum(homeDestinations),
+          }),
+        )
+        .length(4),
+    });
+
+    return z.discriminatedUnion('kind', [aboutSchema, homeSchema]);
+  },
 });
 
 export const collections = { posts, projects, books, bookReviews, pages };

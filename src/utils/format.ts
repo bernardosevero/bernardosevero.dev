@@ -25,3 +25,41 @@ export function companyMonogram(company: string): string {
     .map((word) => Array.from(word)[0]?.toUpperCase() ?? '')
     .join('');
 }
+
+export interface TextRun {
+  text: string;
+  strong: boolean;
+}
+
+const emphasisMarker = '**';
+
+// Content highlights mark metrics with paired `**…**`. Splitting into runs lets layouts
+// render <strong> without set:html. An unpaired marker stays literal text.
+export function emphasisRuns(text: string): TextRun[] {
+  const segments = text.split(emphasisMarker);
+  const hasUnpairedMarker = segments.length % 2 === 0;
+  const pairedSegments = hasUnpairedMarker ? segments.slice(0, -2) : segments;
+  const runs = pairedSegments.map((segment, index) => ({
+    text: segment,
+    strong: index % 2 === 1,
+  }));
+
+  if (hasUnpairedMarker) {
+    // The last marker has no partner, so it rejoins the text on both sides of it.
+    runs.push({ text: segments.slice(-2).join(emphasisMarker), strong: false });
+  }
+
+  return mergePlainRuns(runs.filter((run) => run.text.length > 0));
+}
+
+function mergePlainRuns(runs: TextRun[]): TextRun[] {
+  return runs.reduce<TextRun[]>((merged, run) => {
+    const previous = merged.at(-1);
+    if (previous && !previous.strong && !run.strong) {
+      previous.text += run.text;
+    } else {
+      merged.push({ ...run });
+    }
+    return merged;
+  }, []);
+}
