@@ -14,6 +14,7 @@ const asset: CvAsset = {
   downloadName: 'bernardo-severo-cv.pdf',
 };
 const run = promisify(execFile);
+const cvLinkCounts: Record<string, number> = { './': 1, './about/': 1, './system/': 2 };
 
 // A blank PDF created only inside isolated test output, never in public/.
 function pdfFixture(): Buffer {
@@ -59,8 +60,10 @@ test('production CV availability matches explicit configuration without JavaScri
     const page = await context.newPage();
     for (const route of ['./', './about/', './system/']) {
       await page.goto(route);
-      const link = page.getByRole('link', { name: 'Download CV (PDF)', exact: true });
-      await expect(link).toHaveCount(cvAsset ? 1 : 0);
+      // System shows the icon and button variants; content pages show one action.
+      const links = page.getByRole('link', { name: 'Download CV (PDF)', exact: true });
+      await expect(links).toHaveCount(cvAsset ? cvLinkCounts[route] : 0);
+      const link = links.first();
       if (cvAsset) {
         const response = await context.request.get((await link.getAttribute('href')) || '');
         expect(response.ok()).toBe(true);
@@ -158,21 +161,24 @@ for (const base of ['/', '/bernardosevero.dev/']) {
           });
           for (const route of ['', 'about/', 'system/']) {
             await page.goto(`${origin}${base}${route}`);
-            const link = page.getByRole('link', { name: 'Download CV (PDF)', exact: true });
-            await expect(link).toHaveCount(1);
-            await expect(link).toHaveAttribute('href', `${base}${asset.path}`);
-            await expect(link).toHaveAttribute('download', asset.downloadName);
-            await expect(link).toHaveAttribute('title', 'Download CV (PDF)');
-            await expect(link).not.toHaveAttribute('target');
-            await expect(link.locator('svg')).toHaveAttribute('aria-hidden', 'true');
-            await expect(link.locator('svg')).toHaveAttribute('focusable', 'false');
+            const links = page.getByRole('link', { name: 'Download CV (PDF)', exact: true });
+            await expect(links).toHaveCount(cvLinkCounts[`./${route}`]);
+            for (const variant of await links.all()) {
+              await expect(variant).toHaveAttribute('href', `${base}${asset.path}`);
+              await expect(variant).toHaveAttribute('download', asset.downloadName);
+              await expect(variant).toHaveAttribute('title', 'Download CV (PDF)');
+              await expect(variant).not.toHaveAttribute('target');
+              await expect(variant.locator('svg')).toHaveAttribute('aria-hidden', 'true');
+              await expect(variant.locator('svg')).toHaveAttribute('focusable', 'false');
+            }
+            const link = links.first();
             if (route !== 'system/') {
               const contact = page.getByRole('navigation', {
                 name: 'Professional profiles and CV',
               });
               await expect(contact.getByRole('link')).toHaveCount(3);
-              const linkedIn = contact.getByRole('link').nth(0);
-              const github = contact.getByRole('link').nth(1);
+              const linkedIn = contact.getByRole('link', { name: /LinkedIn/ });
+              const github = contact.getByRole('link', { name: /GitHub/ });
               await expect(linkedIn).toHaveAttribute(
                 'href',
                 'https://www.linkedin.com/in/bernardosevero/',
@@ -182,8 +188,16 @@ for (const base of ['/', '/bernardosevero.dev/']) {
                 await expect(profile).toHaveAttribute('target', '_blank');
                 await expect(profile).toHaveAttribute('rel', 'noreferrer');
               }
-              await github.focus();
-              await page.keyboard.press('Tab');
+              // Home keeps the CV after GitHub; on the About CV page the button leads the actions.
+              if (route === 'about/') {
+                await link.focus();
+                await page.keyboard.press('Tab');
+                await expect(linkedIn).toBeFocused();
+                await page.keyboard.press('Shift+Tab');
+              } else {
+                await github.focus();
+                await page.keyboard.press('Tab');
+              }
             } else await link.focus();
             await expect(link).toBeFocused();
             expect(
@@ -207,7 +221,7 @@ for (const base of ['/', '/bernardosevero.dev/']) {
                 expect(
                   await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
                 ).toBe(true);
-                if (route !== 'system/') {
+                if (route === '') {
                   const heading = (await page
                     .getByRole('heading', { name: 'About me', exact: true })
                     .boundingBox())!;
@@ -221,10 +235,14 @@ for (const base of ['/', '/bernardosevero.dev/']) {
                   }
                 }
                 if ([320, 375, 1586].includes(width)) {
+                  const specimenSelectors: Record<string, string> = {
+                    '': '.about-heading-row',
+                    'about/': '#contact',
+                  };
                   const specimen =
                     route === 'system/'
-                      ? page.locator('article').filter({ has: link })
-                      : page.locator('.about-heading-row');
+                      ? page.locator('article').filter({ has: link }).first()
+                      : page.locator(specimenSelectors[route] ?? '#contact');
                   await specimen.screenshot({
                     path: testInfo.outputPath(`${route.replace('/', '') || 'home'}-${width}.png`),
                   });

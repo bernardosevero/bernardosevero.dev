@@ -1,0 +1,222 @@
+---
+import PortfolioPage from './PortfolioPage.astro';
+import WoodFrame from '../components/WoodFrame.astro';
+import PixelIcon from '../components/PixelIcon.astro';
+import CvDownloadLink from '../components/CvDownloadLink.astro';
+import CvExperience from '../components/CvExperience.astro';
+import Emphasis from '../components/Emphasis.astro';
+import { cvAsset } from '../config/cv';
+import { profileLinkIcons } from '../config/character-sheet';
+import { isVisibleContent } from '../utils/content';
+import { getDestinationType, primaryProjectUrl } from '../utils/project-links';
+import { basePath } from '../utils/paths';
+import { Image } from 'astro:assets';
+import wizardPortrait from '../assets/bernardo-wizard.png';
+import { getCollection, getEntry } from 'astro:content';
+import '../styles/portfolio.css';
+import '../styles/social-link.css';
+import '../styles/cv.css';
+
+const about = await getEntry('pages', 'about');
+if (!about || about.data.kind !== 'about')
+  throw new Error('The About content entry is missing or invalid.');
+const cv = about.data;
+
+// Side quests mirror the Projects list order; only verified destinations become links.
+const sideQuests = (await getCollection('projects', isVisibleContent))
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured))
+  .map(({ data }) => {
+    const url = primaryProjectUrl(data);
+    return {
+      title: data.title,
+      summary: data.summary,
+      url: url && getDestinationType(url) ? url : undefined,
+    };
+  });
+---
+
+<PortfolioPage
+  title={`${cv.name} — ${cv.title} · CV`}
+  description={`${cv.headline}. ${cv.location}.`}
+  mainClass="cv-page"
+  shellClass="cv-shell"
+>
+  <WoodFrame class="cv-sheet">
+    <header class="cv-header">
+      <Image
+        class="cv-portrait"
+        src={wizardPortrait}
+        alt="Bernardo wearing round glasses and a green-and-gold wizard costume, illustrated in pixel art."
+        width={168}
+        densities={[1, 2]}
+        format="webp"
+        loading="eager"
+      />
+      <div class="cv-identity">
+        <p class="cv-kicker">Character sheet · CV</p>
+        <h1 class="cv-name">{cv.name}</h1>
+        <p class="cv-class">{cv.title} · Full-stack software engineer</p>
+        <p class="cv-meta">
+          <PixelIcon name="pin" size={18} />
+          {[cv.location, ...cv.focus].join(' · ')}
+        </p>
+      </div>
+      <nav
+        id="contact"
+        class="cv-actions"
+        aria-label={cvAsset ? 'Professional profiles and CV' : 'Professional profiles'}
+      >
+        <CvDownloadLink variant="button" />
+        <div class="cv-profiles">
+          {cv.links.map(({ label, url }) => (
+            <a
+              class="social-link"
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              data-professional-profile={label.toLowerCase()}
+              aria-label={`${label} (opens in a new tab)`}
+              title={label}
+            >
+              <PixelIcon name={profileLinkIcons[label]} size={31} />
+              <span class="sr-only">{label}</span>
+            </a>
+          ))}
+        </div>
+      </nav>
+    </header>
+
+    <section class="cv-summary" aria-labelledby="summary-heading">
+      <h2 id="summary-heading" class="cv-heading">
+        Summary
+      </h2>
+      <p>
+        <Emphasis text={cv.summary} />
+      </p>
+    </section>
+
+    <div class="cv-columns">
+      <div class="cv-main">
+        <section aria-labelledby="experience-heading">
+          <h2 id="experience-heading" class="cv-heading">
+            <PixelIcon name="briefcase" size={28} />
+            Experience
+          </h2>
+          {cv.experience.map((job) => (
+            <CvExperience {...job} />
+          ))}
+        </section>
+
+        {cv.education.length > 0 && (
+          <section aria-labelledby="education-heading">
+            <h2 id="education-heading" class="cv-heading">
+              <PixelIcon name="cap" size={28} />
+              Education
+            </h2>
+            {cv.education.map((item) => (
+              <div class="cv-education">
+                <div>
+                  <h3>{item.degree}</h3>
+                  <p>
+                    {item.school}, {item.location}
+                  </p>
+                  {item.coursework && (
+                    <p class="cv-education__coursework">Relevant coursework: {item.coursework}</p>
+                  )}
+                </div>
+                <p class="cv-education__period">{item.period}</p>
+              </div>
+            ))}
+          </section>
+        )}
+
+        <section aria-labelledby="side-quests-heading">
+          <h2 id="side-quests-heading" class="cv-heading">
+            <PixelIcon name="star" size={28} />
+            Side quests
+          </h2>
+          {sideQuests.length > 0 ? (
+            <ul class="cv-quests">
+              {sideQuests.map((quest) => (
+                <li>
+                  {quest.url ? (
+                    <a class="cv-quests__title" href={quest.url}>
+                      {quest.title} <span aria-hidden="true">↗</span>
+                    </a>
+                  ) : (
+                    <span class="cv-quests__title">{quest.title}</span>
+                  )}
+                  <span class="cv-quests__summary"> · {quest.summary}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="cv-quests__empty">Published projects will appear here.</p>
+          )}
+          <p class="cv-quests__all">
+            <a href={`${basePath}projects/`}>
+              All projects <span aria-hidden="true">→</span>
+            </a>
+          </p>
+        </section>
+      </div>
+
+      <aside class="cv-sidebar" aria-label="Skills and stats">
+        <section class="cv-box" aria-labelledby="skills-heading">
+          <h2 id="skills-heading" class="cv-heading">
+            Skills
+          </h2>
+          {cv.skills.map(({ group, items }) => (
+            <div class="cv-skill-group">
+              <h3 class="cv-label">{group}</h3>
+              <ul class="tag-list">
+                {items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+
+        <section class="cv-box cv-box--stats" aria-labelledby="stats-heading">
+          <h2 id="stats-heading" class="cv-heading">
+            Character stats
+          </h2>
+          <ul class="strength-list" aria-label="Working strengths">
+            {cv.strengths.map(({ label, level }) => (
+              <li>
+                <span>{label}</span>
+                <span class="strength-meter" role="img" aria-label={`${level} out of 10`}>
+                  {Array.from({ length: 10 }, (_, index) => (
+                    <i data-filled={index < level ? 'true' : 'false'}></i>
+                  ))}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="cv-box cv-box--tools" aria-labelledby="tools-heading">
+          <h2 id="tools-heading" class="cv-heading">
+            Daily tools
+          </h2>
+          <ul class="tag-list tag-list--soft">
+            {cv.tools.map((tool) => (
+              <li>{tool}</li>
+            ))}
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </WoodFrame>
+</PortfolioPage>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-professional-profile]').forEach((link) => {
+    link.addEventListener('click', () => {
+      window.posthog?.capture('professional_profile_opened', {
+        profile: link.dataset.professionalProfile,
+      });
+    });
+  });
+</script>

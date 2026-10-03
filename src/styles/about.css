@@ -190,29 +190,6 @@
   align-items: center;
   gap: 14px;
 }
-.company-tile {
-  display: grid;
-  flex: none;
-  box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border: 2px solid var(--wood-dark);
-  background: var(--parchment-light);
-  box-shadow:
-    inset 0 0 0 2px var(--parchment),
-    0 2px var(--wood-shadow);
-  color: var(--ink-soft);
-  font-family: var(--font-heading);
-  font-size: var(--text-2xs);
-  font-weight: 700;
-  line-height: 1;
-}
-.company-tile img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
 .timeline-heading-text {
   min-width: 0;
 }
@@ -320,30 +297,6 @@
   display: flex;
   gap: 9px;
 }
-.social-link {
-  display: grid;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  border: 2px solid var(--parchment-edge);
-  border-radius: 4px;
-  background: var(--parchment);
-  box-shadow:
-    inset 2px 2px var(--parchment-light),
-    0 3px var(--ornament);
-  text-decoration: none;
-}
-.social-link:hover {
-  background: var(--parchment-light);
-  border-color: var(--wood);
-}
-.social-link:active {
-  translate: 0 2px;
-  box-shadow:
-    inset 2px 2px var(--green-shade),
-    0 1px var(--button-shadow);
-}
-
 @media (width > 820px) {
   .character-sheet .frame-surface {
     padding-top: 28px;

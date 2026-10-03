@@ -8,7 +8,7 @@ const longPostPath =
   'posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/';
 
 const routes = [
-  { path: 'about/', heading: 'About' },
+  { path: 'about/', heading: 'Bernardo Severo' },
   { path: 'projects/', heading: 'Projects' },
   {
     path: longPostPath,
@@ -72,7 +72,7 @@ for (const route of routes) {
 
 test('authored names keep their casing while page titles remain decorative', async ({ page }) => {
   for (const [route, selector] of [
-    ['about/', '.timeline h3'],
+    ['about/', '.cv-job h3'],
     ['projects/', '.project-card h2'],
     ['reading/', '.codex-detail:visible h2'],
   ]) {
@@ -88,7 +88,7 @@ test('authored names keep their casing while page titles remain decorative', asy
     ).toBe('uppercase');
   }
   await page.goto('./about/');
-  await expect(page.locator('.timeline h3').first()).toHaveText('SAP Concur');
+  await expect(page.locator('.cv-job h3').first()).toHaveText('SAP Concur');
 });
 
 test('sentence-length copy and post and project names use the text face', async ({ page }) => {
@@ -100,9 +100,10 @@ test('sentence-length copy and post and project names use the text face', async 
 
   await page.goto('./about/');
   await page.evaluate(() => document.fonts.ready);
-  expect(await family('.about-prose p')).toMatch(/^Alegreya/);
-  expect(await family('.timeline li > p:last-child')).toMatch(/^Alegreya/);
-  expect(await family('.timeline h3')).toMatch(/^"?Pixelify Sans/);
+  expect(await family('.cv-summary p')).toMatch(/^Alegreya/);
+  expect(await family('.cv-job__description')).toMatch(/^Alegreya/);
+  expect(await family('.cv-job__highlights li')).toMatch(/^Alegreya/);
+  expect(await family('.cv-job h3')).toMatch(/^"?Pixelify Sans/);
 
   await page.goto('./projects/');
   await page.evaluate(() => document.fonts.ready);
@@ -154,8 +155,30 @@ test('post page tags are centered in the frame at 1586px', async ({ page }) => {
   expect(Math.abs(gaps.left - gaps.right)).toBeLessThanOrEqual(2);
 });
 
-test('About exposes the requested professional profile links', async ({ page }) => {
+test('About is a CV with a logical outline, profile links, and the CV download', async ({
+  page,
+}) => {
   await page.goto('./about/');
+  await expect(page).toHaveTitle('Bernardo Severo — Product Engineer · CV');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bernardo Severo');
+  await expect(page.locator('h1')).toHaveCount(1);
+
+  const sections = await page.locator('h2').allInnerTexts();
+  const order = ['Summary', 'Experience', 'Education', 'Side quests', 'Skills'].map((name) =>
+    sections.findIndex((text) => text.trim().toLowerCase() === name.toLowerCase()),
+  );
+  expect(order.every((index) => index >= 0)).toBe(true);
+  expect(order).toEqual([...order].sort((first, second) => first - second));
+
+  const jobs = page.locator('#experience-heading ~ article');
+  await expect(jobs.locator('h3')).toHaveText(['SAP Concur', 'TAG Livros', 'Alura']);
+  const firstJob = jobs.first();
+  await expect(firstJob.locator('.cv-job__highlights li')).toHaveCount(3);
+  await expect(firstJob.locator('strong', { hasText: '~3 hours' })).toHaveCount(1);
+  await expect(page.getByRole('list', { name: 'Tech used at SAP Concur' })).toBeVisible();
+  await expect(page.getByText('**', { exact: false })).toHaveCount(0);
+  await expect(page.getByText('Better tools. Kinder humans.')).toHaveCount(0);
+
   await expect(page.getByRole('link', { name: /LinkedIn/ })).toHaveAttribute(
     'href',
     'https://www.linkedin.com/in/bernardosevero/',
@@ -164,15 +187,42 @@ test('About exposes the requested professional profile links', async ({ page }) 
     'href',
     'https://github.com/bernardosevero',
   );
-  await expect(page.getByRole('heading', { name: 'Experience' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Specializations' })).toBeVisible();
-  await expect(page.getByRole('list', { name: 'Working strengths' })).toBeVisible();
   await expect(page.locator('[data-professional-profile] .pixel-icon')).toHaveCount(2);
-  await expect(page.locator('.social-link .pixel-icon')).toHaveCount(cvAsset ? 3 : 2);
+  await expect(page.getByRole('list', { name: 'Working strengths' })).toBeVisible();
+
+  const download = page.getByRole('link', { name: 'Download CV (PDF)', exact: true });
+  await expect(download).toHaveCount(cvAsset ? 1 : 0);
+  if (cvAsset) {
+    await expect(download).toHaveClass(/rpg-button/);
+    await expect(download).toHaveAttribute('href', new RegExp(`${cvAsset.path}$`));
+    await expect(download).toHaveAttribute('download', cvAsset.downloadName);
+  }
+
+  const allProjects = page.getByRole('link', { name: /All projects/ });
+  await expect(allProjects).toHaveAttribute('href', /projects\/$/);
 });
 
-for (const width of [320, 390, 1586]) {
-  test(`About portrait and heading links fit at ${width}px`, async ({ page }) => {
+test('About prints as a plain CV without navigation or character stats', async ({ page }) => {
+  await page.goto('./about/');
+  await page.emulateMedia({ media: 'print' });
+  await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeHidden();
+  await expect(page.locator('.cv-box--stats')).toBeHidden();
+  await expect(page.locator('.cv-box--tools')).toBeHidden();
+  await expect(page.locator('.site-footer')).toBeHidden();
+  await expect(page.getByRole('heading', { name: 'Experience' })).toBeVisible();
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe(
+    'rgb(255, 255, 255)',
+  );
+  expect(
+    await page
+      .locator('.cv-job')
+      .first()
+      .evaluate((element) => getComputedStyle(element).breakInside),
+  ).toBe('avoid');
+});
+
+for (const width of [320, 390, 760, 1024, 1586]) {
+  test(`About CV fits with a loaded portrait at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 992 });
     await page.goto('./about/');
     await page.evaluate(() => document.fonts.ready);
@@ -183,25 +233,17 @@ for (const width of [320, 390, 1586]) {
         (image: HTMLImageElement) => image.complete && image.naturalWidth > 0,
       ),
     ).toBe(true);
-    const heading = await page
-      .getByRole('heading', { name: 'About me', exact: true })
-      .boundingBox();
-    for (const name of [/LinkedIn/, /GitHub/]) {
-      const link = await page.getByRole('link', { name }).boundingBox();
-      const sameRow = Math.abs(heading!.y + heading!.height / 2 - (link!.y + link!.height / 2)) < 2;
-      expect(sameRow || (cvAsset !== null && link!.y >= heading!.y + heading!.height)).toBe(true);
+    for (const action of await page.locator('#contact a').all()) {
+      const box = await action.boundingBox();
+      if (!box) throw new Error('Every CV action needs a rendered box.');
+      expect(box.width).toBeGreaterThanOrEqual(40);
+      expect(box.height).toBeGreaterThanOrEqual(40);
+      expect(box.x + box.width).toBeLessThanOrEqual(width);
     }
-    await expect(page.getByText('Better tools. Kinder humans.')).toHaveCount(0);
-    expect(
-      await page.locator('.specialization-list').evaluate((element) => {
-        const style = getComputedStyle(element);
-        return {
-          display: style.display,
-          marginTop: style.marginTop,
-          columns: style.gridTemplateColumns.split(' ').length,
-        };
-      }),
-    ).toEqual({ display: 'grid', marginTop: '12px', columns: width === 1586 ? 3 : 2 });
+    const columns = await page
+      .locator('.cv-columns')
+      .evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').length);
+    expect(columns).toBe(width > 900 ? 2 : 1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );

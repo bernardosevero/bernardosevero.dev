@@ -10,7 +10,9 @@ interface Props {
     | 'vscode'
     | 'docker'
     | 'cloud'
-    | 'download';
+    | 'download'
+    | 'pin'
+    | 'cap';
   size?: number;
 }
 
@@ -41,6 +43,20 @@ const { name, size = 28 } = Astro.props;
           CV
         </text>
         <path fill="#56341e" d="M14 20h4v3h3l-5 5-5-5h3Z" />
+      </>
+    )}
+    {name === 'pin' && (
+      <path
+        fill="#704129"
+        d="M12 2h9v3h3v3h3v9h-3v3h-3v3h-3v6h-3v-6h-3v-3h-3v-3H5V8h3V5h3Zm3 6v6h3V8Z"
+      />
+    )}
+    {name === 'cap' && (
+      <>
+        <path fill="#56341e" d="M15 4h2l14 6v2l-14 6h-2L1 12v-2Z" />
+        <path fill="#80502b" d="M15 6h2l10 4-10 4h-2L5 10Z" />
+        <path fill="#352014" d="M7 14l8 4h2l8-4v8l-4 4H11l-4-4Z" />
+        <path fill="#d8af61" d="M27 12h2v12h-2Z" />
       </>
     )}
     {name === 'briefcase' && (

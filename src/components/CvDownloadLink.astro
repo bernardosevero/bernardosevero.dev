@@ -2,18 +2,43 @@
 import { cvAsset } from '../config/cv';
 import { basePath } from '../utils/paths';
 import PixelIcon from './PixelIcon.astro';
-import '../styles/about.css';
+import '../styles/social-link.css';
+
+type Variant = 'icon' | 'button';
+
+interface Props {
+  /** `icon` is the square profile-row action; `button` is the labelled primary RPG action. */
+  variant?: Variant;
+}
+
+const { variant = 'icon' } = Astro.props;
+const label = 'Download CV (PDF)';
+const variantClasses: Record<Variant, string> = {
+  icon: 'social-link',
+  button: 'rpg-button cv-download-button',
+};
 ---
 
 {cvAsset && (
   <a
-    class="social-link"
+    class={variantClasses[variant]}
     href={`${basePath}${cvAsset.path}`}
     download={cvAsset.downloadName}
-    aria-label="Download CV (PDF)"
-    title="Download CV (PDF)"
+    aria-label={label}
+    title={label}
   >
-    <PixelIcon name="download" size={31} />
-    <span class="sr-only">Download CV (PDF)</span>
+    <PixelIcon name="download" size={variant === 'button' ? 26 : 31} />
+    <span class:list={{ 'sr-only': variant === 'icon' }}>{label}</span>
   </a>
 )}
+
+<style>
+  .cv-download-button {
+    gap: 10px;
+    min-height: 52px;
+    padding: 8px 20px;
+    font-size: var(--text-sm);
+    text-align: center;
+    text-decoration: none;
+  }
+</style>

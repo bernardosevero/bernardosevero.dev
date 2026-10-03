@@ -110,6 +110,16 @@
   text-transform: uppercase;
 }
 
+/* Quieter parchment chips for secondary lists, such as the tech used in a role. */
+.tag-list--soft li {
+  border-color: var(--parchment-edge);
+  background: var(--parchment-light);
+  box-shadow:
+    inset 0 2px #fff4d0,
+    0 2px var(--ornament);
+  color: var(--wood-shadow);
+}
+
 .topic-filter {
   padding: 9px 14px;
   border: 2px solid var(--green-dark);
