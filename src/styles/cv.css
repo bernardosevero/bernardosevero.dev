@@ -202,7 +202,7 @@
   gap: 8px;
 }
 
-/* The same meters as the Character Sheet; the label column fits the longest label. */
+/* Character stats meters; the label column fits the longest label. */
 .strength-list {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);

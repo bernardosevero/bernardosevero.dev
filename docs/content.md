@@ -97,14 +97,14 @@ Low-frequency Home and About copy lives in `src/content/pages/`. The schema uses
 
 Two entries exist, and each caller narrows by `kind` before reading fields:
 
-- `about.md` (`kind: about`) holds the CV facts. Besides the Character Sheet fields, it requires `location`, `headline`, `summary` (the CV summary paragraph) and `teaser` (one or two sentences for the Home preview). Each `experience` item requires `location` and at least one `highlights` bullet, and may set `employment` (for example `Freelance, part-time`) and a `tech` list. `skills` is a non-empty list of `{ group, items }`, and `education` is a list of `{ degree, school, location, period, coursework? }`. Keep experience in the CV's order. The Markdown body is the About me paragraph.
+- `about.md` (`kind: about`) holds the CV facts. Besides `name`, `title`, `focus`, `strengths`, `experience`, `tools` and `links`, it requires `location`, `headline`, `summary` (the CV summary paragraph) and `teaser` (one or two sentences for the Home preview). Each `experience` item requires `location` and at least one `highlights` bullet, and may set `employment` (for example `Freelance, part-time`) and a `tech` list. `skills` is a non-empty list of `{ group, items }`, and `education` is a list of `{ degree, school, location, period, coursework? }`. Keep experience in the CV's order. `base`, `description`, `specializations` and the Markdown body are still validated but no page renders them since the Character Sheet was retired.
 - `home.md` (`kind: home`) has no body. It holds `greeting`, `intro`, `prompt` and exactly four `choices`, each a `label` and a `destination` from `projects`, `posts`, `books` or `about`.
 
 `summary` and `highlights` accept `**bold**` markers for metrics, and nothing else: no other Markdown, links or HTML. Layouts render them through `emphasisRuns` in `src/utils/format.ts`, never with `set:html` or `innerHTML`. An unpaired `**` stays literal text.
 
 Copy facts only from the published CV. Its phone number and email address are not published on the site: keep them out of content files, code, tests, commits and pull requests.
 
-About `tools` and profile `links` labels must be names listed in `src/config/character-sheet.ts`, which pairs each with its `PixelIcon.astro` artwork. The build rejects unknown names instead of rendering an empty icon tile. To add a tool, draw its icon first, then add its name and icon to that file.
+About `tools` and profile `links` labels must be names listed in `src/config/profile.ts`, which also pairs each profile link with its `PixelIcon.astro` artwork. The build rejects unknown names instead of rendering an empty icon tile. To add a tool, add its name to that file; to add a profile link, draw its icon first, then add its label and icon there.
 
 ### Company logos
 

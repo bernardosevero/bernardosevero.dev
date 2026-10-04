@@ -1,14 +1,6 @@
-// The About schema accepts only these names, so every tool and profile link that
-// reaches the Character Sheet has PixelIcon artwork.
+// The About schema accepts only these names. Profile links render PixelIcon artwork,
+// so each label must have an icon here.
 export const toolNames = ['VS Code', 'GitHub', 'Docker', 'AWS'] as const;
-export type ToolName = (typeof toolNames)[number];
-
-export const toolIcons = {
-  'VS Code': 'vscode',
-  GitHub: 'github',
-  Docker: 'docker',
-  AWS: 'cloud',
-} as const satisfies Record<ToolName, string>;
 
 export const profileLinkLabels = ['LinkedIn', 'GitHub'] as const;
 export type ProfileLinkLabel = (typeof profileLinkLabels)[number];

@@ -69,7 +69,7 @@ Gold is not body-copy color. Green does not carry state by itself. Every status 
 
 - `--font-heading`: Pixelify Sans 700 for decorative page titles, section titles, navigation, and compact labels.
 - `--font-body`: VT323 400 for metadata, descriptions, tags, badges, inline code, and controls where legible.
-- `--font-text`: Alegreya 400, 400 italic, and 700 (fallback Georgia, serif) for sentence-length copy (long-form prose, the About paragraph and timeline descriptions, and project card summaries) and, at 700, for post and project names: the post page title, post titles on `/posts/`, and project card titles.
+- `--font-text`: Alegreya 400, 400 italic, and 700 (fallback Georgia, serif) for sentence-length copy (long-form prose, the CV summary, role descriptions and highlights, and project card summaries) and, at 700, for post and project names: the post page title, post titles on `/posts/`, and project card titles.
 
 Rule: anything read as sentences uses the text face, and so do post and project names, which are often sentence-length. Decorative page titles (`ABOUT`, `PROJECTS`, `POSTS`, `READING`, `SYSTEM`), other names and headings (including book titles and `h2` headings inside prose), labels, stats, tags, badges, dates, navigation, buttons, links styled as actions, the post kicker, and the short page intro under each page title stay pixel (`--font-heading` / `--font-body`).
 
@@ -87,15 +87,15 @@ Every font size uses a `--text-*` token. Steps follow the 4px rhythm through 32p
 
 | Token | Size | Typical use |
 | --- | --- | --- |
-| `--text-2xs` | 1rem · 16px | Character Sheet strength and identity labels |
-| `--text-xs` | 1.125rem · 18px | Navigation minimum, book tile titles, timeline periods, project links |
-| `--text-sm` | 1.25rem · 20px | Tags and badges, timeline copy, About prose, phone-size headings |
+| `--text-2xs` | 1rem · 16px | CV kicker, skill group labels, and character stat labels |
+| `--text-xs` | 1.125rem · 18px | Navigation minimum, book tile titles, CV highlights, project links |
+| `--text-sm` | 1.25rem · 20px | Tags and badges, CV summary, phone-size headings |
 | `--text-md` | 1.5rem · 24px | Metadata, topic filters, Codex fact labels, heading and intro minimums |
 | `--text-lg` | 1.75rem · 28px | Body copy (`body` default), card and post title minimums |
 | `--text-xl` | 2rem · 32px | RPG buttons, article subheads, section heading and intro maximums |
 | `--text-2xl` | 2.5rem · 40px | Page and sheet title minimums, card and post title maximums |
 | `--text-3xl` | 3rem · 48px | Codex title and desktop sheet title maximums |
-| `--text-4xl` | 3.75rem · 60px | Character Sheet title maximum |
+| `--text-4xl` | 3.75rem · 60px | CV name and post title maximum |
 | `--text-5xl` | 4.5rem · 72px | Page title maximum |
 
 Fluid headings use two tokens as `clamp()` bounds, for example `clamp(var(--text-md), 3vw, var(--text-xl))`. The tokens are in `rem`, so text follows the visitor's browser font-size preference; layout geometry, borders, and pixel-art details stay in `px`. `npm run lint:css` rejects raw font sizes. Add a step only when no existing step works, and record it here and in the `/system/` type-scale specimen.
@@ -162,17 +162,17 @@ Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green act
 
 ### Pixel icons
 
-`src/layouts/CharacterSheet.astro` is no longer routed and is kept only until its planned removal. Production content pages use the shared navigation for page switching; redundant return links are not rendered. `/system/` retains a return link as a documentation-page escape hatch and specimen.
+Production content pages use the shared navigation for page switching; redundant return links are not rendered. `/system/` retains a return link as a documentation-page escape hatch and specimen.
 
-`PixelIcon.astro` contains multicolor SVG artwork for the character sheet, tool tiles, and professional profile links. Tool marks retain recognizable colors; the briefcase, star, wrench, book, and graduation cap share dark walnut outlines, bronze shading, and gold highlights drawn from the About reference. The walnut `pin` marks a location in metadata lines. The AWS illustration is a cloud symbol with an orange smile, not an official logo. Artwork is independent of CSS geometry; CSS controls its size and surrounding tile. Decorative instances are hidden from assistive technology; icon-only controls must provide an accessible name and a visible tooltip or nearby label. The live inventory shows both icon families.
+`PixelIcon.astro` contains multicolor SVG artwork for CV section headings, tool tiles, and professional profile links. Tool marks retain recognizable colors; the briefcase, star, wrench, book, and graduation cap share dark walnut outlines, bronze shading, and gold highlights drawn from the About reference. The walnut `pin` marks a location in metadata lines. The AWS illustration is a cloud symbol with an orange smile, not an official logo. Artwork is independent of CSS geometry; CSS controls its size and surrounding tile. Decorative instances are hidden from assistive technology; icon-only controls must provide an accessible name and a visible tooltip or nearby label. The live inventory shows both icon families.
 
 ### CV download
 
-The optional `CvDownloadLink.astro` has two variants. `icon` (the default) reuses `.social-link` from `src/styles/social-link.css` and follows LinkedIn and GitHub on the Character Sheet. `button` is a labelled `.rpg-button` with the same icon, used as the primary action in the CV page header. It owns native download semantics and an explicit accessible PDF label, independently of external profile navigation. The contact heading row wraps when the actions need more space. Its walnut-and-gold document icon belongs to `PixelIcon.astro`. System renders both variants and their keyboard focus behavior when a public CV is configured, or the icon alone when it is absent. This small addition preserves the approved About composition; the narrow heading row may reflow to a second line. See `docs/content.md` for enabling and replacing the PDF.
+The optional `CvDownloadLink.astro` has two variants. `icon` (the default) reuses `.social-link` from `src/styles/social-link.css` for a square action beside profile links; only `/system/` renders it today. `button` is a labelled `.rpg-button` with the same icon, used as the primary action in the CV page header. It owns native download semantics and an explicit accessible PDF label, independently of external profile navigation. Its walnut-and-gold document icon belongs to `PixelIcon.astro`. System renders both variants and their keyboard focus behavior when a public CV is configured, or the icon alone when it is absent. See `docs/content.md` for enabling and replacing the PDF.
 
 ### Company tile
 
-`CompanyTile.astro` renders the 40px tile and owns its styles. It is decorative unless `labelled` is set, as in the Home board's company row, where the logo's `alt` (or the monogram's label) is the company name. `ExperienceEntry.astro` (Character Sheet timeline) and `CvExperience.astro` (CV page) both use it. `ExperienceEntry` renders a row with the tile, then the company name (`h3`) with role and period, followed by the description; its timeline diamond alignment (centered on the 40px row) lives in `about.css`. The tile has a 2px `--wood-dark` border, `--parchment-light` fill, and the standard inset and drop shadows. A supplied logo renders at 28px with `object-fit: contain` and keeps its own colors; without one, the tile shows a monogram from `companyMonogram()` in `src/utils/format.ts` (first letter of up to three words, `--font-heading` 700 at `--text-2xs`, `--ink-soft`). Both forms are decorative (`alt=""` or `aria-hidden="true"`) because the company name sits beside the tile. The tile stays 40px on phones. `/system/` shows static monogram specimens in both entries. See `docs/content.md` for adding logos.
+`CompanyTile.astro` renders the 40px tile and owns its styles. It is decorative unless `labelled` is set, as in the Home board's company row, where the logo's `alt` (or the monogram's label) is the company name. `CvExperience.astro` (CV page) uses it beside each company name. The tile has a 2px `--wood-dark` border, `--parchment-light` fill, and the standard inset and drop shadows. A supplied logo renders at 28px with `object-fit: contain` and keeps its own colors; without one, the tile shows a monogram from `companyMonogram()` in `src/utils/format.ts` (first letter of up to three words, `--font-heading` 700 at `--text-2xs`, `--ink-soft`). Both forms are decorative (`alt=""` or `aria-hidden="true"`) because the company name sits beside the tile. The tile stays 40px on phones. `/system/` shows a static monogram specimen in the CV job entry. See `docs/content.md` for adding logos.
 
 ### Home dialogue
 
@@ -238,7 +238,6 @@ Write queries in range syntax (`width <= 520px`, `width > 820px`) so adjacent ra
 | Viewport | `<= 520px` | Phone density: tighter panel padding, smaller headings and icons |
 | Viewport | `<= 560px` | Outer shell: page and navigation side gutters shrink to 8px |
 | Viewport | `<= 760px` | `/system/` specimen grid switches to auto-fit columns |
-| Viewport | `> 820px`, `<= 1200px`, `<= 1080px` | Character Sheet: desktop spacing, one stacked column, then compact identity and tag sizing |
 | Viewport | `<= 838px`, `<= 520px` | Home: `--home-chrome` follows the two-column navigation, then its phone padding |
 | Viewport | `<= 560px` | Home dialogue: stacked speaker row, one choice column, hidden prompt line, fewer decorations |
 | Viewport | `<= 1080px`, `<= 900px`, `<= 520px` | CV page: header actions wrap below the name, sidebar follows the main column, then a stacked header |

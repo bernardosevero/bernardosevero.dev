@@ -6,7 +6,7 @@ This is the source of [Bernardo Severo's portfolio](https://bernardosevero.dev/)
 
 ## 🗺️ What lives here?
 
-- 🛡️ **Character Sheet** — about me page with experience, specialties, and tools.
+- 🛡️ **Character Sheet** — a CV-style about page with experience, skills, and education.
 - 📜 **Quest Log** — projects and the decisions behind them.
 - ✍️ **Journal** — random texts, engineering notes, and lessons learned.
 - 📚 **Reading Codex** — books, ratings, and optional reviews.

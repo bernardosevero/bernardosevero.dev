@@ -14,14 +14,11 @@ import ProjectCard from '../components/ProjectCard.astro';
 import { defaultProjectImage } from '../utils/project-images';
 import ChapterBar from '../components/ChapterBar.astro';
 import type { OutlineSection } from '../utils/outline';
-import ExperienceEntry from '../components/ExperienceEntry.astro';
 import CvExperience from '../components/CvExperience.astro';
 import HomeDialogue from '../components/HomeDialogue.astro';
 import NoticeNote from '../components/NoticeNote.astro';
 import '../styles/portfolio.css';
 import '../styles/social-link.css';
-// The Experience entry specimen keeps the Character Sheet timeline styles.
-import '../styles/about.css';
 
 const colorTokens = [
   '--ink',
@@ -340,21 +337,6 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               <p>
                 One parchment note from the Home board: decorative nail, pixel kicker, content, and
                 bottom actions. On the board each note is slightly rotated and lifts on hover.
-              </p>
-            </article>
-            <article>
-              <h3>Experience entry</h3>
-              <ol class="timeline">
-                <ExperienceEntry
-                  company="Example Company"
-                  role="Example role"
-                  period="2020 — 2022"
-                  description="Static specimen data with the monogram fallback tile."
-                />
-              </ol>
-              <p>
-                A 40px tile precedes the company name. Without a logo it shows a decorative monogram
-                of up to three initials; supplied logos are decorative images.
               </p>
             </article>
             <article>
