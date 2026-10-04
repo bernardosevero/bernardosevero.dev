@@ -63,7 +63,8 @@ const homeActive = activeItem === 'home';
     gap: 10px;
   }
   .site-navigation__home {
-    display: block;
+    display: grid;
+    place-items: center;
     box-sizing: border-box;
     width: 54px;
     height: 54px;
@@ -74,8 +75,8 @@ const homeActive = activeItem === 'home';
   }
   .site-navigation__home img {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 48px;
+    height: 48px;
     image-rendering: pixelated;
   }
   a.site-navigation__home:hover,
@@ -114,18 +115,30 @@ const homeActive = activeItem === 'home';
   }
 
   @container (width <= 760px) {
+    /* An even 3×2 grid: the tile widens to a full cell with the portrait centered. */
     .site-navigation__list {
-      grid-template-columns: 54px repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-    /* Five buttons fill three rows of two; the tile spans them all. */
     .site-navigation__home {
-      grid-row: 1 / span 3;
+      width: 100%;
+    }
+  }
+
+  /* Below 314px (a 376px viewport), a third of the menu cannot fit PROJECTS at
+     --text-xs, so the same cells form an even 2×3 grid instead. */
+  @container (width < 314px) {
+    .site-navigation__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
   @media (width <= 520px) {
     :global(.site-navigation .frame-surface) {
       padding: 8px;
+    }
+    /* Narrow padding gives PROJECTS room in a third of the menu near the 314px switch. */
+    .site-navigation__link {
+      padding-inline: 4px;
     }
     .site-navigation__gem {
       left: -10px;

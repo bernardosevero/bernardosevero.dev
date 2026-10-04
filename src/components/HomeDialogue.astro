@@ -123,6 +123,7 @@ const promptId = preview ? undefined : 'home-dialogue-prompt';
   }
 
   .home-dialogue__parchment {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -236,8 +237,12 @@ const promptId = preview ? undefined : 'home-dialogue-prompt';
     text-align: right;
   }
 
+  /* Skip overlays the bottom-right corner, over the choices that stay hidden while
+     typing, so adding and removing it never changes the card's height. */
   .home-dialogue :global(.home-dialogue__skip) {
-    align-self: flex-end;
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
     min-height: 44px;
     padding: 4px 6px;
     border: 0;

@@ -7,8 +7,7 @@ const basePath = `${(process.env.BASE_PATH || '/').replace(/\/+$/, '')}/`;
 const siteURL = process.env.SITE_URL || 'https://bernardosevero.dev';
 
 const greeting = "Welcome, traveler! I'm Bernardo.";
-const intro =
-  'A product engineer from Brazil. I build useful products where AI, the web and real people meet.';
+const intro = 'A product engineer from Brazil.';
 const prompt = 'Where would you like to go?';
 const choices = [
   ['See my quests', 'projects/', 'Projects'],
@@ -95,6 +94,87 @@ test('the typewriter hides choices until Skip completes the full text', async ({
   await expect(dialogue.locator('.home-dialogue__typed')).toHaveCount(0);
   await expect(page.getByText(intro, { exact: true })).toBeVisible();
 });
+
+for (const viewport of [
+  { width: 1440, height: 900 },
+  { width: 390, height: 844 },
+]) {
+  test(`the dialogue keeps its height when typing completes at ${viewport.width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('./');
+    await page.evaluate(() => document.fonts.ready);
+    const dialogue = page.locator('.home-dialogue');
+    const skip = dialogue.getByRole('button', { name: /Skip/ });
+    await expect(skip).toBeVisible();
+    const typing = await dialogue.boundingBox();
+    await skip.click();
+    await expect(skip).toHaveCount(0);
+    const complete = await dialogue.boundingBox();
+    if (!typing || !complete) throw new Error('The Home dialogue must render.');
+    expect(complete.height).toBe(typing.height);
+  });
+}
+
+// Below a 376px viewport PROJECTS cannot fit a third of the menu, so the grid is 2×3.
+const narrowMenuRows = [
+  {
+    widths: [320, 375],
+    rows: [
+      ['Home', 'About'],
+      ['Projects', 'Blog'],
+      ['Books', 'System'],
+    ],
+  },
+  {
+    widths: [376, 390, 760],
+    rows: [
+      ['Home', 'About', 'Projects'],
+      ['Blog', 'Books', 'System'],
+    ],
+  },
+];
+
+for (const { widths, rows } of narrowMenuRows) {
+  for (const width of widths) {
+    test(`the narrow menu is an even ${rows[0].length}×${rows.length} grid with unclipped labels at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto('./about/');
+      await page.evaluate(() => document.fonts.ready);
+      const menu = page.getByRole('navigation', { name: 'Main navigation' });
+      const boxes = [];
+      for (const row of rows) {
+        const rowBoxes = [];
+        for (const name of row) {
+          const box = await menu.getByRole('link', { name, exact: true }).boundingBox();
+          if (!box) throw new Error(`The ${name} menu item must render.`);
+          rowBoxes.push(box);
+        }
+        boxes.push(rowBoxes);
+      }
+      for (const rowBoxes of boxes) {
+        for (const box of rowBoxes) {
+          expect(box.y).toBe(rowBoxes[0].y);
+          expect(box.height).toBe(rowBoxes[0].height);
+          expect(Math.abs(box.width - rowBoxes[0].width)).toBeLessThanOrEqual(1);
+        }
+      }
+      expect(boxes[1][0].y).toBeGreaterThan(boxes[0][0].y + boxes[0][0].height);
+      const clipped = await menu
+        .locator('.site-navigation__link')
+        .evaluateAll((links) =>
+          links
+            .filter((link) => link.scrollWidth > link.clientWidth + 1)
+            .map((link) => link.textContent?.trim()),
+        );
+      expect(clipped).toEqual([]);
+    });
+  }
+}
 
 test('a click inside the dialogue completes the typing', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });

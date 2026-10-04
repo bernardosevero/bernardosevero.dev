@@ -1,7 +1,7 @@
 ---
 kind: home
 greeting: Welcome, traveler! I'm Bernardo.
-intro: A product engineer from Brazil. I build useful products where AI, the web and real people meet.
+intro: A product engineer from Brazil.
 prompt: Where would you like to go?
 choices:
   - label: See my quests

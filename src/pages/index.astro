@@ -238,21 +238,28 @@ const fireflies = [
 <style>
   /* Everything above the first screen: the page top space, the rendered navigation,
      and the gap before content. Navigation heights measured in Chromium with loaded
-     fonts: 128px in the six-column layout, 256px in the two-column layout, and 248px
-     once the phone-density navigation padding applies at 520px. */
+     fonts: 128px in the six-column layout, 192px in the 3×2 layout, 184px once the
+     phone-density navigation padding applies at 520px, and 248px in the 2×3 layout. */
   :global(.home-page) {
     --home-chrome: calc(var(--page-top-space) + 128px + var(--page-section-gap));
   }
 
-  /* SiteNavigation switches to two columns when its 760px container query matches,
+  /* SiteNavigation switches to a 3×2 grid when its 760px container query matches,
      which happens at viewports up to 838px (frame padding plus 32px page gutters). */
   @media (width <= 838px) {
     :global(.home-page) {
-      --home-chrome: calc(var(--page-top-space) + 256px + var(--page-section-gap));
+      --home-chrome: calc(var(--page-top-space) + 192px + var(--page-section-gap));
     }
   }
 
   @media (width <= 520px) {
+    :global(.home-page) {
+      --home-chrome: calc(var(--page-top-space) + 184px + var(--page-section-gap));
+    }
+  }
+
+  /* SiteNavigation's container drops below 314px, and to the 2×3 grid, under 376px. */
+  @media (width < 376px) {
     :global(.home-page) {
       --home-chrome: calc(var(--page-top-space) + 248px + var(--page-section-gap));
     }
