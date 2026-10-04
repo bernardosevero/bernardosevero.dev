@@ -124,7 +124,7 @@ The Components and States section on `/system/` includes a live timber-only spec
 
 ### Site navigation
 
-`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's five destinations: About (`about/`), Projects, Blog, Books, and System. A 54px Home tile (the pixelated wizard portrait in a 3px `--ornament` frame, `aria-label="Home"`) starts the bar before the five buttons and links to the site root. It uses real anchors and derives the active section from the current route by matching each item's path; the root and unknown routes resolve to `home`, which marks the Home tile `aria-current="page"` and no button. It renders on every public content route. All content pages, including Home, About, and Books, use the same top bar from `BaseLayout`. Navigation stays in normal flow with a token-based gap before content. The grid is `54px repeat(5, minmax(0, 1fr))` when the menu has room and `54px repeat(2, minmax(0, 1fr))` in narrow containers, where the tile spans all three button rows. There is one navigation layout, without a redundant bar/rail variant. Its 54px minimum link height is preserved at mobile sizes. The documentation-only `preview` mode renders static spans with identical production classes, so its specimen never navigates away.
+`SiteNavigation.astro` and `src/config/navigation.ts` own the portfolio's five destinations: About (`about/`), Projects, Blog, Books, and System. A 54px Home tile (the pixelated wizard portrait in a 3px `--ornament` frame, `aria-label="Home"`) starts the bar before the five buttons and links to the site root. It uses real anchors and derives the active section from the current route by matching each item's path; the root and unknown routes resolve to `home`, which marks the Home tile `aria-current="page"` and no button. It renders on every public content route. All content pages, including Home, About, and Books, use the same top bar from `BaseLayout`. Navigation stays in normal flow with a token-based gap before content. The grid is `54px repeat(5, minmax(0, 1fr))` when the menu has room and an even `repeat(3, minmax(0, 1fr))` 3×2 grid in narrow containers, where the tile widens to a full cell with the 48px portrait centered (Home, About, Projects / Blog, Books, System). Below a 314px container (a 376px viewport) a third of the menu cannot fit `PROJECTS` at `--text-xs`, so the same cells form an even 2×3 grid (Home, About / Projects, Blog / Books, System). At viewports up to 520px the buttons' inline padding drops to 4px. There is one navigation layout, without a redundant bar/rail variant. Its 54px minimum link height is preserved at mobile sizes. The documentation-only `preview` mode renders static spans with identical production classes, so its specimen never navigates away.
 
 ### Reading Codex
 
@@ -136,7 +136,7 @@ Without JavaScript, shelf navigation and book tiles are fragment links and all m
 
 `BookRating.astro` renders five outlined stars with full or fractional fills plus an exact accessible value. Missing ratings say “Not rated”; zero remains a valid rating. The system page shows all these states. No ratings or review summaries are inferred.
 
-Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green actions in a timber frame, five columns on desktop and two on mobile. It sits in normal document flow above the Codex so its actual height determines the content spacing.
+Reading uses the same `SiteNavigation` bar demonstrated on `/system/`: green actions in a timber frame, five columns on desktop and a 3×2 grid on mobile (2×3 below a 376px viewport). It sits in normal document flow above the Codex so its actual height determines the content spacing.
 
 ### Project card
 
@@ -180,7 +180,7 @@ The optional `CvDownloadLink.astro` has two variants. `icon` (the default) reuse
 
 The dialogue is a `WoodFrame` with a green `Bernardo` name plate on its top edge, a 156px bobbing portrait, and a parchment text area: the greeting as the `h1`, the intro, the prompt, and the four choices as real links in a two-column grid. Each choice shows a pixel ▶ cursor when hovered or focused, and the first choice shows it when none is active. At `<= 560px` the portrait shrinks to 72px and joins the plate in a row overlapping the frame's top edge, the choices stack in one column (at least 44px tall), and the prompt is visually hidden but still read aloud. Content taller than the first screen makes the page scroll; text and touch targets never shrink further.
 
-`src/scripts/home-dialogue.ts` is progressive enhancement. The server renders the complete text and choices. The script types the text at 28ms per character into an `aria-hidden` copy layered over the real text, which keeps its layout and stays readable to assistive technology. It hides the choices until typing ends and adds a `Skip ▸▸` button. Skip, any key press, or any click inside the dialogue completes the text at once; listeners stay on the dialogue, and no timer runs after completion. Missing markup throws before enhancing, leaving the server-rendered dialogue usable. `/system/` shows a static `preview` specimen with no heading, links, or typing.
+`src/scripts/home-dialogue.ts` is progressive enhancement. The server renders the complete text and choices. The script types the text at 28ms per character into an `aria-hidden` copy layered over the real text, which keeps its layout and stays readable to assistive technology. It hides the choices until typing ends (they keep their space) and adds a `Skip ▸▸` button positioned over the parchment's bottom-right corner, outside the layout flow, so the card keeps one height when typing completes. Skip, any key press, or any click inside the dialogue completes the text at once; listeners stay on the dialogue, and no timer runs after completion. Missing markup throws before enhancing, leaving the server-rendered dialogue usable. `/system/` shows a static `preview` specimen with no heading, links, or typing.
 
 Motion inventory, all CSS animating only `transform` and `opacity`:
 
@@ -238,12 +238,13 @@ Write queries in range syntax (`width <= 520px`, `width > 820px`) so adjacent ra
 | Viewport | `<= 520px` | Phone density: tighter panel padding, smaller headings and icons |
 | Viewport | `<= 560px` | Outer shell: page and navigation side gutters shrink to 8px |
 | Viewport | `<= 760px` | `/system/` specimen grid switches to auto-fit columns |
-| Viewport | `<= 838px`, `<= 520px` | Home: `--home-chrome` follows the two-column navigation, then its phone padding |
+| Viewport | `<= 838px`, `<= 520px`, `< 376px` | Home: `--home-chrome` follows the 3×2 navigation, its phone padding, then the 2×3 navigation |
 | Viewport | `<= 560px` | Home dialogue: stacked speaker row, one choice column, hidden prompt line, fewer decorations |
 | Viewport | `<= 1080px`, `<= 900px`, `<= 520px` | CV page: header actions wrap below the name, sidebar follows the main column, then a stacked header |
 | Container | `<= 850px`, `<= 650px` | Reading Codex: three-column shelf, then two columns with stacked panels |
 | Container | `<= 650px` | `BookTile` and `BookRating` compact sizing inside the Codex |
-| Container | `<= 760px` | `SiteNavigation` switches from five to two button columns beside the Home tile |
+| Container | `<= 760px` | `SiteNavigation` switches from the tile plus five buttons in one row to an even 3×2 grid |
+| Container | `< 314px` | `SiteNavigation` switches from the 3×2 grid to an even 2×3 grid |
 
 Prefer container queries for components whose width depends on their parent. Add a new value only when content breaks between the existing ones, and record it here.
 
