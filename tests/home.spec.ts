@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import process from 'node:process';
 import AxeBuilder from '@axe-core/playwright';
+import { cvAsset } from '../src/config/cv';
 
 const basePath = `${(process.env.BASE_PATH || '/').replace(/\/+$/, '')}/`;
 const siteURL = process.env.SITE_URL || 'https://bernardosevero.dev';
@@ -193,6 +194,150 @@ test('doubled root text grows the first screen and scrolls instead of clipping',
   expect(last.y + last.height).toBeLessThanOrEqual(dialogue.y + dialogue.height);
 });
 
+test('the notice board previews posts, the latest quest, the reading desk, and the CV', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('./', { waitUntil: 'domcontentloaded' });
+  const board = page.getByRole('region', { name: 'News from the village' });
+  await expect(board).toHaveAttribute('id', 'news');
+  await expect(page.getByRole('link', { name: /News from the village/ })).toHaveAttribute(
+    'href',
+    '#news',
+  );
+  const notes = board.locator('article');
+  await expect(notes).toHaveCount(4);
+  const note = (kicker: string) =>
+    notes.filter({ has: page.getByRole('heading', { name: kicker, exact: true }) });
+
+  const blog = note('Fresh from the blog');
+  const postLinks = blog.locator('.home-note__title a');
+  await expect(postLinks).toHaveText([
+    'I kept forgetting LeetCode problems, so I built a spaced-repetition trainer',
+    'Building my portfolio: RPG menus, design systems, and LLMs',
+  ]);
+  await expect(postLinks.first()).toHaveAttribute(
+    'href',
+    `${basePath}posts/i-kept-forgetting-leetcode-problems-so-i-built-a-spaced-repetition-trainer/`,
+  );
+  await expect(blog.getByRole('link', { name: /All posts/ })).toHaveAttribute(
+    'href',
+    `${basePath}posts/`,
+  );
+
+  const quest = note('Latest quest');
+  await expect(quest).toContainText('dsa-learning: spaced repetition for coding interviews');
+  const imageLink = quest.locator('.project-image a');
+  await expect(imageLink).toHaveAttribute('href', 'https://dsa-learning.bernardosevero.dev/');
+  await expect(imageLink).toHaveAttribute('tabindex', '-1');
+  await expect(imageLink).toHaveAttribute('aria-hidden', 'true');
+  await expect(quest.getByRole('link', { name: /Open the app/ })).toHaveAttribute(
+    'href',
+    'https://dsa-learning.bernardosevero.dev/',
+  );
+  await expect(quest.getByRole('link', { name: /All projects/ })).toHaveAttribute(
+    'href',
+    `${basePath}projects/`,
+  );
+
+  const desk = note('On the reading desk');
+  await expect(desk).toContainText('Reading now');
+  await expect(desk).toContainText('The Alienist');
+  const finished = desk.locator('.home-note__finished .home-note__text');
+  await expect(finished).toHaveCount(2);
+  await expect(finished.nth(0)).toContainText('Clean Code');
+  await expect(finished.nth(0)).toContainText('4 out of 5 stars');
+  await expect(finished.nth(1)).toContainText('White Nights');
+  await expect(finished.nth(1)).toContainText('4.5 out of 5 stars');
+
+  const character = note('Character sheet');
+  await expect(character).toContainText('Product Engineer · 7+ years');
+  const companies = character.getByRole('list', { name: 'Past and current companies' });
+  await expect(companies.getByRole('img')).toHaveCount(3);
+  await expect(companies.getByRole('img', { name: 'SAP Concur' })).toHaveCount(1);
+  const download = character.getByRole('link', { name: 'Download CV (PDF)', exact: true });
+  if (cvAsset) {
+    await expect(download).toHaveClass(/rpg-button/);
+    await expect(download).toHaveAttribute('download', cvAsset.downloadName);
+  } else await expect(download).toHaveCount(0);
+  await expect(character.getByRole('link', { name: /Read the full sheet/ })).toHaveAttribute(
+    'href',
+    `${basePath}about/`,
+  );
+
+  await desk.getByRole('link', { name: 'read the review' }).click();
+  await expect(page).toHaveURL(`${basePath}reading/fyodor-dostoevsky-white-nights/`);
+  await expect(page.getByRole('heading', { level: 1, name: 'White Nights' })).toBeVisible();
+});
+
+test('keyboard order in the notice board follows reading order and skips decoration', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('./', { waitUntil: 'domcontentloaded' });
+  const names = await page.locator('#news').evaluate((board) =>
+    [...board.querySelectorAll<HTMLElement>('a, button')]
+      .filter((element) => element.tabIndex >= 0 && !element.closest('[aria-hidden="true"]'))
+      // Prefer the explicit label, as assistive technology does (the CV icon has inner text).
+      .map(
+        (element) =>
+          element.getAttribute('aria-label') ?? element.textContent?.replace(/\s+/g, ' ').trim(),
+      ),
+  );
+  expect(names).toEqual([
+    'I kept forgetting LeetCode problems, so I built a spaced-repetition trainer',
+    'Building my portfolio: RPG menus, design systems, and LLMs',
+    'All posts →',
+    'Open the app ↗',
+    'All projects →',
+    'read the review',
+    'Visit the library →',
+    ...(cvAsset ? ['Download CV (PDF)'] : []),
+    'Read the full sheet →',
+  ]);
+  await expect(page.locator('#news .notice-note__nail[aria-hidden="true"]')).toHaveCount(4);
+});
+
+test('notes drop in once, and reduced motion or no JavaScript leaves them still', async ({
+  browser,
+  baseURL,
+}) => {
+  const motion = await browser.newContext({ baseURL, reducedMotion: 'no-preference' });
+  try {
+    const page = await motion.newPage();
+    await page.goto('./', { waitUntil: 'domcontentloaded' });
+    const board = page.locator('#news');
+    await expect(board).not.toHaveClass(/notice-board--arrived/);
+    await board.scrollIntoViewIfNeeded();
+    await expect(board).toHaveClass(/notice-board--arrived/);
+  } finally {
+    await motion.close();
+  }
+
+  for (const options of [
+    { reducedMotion: 'reduce' as const, javaScriptEnabled: true },
+    { reducedMotion: 'no-preference' as const, javaScriptEnabled: false },
+  ]) {
+    const context = await browser.newContext({ ...options, baseURL });
+    try {
+      const page = await context.newPage();
+      await page.goto('./', { waitUntil: 'domcontentloaded' });
+      const board = page.locator('#news');
+      await board.scrollIntoViewIfNeeded();
+      await expect(board).not.toHaveClass(/notice-board--arrived/);
+      for (const note of await board.locator('article').all()) {
+        await expect(note).toBeVisible();
+        expect(await note.evaluate((element) => getComputedStyle(element).animationName)).toBe(
+          'none',
+        );
+        expect(await note.evaluate((element) => getComputedStyle(element).opacity)).toBe('1');
+      }
+    } finally {
+      await context.close();
+    }
+  }
+});
+
 test('skip link moves keyboard focus directly to the main content', async ({ page }) => {
   await page.goto('./');
   await page.keyboard.press('Tab');
@@ -262,18 +407,22 @@ for (const viewport of [
     await page.evaluate(() => document.fonts.ready);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     const overflow = await page.evaluate(() =>
-      ['.home-shell', '.home-first-screen', '.home-dialogue', '.home-dialogue__parchment'].filter(
-        (selector) => {
-          const element = document.querySelector<HTMLElement>(selector);
-          if (!element) return true;
-          const rect = element.getBoundingClientRect();
-          return (
-            element.scrollWidth > element.clientWidth + 2 ||
-            rect.right > innerWidth + 1 ||
-            rect.left < 0
-          );
-        },
-      ),
+      [
+        '.home-shell',
+        '.home-first-screen',
+        '.home-dialogue',
+        '.home-dialogue__parchment',
+        '.notice-board',
+      ].filter((selector) => {
+        const element = document.querySelector<HTMLElement>(selector);
+        if (!element) return true;
+        const rect = element.getBoundingClientRect();
+        return (
+          element.scrollWidth > element.clientWidth + 2 ||
+          rect.right > innerWidth + 1 ||
+          rect.left < 0
+        );
+      }),
     );
     expect(overflow).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(

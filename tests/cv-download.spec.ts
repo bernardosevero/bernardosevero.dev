@@ -14,8 +14,8 @@ const asset: CvAsset = {
   downloadName: 'bernardo-severo-cv.pdf',
 };
 const run = promisify(execFile);
-// Home's dialogue has no CV action; System shows both variants.
-const cvLinkCounts: Record<string, number> = { './': 0, './about/': 1, './system/': 2 };
+// Home's notice board and About show the button; System shows both variants.
+const cvLinkCounts: Record<string, number> = { './': 1, './about/': 1, './system/': 2 };
 
 // A blank PDF created only inside isolated test output, never in public/.
 function pdfFixture(): Buffer {
@@ -64,7 +64,6 @@ test('production CV availability matches explicit configuration without JavaScri
       // System shows the icon and button variants; content pages show one action.
       const links = page.getByRole('link', { name: 'Download CV (PDF)', exact: true });
       await expect(links).toHaveCount(cvAsset ? cvLinkCounts[route] : 0);
-      if (route === './') continue;
       const link = links.first();
       if (cvAsset) {
         const response = await context.request.get((await link.getAttribute('href')) || '');
@@ -161,11 +160,7 @@ for (const base of ['/', '/bernardosevero.dev/']) {
           page.on('response', (response) => {
             if (response.status() >= 400) failures.push(response.url());
           });
-          await page.goto(`${origin}${base}`);
-          await expect(
-            page.getByRole('link', { name: 'Download CV (PDF)', exact: true }),
-          ).toHaveCount(0);
-          for (const route of ['about/', 'system/']) {
+          for (const route of ['', 'about/', 'system/']) {
             await page.goto(`${origin}${base}${route}`);
             const links = page.getByRole('link', { name: 'Download CV (PDF)', exact: true });
             await expect(links).toHaveCount(cvLinkCounts[`./${route}`]);
@@ -178,7 +173,7 @@ for (const base of ['/', '/bernardosevero.dev/']) {
               await expect(variant.locator('svg')).toHaveAttribute('focusable', 'false');
             }
             const link = links.first();
-            if (route !== 'system/') {
+            if (route === 'about/') {
               const contact = page.getByRole('navigation', {
                 name: 'Professional profiles and CV',
               });
@@ -226,9 +221,9 @@ for (const base of ['/', '/bernardosevero.dev/']) {
                   const specimen =
                     route === 'system/'
                       ? page.locator('article').filter({ has: link }).first()
-                      : page.locator('#contact');
+                      : page.locator(route === 'about/' ? '#contact' : '#news');
                   await specimen.screenshot({
-                    path: testInfo.outputPath(`${route.replace('/', '')}-${width}.png`),
+                    path: testInfo.outputPath(`${route.replace('/', '') || 'home'}-${width}.png`),
                   });
                 }
               }

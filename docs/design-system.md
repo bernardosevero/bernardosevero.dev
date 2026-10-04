@@ -172,7 +172,7 @@ The optional `CvDownloadLink.astro` has two variants. `icon` (the default) reuse
 
 ### Company tile
 
-`CompanyTile.astro` renders the 40px tile and owns its styles. `ExperienceEntry.astro` (Character Sheet timeline) and `CvExperience.astro` (CV page) both use it. `ExperienceEntry` renders a row with the tile, then the company name (`h3`) with role and period, followed by the description; its timeline diamond alignment (centered on the 40px row) lives in `about.css`. The tile has a 2px `--wood-dark` border, `--parchment-light` fill, and the standard inset and drop shadows. A supplied logo renders at 28px with `object-fit: contain` and keeps its own colors; without one, the tile shows a monogram from `companyMonogram()` in `src/utils/format.ts` (first letter of up to three words, `--font-heading` 700 at `--text-2xs`, `--ink-soft`). Both forms are decorative (`alt=""` or `aria-hidden="true"`) because the company name sits beside the tile. The tile stays 40px on phones. `/system/` shows static monogram specimens in both entries. See `docs/content.md` for adding logos.
+`CompanyTile.astro` renders the 40px tile and owns its styles. It is decorative unless `labelled` is set, as in the Home board's company row, where the logo's `alt` (or the monogram's label) is the company name. `ExperienceEntry.astro` (Character Sheet timeline) and `CvExperience.astro` (CV page) both use it. `ExperienceEntry` renders a row with the tile, then the company name (`h3`) with role and period, followed by the description; its timeline diamond alignment (centered on the 40px row) lives in `about.css`. The tile has a 2px `--wood-dark` border, `--parchment-light` fill, and the standard inset and drop shadows. A supplied logo renders at 28px with `object-fit: contain` and keeps its own colors; without one, the tile shows a monogram from `companyMonogram()` in `src/utils/format.ts` (first letter of up to three words, `--font-heading` 700 at `--text-2xs`, `--ink-soft`). Both forms are decorative (`alt=""` or `aria-hidden="true"`) because the company name sits beside the tile. The tile stays 40px on phones. `/system/` shows static monogram specimens in both entries. See `docs/content.md` for adding logos.
 
 ### Home dialogue
 
@@ -194,6 +194,14 @@ Motion inventory, all CSS animating only `transform` and `opacity`:
 | Choice cursor and caret | Pixel nudge and blinking ▼ caret |
 
 The decorative layer is `aria-hidden` and ignores pointer events. Its inner box is sized like the cover-fitted art, so percentage positions stay over the left house and lantern at any viewport. With `prefers-reduced-motion: reduce`, nothing moves: the global rule stops animations, the decorative layer is hidden, and the script leaves the full text and choices in place with no Skip button. Without JavaScript the dialogue is complete and its links work.
+
+### Notice board
+
+Below the first screen, `NoticeBoard.astro` renders the `News from the village` section (`id="news"`): a `WoodFrame` board with a pixel `h2` in `--on-green` with a dark shadow between two short rules, and a 2×2 grid of notes (40px × 44px gaps, one column at `<= 760px`). The first screen's bouncing `News from the village` chevron links to it and is the first thing hidden when the first screen is crowded (`<= 560px` wide or under 700px tall).
+
+`NoticeNote.astro` is one parchment note: a decorative iron nail on its top edge, a pixel kicker (`h3`), a default content slot, and an `actions` slot pinned to the bottom. The board rotates its notes −1.2°, 1°, 0.8°, and −0.9° through `--note-rotation`; hover straightens and lifts a note 6px over 200ms. When the board scrolls into view, an `IntersectionObserver` adds `notice-board--arrived` and the notes drop in (`translateY(-36px)` to rest, 600ms with overshoot, staggered 150ms). Without JavaScript or with reduced motion the notes are simply visible, and hover lifts without changing the rotation.
+
+The four notes on Home read visible entries at build time through the pure selectors in `src/utils/home-previews.ts`: the two newest posts, the newest project (by `publishedAt`, undated last, `featured` breaking ties) with its `ProjectImageFrame` image, the current and two most recently finished books (review links follow the Reading rule), and the About `headline`, `teaser`, labelled company tiles, the button variant of `CvDownloadLink`, and a link to `/about/`. An empty source shows a short honest line instead of disappearing. `ProjectImageFrame.astro` is the shared project image frame used by `ProjectCard` and this board. `/system/` shows one static note.
 
 ### CV page
 

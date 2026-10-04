@@ -17,6 +17,7 @@ import type { OutlineSection } from '../utils/outline';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
 import CvExperience from '../components/CvExperience.astro';
 import HomeDialogue from '../components/HomeDialogue.astro';
+import NoticeNote from '../components/NoticeNote.astro';
 import '../styles/portfolio.css';
 import '../styles/social-link.css';
 // The Experience entry specimen keeps the Character Sheet timeline styles.
@@ -327,6 +328,21 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               </p>
             </article>
             <article>
+              <h3>Notice note</h3>
+              <div class="notice-note-specimen">
+                <NoticeNote kicker="Kicker label">
+                  <p>Static specimen content: any preview text or list goes in the default slot.</p>
+                  <a slot="actions" href={`${base}system/`}>
+                    Action link <span aria-hidden="true">→</span>
+                  </a>
+                </NoticeNote>
+              </div>
+              <p>
+                One parchment note from the Home board: decorative nail, pixel kicker, content, and
+                bottom actions. On the board each note is slightly rotated and lifts on hover.
+              </p>
+            </article>
+            <article>
               <h3>Experience entry</h3>
               <ol class="timeline">
                 <ExperienceEntry
@@ -591,6 +607,10 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
   /* Room for the name plate and phone portrait, which overlap the frame's top edge. */
   .home-dialogue-specimen__stage {
     padding-top: 48px;
+  }
+  /* Room for the nail, which sits on the note's top edge. */
+  .notice-note-specimen {
+    padding-top: 12px;
   }
   .footer-specimen {
     padding-top: 24px;
