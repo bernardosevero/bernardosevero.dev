@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { profileLinkLabels, toolNames } from './config/character-sheet';
+import { profileLinkLabels, toolNames } from './config/profile';
 
 const date = z.coerce.date();
 

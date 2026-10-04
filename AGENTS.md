@@ -31,7 +31,7 @@ npm test -- tests/design-consistency.spec.ts # Focused iteration
 | Builds, CI, deployment, base paths | [Deployment and local verification](docs/deployment.md#local-verification) |
 | Skill workflows or maintenance | [Skills](docs/skills.md) |
 
-Production components and the design system are the visual source of truth. `/` and `/about/` share the Character Sheet and `BaseLayout` top navigation.
+Production components and the design system are the visual source of truth. `/` (Home dialogue and notice board) and `/about/` (CV page) share the `BaseLayout` top navigation.
 
 ## Product and content
 

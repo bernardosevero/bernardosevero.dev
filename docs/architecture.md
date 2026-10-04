@@ -13,7 +13,7 @@ The project is a statically generated Astro portfolio. Content collections provi
 | Schemas | `src/content.config.ts` | Prevents malformed posts, projects, books, and page copy |
 | Design tokens | `src/styles/tokens.css` | Shared palette, typography, geometry, and effects |
 | Foundations | `src/styles/global.css` | Base behavior and reusable RPG component classes |
-| Route composition | `src/styles/portfolio.css`, `about.css`, `reading-codex.css`, and route-local styles | Responsive layout without leaking page decisions into primitives |
+| Route composition | `src/styles/portfolio.css`, `cv.css`, `reading-codex.css`, and route-local styles | Responsive layout without leaking page decisions into primitives |
 | Automation | `scripts/` and personal Codex skills | Safe scaffolding and normalized content import |
 | Verification | `tests/`, Astro check, build | Interaction, accessibility, overflow, assets, and schema confidence |
 
