@@ -82,6 +82,9 @@
     "author": "Felipe Nunes",
     "status": "wishlist",
     "isbn": "9786559873081",
+    "coverUrl": "https://m.media-amazon.com/images/I/81YDs92bbDL._AC_UF1000,1000_QL80_.jpg",
+    "coverSource": "manual",
+    "coverProvenance": "Amazon product image supplied by the owner, ISBN 9786559873081",
     "notionId": "3f074cb445b8810bb69ac679f0f2fbe7",
     "notionLastEditedAt": "2026-10-05T13:28:30.780Z",
     "draft": false
@@ -286,6 +289,9 @@
     "author": "Michel Alcoforado",
     "status": "wishlist",
     "isbn": "9786556928586",
+    "coverUrl": "https://covers.openlibrary.org/b/olid/OL60744595M-L.jpg",
+    "coverSource": "catalog",
+    "coverProvenance": "Open Library edition OL60744595M",
     "notionId": "3f074cb445b88186ae13e097467cbbb7",
     "notionLastEditedAt": "2026-10-05T13:28:32.454Z",
     "draft": false
