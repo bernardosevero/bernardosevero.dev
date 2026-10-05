@@ -77,6 +77,16 @@
     "draft": false
   },
   {
+    "id": "felipe-nunes-brasil-no-espelho",
+    "title": "Brasil no Espelho",
+    "author": "Felipe Nunes",
+    "status": "wishlist",
+    "isbn": "9786559873081",
+    "notionId": "3f074cb445b8810bb69ac679f0f2fbe7",
+    "notionLastEditedAt": "2026-10-05T13:28:30.780Z",
+    "draft": false
+  },
+  {
     "id": "fyodor-dostoevsky-white-nights",
     "title": "White Nights",
     "author": "Fyodor Dostoevsky",
@@ -262,12 +272,22 @@
     "id": "martin-kleppmann-designing-data-intensive-applications",
     "title": "Designing Data-Intensive Applications",
     "author": "Martin Kleppmann",
-    "status": "wishlist",
+    "status": "reading",
     "coverUrl": "https://covers.openlibrary.org/b/olid/OL26780701M-L.jpg",
     "coverSource": "catalog",
     "coverProvenance": "Open Library edition OL26780701M",
     "notionId": "3e274cb445b8811fa245e701ec7a7d5b",
-    "notionLastEditedAt": "2026-09-21T19:05:10.698Z",
+    "notionLastEditedAt": "2026-10-05T13:21:28.119Z",
+    "draft": false
+  },
+  {
+    "id": "michel-alcoforado-coisa-de-rico",
+    "title": "Coisa de Rico",
+    "author": "Michel Alcoforado",
+    "status": "wishlist",
+    "isbn": "9786556928586",
+    "notionId": "3f074cb445b88186ae13e097467cbbb7",
+    "notionLastEditedAt": "2026-10-05T13:28:32.454Z",
     "draft": false
   },
   {
