@@ -312,8 +312,10 @@ test('shelf tabs support keyboard selection, scrolling, and remembered books', a
   await page.keyboard.press('ArrowRight');
   await expect(page.getByRole('tab', { name: 'reading' })).toBeFocused();
   await expect(page.getByRole('tab', { name: 'reading' })).toHaveAttribute('aria-selected', 'true');
-  await expect(page.getByRole('article', { name: 'The Alienist' })).toBeVisible();
-  await expect(page.locator('[data-announcement]')).toHaveText('reading: 1 book');
+  await expect(
+    page.getByRole('article', { name: 'Designing Data-Intensive Applications' }),
+  ).toBeVisible();
+  await expect(page.locator('[data-announcement]')).toHaveText('reading: 2 books');
   await page.keyboard.press('ArrowRight');
   await expect(page.getByRole('tab', { name: 'wishlist' })).toBeFocused();
   await expect(page.getByRole('tab', { name: 'wishlist' })).toHaveAttribute(
@@ -366,7 +368,7 @@ test('books and reviews remain available without JavaScript', async ({ browser, 
   const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const page = await context.newPage();
   await page.goto('./reading/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('.codex-detail')).toHaveCount(30);
+  await expect(page.locator('.codex-detail')).toHaveCount(32);
   await page.getByRole('link', { name: 'White Nights', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
   await page.getByRole('link', { name: 'Read review →' }).click();
