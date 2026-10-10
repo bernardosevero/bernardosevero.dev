@@ -87,7 +87,7 @@ Book covers load directly from each entry's `coverUrl`; do not save copies in th
 
 ### Public CV
 
-The public CV is Bernardo's supplied Google Docs resume, exported as a PDF on 2026-09-20 without content edits. It lives at `public/documents/bernardo-severo-cv.pdf`. The typed `cvAsset` in `src/config/cv.ts` contains `{ path: 'documents/bernardo-severo-cv.pdf', downloadName: 'bernardo-severo-cv.pdf' }`. Set it to `null` to omit the action on Home, About, and System. External profile links retain their separate content schema.
+The public CV is Bernardo's supplied Google Docs resume, exported as a PDF on 2026-10-08 without content edits. It lives at `public/documents/bernardo-severo-cv.pdf`. The typed `cvAsset` in `src/config/cv.ts` contains `{ path: 'documents/bernardo-severo-cv.pdf', downloadName: 'bernardo-severo-cv.pdf' }`. Set it to `null` to omit the action on Home, About, and System. External profile links retain their separate content schema.
 
 Replace the PDF at the same path to preserve its URL. Review the document for public release before enabling it. Astro validates that a configured file is readable and has a PDF signature, failing the build if it is missing or invalid; this does not verify its contents or ownership. The URL uses the site's configured base, and native downloads work without JavaScript. One PDF is shared across the site; its language is not inferred from the page.
 
