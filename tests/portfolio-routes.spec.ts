@@ -336,14 +336,14 @@ test('shelf tabs support keyboard selection, scrolling, and remembered books', a
 });
 
 test('codex fragment links open the linked shelf and book', async ({ page }) => {
-  await page.goto('./reading/#reading-codex-book-machado-de-assis-the-alienist', {
+  await page.goto('./reading/#reading-codex-book-albert-camus-the-stranger', {
     waitUntil: 'domcontentloaded',
   });
   await expect(page.getByRole('tab', { name: 'reading', exact: true })).toHaveAttribute(
     'aria-selected',
     'true',
   );
-  await expect(page.getByRole('article', { name: 'The Alienist' })).toBeVisible();
+  await expect(page.getByRole('article', { name: 'The Stranger' })).toBeVisible();
   await page.goto('./');
   await page.goto('./reading/#reading-codex-wishlist', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('tab', { name: 'wishlist', exact: true })).toHaveAttribute(
@@ -368,7 +368,7 @@ test('books and reviews remain available without JavaScript', async ({ browser, 
   const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const page = await context.newPage();
   await page.goto('./reading/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('.codex-detail')).toHaveCount(32);
+  await expect(page.locator('.codex-detail')).toHaveCount(34);
   await page.getByRole('link', { name: 'White Nights', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'White Nights' })).toBeVisible();
   await page.getByRole('link', { name: 'Read review →' }).click();

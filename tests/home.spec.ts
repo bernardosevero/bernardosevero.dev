@@ -322,13 +322,13 @@ test('the notice board previews posts, the latest quest, the reading desk, and t
 
   const desk = note('On the reading desk');
   await expect(desk).toContainText('Reading now');
-  await expect(desk).toContainText('The Alienist');
+  await expect(desk).toContainText('The Stranger');
   const finished = desk.locator('.home-note__finished .home-note__text');
   await expect(finished).toHaveCount(2);
-  await expect(finished.nth(0)).toContainText('Clean Code');
-  await expect(finished.nth(0)).toContainText('4 out of 5 stars');
-  await expect(finished.nth(1)).toContainText('White Nights');
-  await expect(finished.nth(1)).toContainText('4.5 out of 5 stars');
+  await expect(finished.nth(0)).toContainText('The Alienist');
+  await expect(finished.nth(0)).toContainText('3.5 out of 5 stars');
+  await expect(finished.nth(1)).toContainText('Clean Code');
+  await expect(finished.nth(1)).toContainText('4 out of 5 stars');
 
   const character = note('Character sheet');
   await expect(character).toContainText('Product Engineer · 7+ years');
@@ -345,9 +345,8 @@ test('the notice board previews posts, the latest quest, the reading desk, and t
     `${basePath}about/`,
   );
 
-  await desk.getByRole('link', { name: 'read the review' }).click();
-  await expect(page).toHaveURL(`${basePath}reading/fyodor-dostoevsky-white-nights/`);
-  await expect(page.getByRole('heading', { level: 1, name: 'White Nights' })).toBeVisible();
+  // Neither recently finished book has a review yet, so the desk offers no review link.
+  await expect(desk.getByRole('link', { name: 'read the review' })).toHaveCount(0);
 });
 
 test('keyboard order in the notice board follows reading order and skips decoration', async ({
@@ -370,7 +369,6 @@ test('keyboard order in the notice board follows reading order and skips decorat
     'All posts →',
     'Open the app ↗',
     'All projects →',
-    'read the review',
     'Visit the library →',
     ...(cvAsset ? ['Download CV (PDF)'] : []),
     'Read the full sheet →',

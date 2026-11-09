@@ -12,6 +12,15 @@
     "draft": false
   },
   {
+    "id": "albert-camus-the-stranger",
+    "title": "The Stranger",
+    "author": "Albert Camus",
+    "status": "reading",
+    "notionId": "3d474cb445b881d0be59f0665d3f9ccd",
+    "notionLastEditedAt": "2026-09-07T16:42:54.731Z",
+    "draft": false
+  },
+  {
     "id": "andrew-hunt-and-david-thomas-the-pragmatic-programmer",
     "title": "The Pragmatic Programmer",
     "author": "Andrew Hunt and David Thomas",
@@ -212,13 +221,15 @@
     "id": "machado-de-assis-the-alienist",
     "title": "The Alienist",
     "author": "Machado de Assis",
-    "status": "reading",
+    "status": "finished",
     "isbn": "9788563560933",
+    "rating": 3.5,
+    "finishedAt": "2026-11-09",
     "coverUrl": "https://cdl-static.s3-sa-east-1.amazonaws.com/covers/gg/9788563560933/o-alienista-introducao-de-john-gledson-e-notas-de-helio-guimaraes.jpg",
     "coverSource": "catalog",
     "coverProvenance": "Open Library edition OL11381010M",
     "notionId": "3d474cb445b881f3aa5be7e071708390",
-    "notionLastEditedAt": "2026-09-07T16:43:49.972Z",
+    "notionLastEditedAt": "2026-11-09T12:21:56.902Z",
     "draft": false
   },
   {
@@ -372,6 +383,15 @@
     "coverProvenance": "Open Library edition OL3554660M",
     "notionId": "3d474cb445b881ad9337d34d923ad4d9",
     "notionLastEditedAt": "2026-09-07T01:24:48.232Z",
+    "draft": false
+  },
+  {
+    "id": "sophocles-oedipus-rex",
+    "title": "Oedipus Rex",
+    "author": "Sophocles",
+    "status": "wishlist",
+    "notionId": "3d474cb445b881ba9e65c22b7da0c2e5",
+    "notionLastEditedAt": "2026-09-07T16:43:06.997Z",
     "draft": false
   },
   {
