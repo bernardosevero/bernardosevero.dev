@@ -16,6 +16,9 @@
     "title": "The Stranger",
     "author": "Albert Camus",
     "status": "reading",
+    "coverUrl": "https://covers.openlibrary.org/b/olid/OL50972958M-L.jpg",
+    "coverSource": "catalog",
+    "coverProvenance": "Open Library edition OL50972958M, supplied by the owner",
     "notionId": "3d474cb445b881d0be59f0665d3f9ccd",
     "notionLastEditedAt": "2026-09-07T16:42:54.731Z",
     "draft": false
