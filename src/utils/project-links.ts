@@ -3,6 +3,7 @@ const destinationTypes = new Map([
   ['github.com', 'source_repository'],
   ['www.alura.com.br', 'published_formation'],
   ['dsa-learning.bernardosevero.dev', 'live_application'],
+  ['scroll-spark-app.vercel.app', 'live_application'],
 ]);
 
 export function getDestinationType(value: string): string | undefined {
