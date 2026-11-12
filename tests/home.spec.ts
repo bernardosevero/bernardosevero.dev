@@ -306,14 +306,14 @@ test('the notice board previews posts, the latest quest, the reading desk, and t
   );
 
   const quest = note('Latest quest');
-  await expect(quest).toContainText('dsa-learning: spaced repetition for coding interviews');
+  await expect(quest).toContainText('Scroll Spark: capture ideas while you scroll');
   const imageLink = quest.locator('.project-image a');
-  await expect(imageLink).toHaveAttribute('href', 'https://dsa-learning.bernardosevero.dev/');
+  await expect(imageLink).toHaveAttribute('href', 'https://scroll-spark-app.vercel.app/');
   await expect(imageLink).toHaveAttribute('tabindex', '-1');
   await expect(imageLink).toHaveAttribute('aria-hidden', 'true');
   await expect(quest.getByRole('link', { name: /Open the app/ })).toHaveAttribute(
     'href',
-    'https://dsa-learning.bernardosevero.dev/',
+    'https://scroll-spark-app.vercel.app/',
   );
   await expect(quest.getByRole('link', { name: /All projects/ })).toHaveAttribute(
     'href',
