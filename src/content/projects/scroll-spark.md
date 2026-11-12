@@ -10,7 +10,9 @@ technologies:
   - Buffer API
   - Claude API
   - Chrome extension
+  - Claude Code
 outcomes:
+  - "Live on Vercel, where any Buffer user can connect their account."
   - "Open source under the MIT License."
 featured: false
 draft: false
@@ -34,7 +36,7 @@ decisions:
   - "Make the website the complete product and the Chrome extension a thin client on the same API, so the core capture, idea and post flow works without an install."
   - "Lock each user's token row during a refresh and ask the user to reconnect when the result is unclear, rather than risk reusing a spent refresh token."
   - "Save to Buffer only on an explicit click, with Save as draft as the primary action and Add to queue as a second button that names the channel."
-contribution: "Solo entry: defined the product and its decisions, designed its Riso Print visual style, and built the Next.js website, the Chrome side-panel extension and the backend that connects Buffer, Claude and Postgres."
+contribution: "Solo entry: defined the product and its decisions, designed its Riso Print visual style, and built the Next.js website, the Chrome side-panel extension and the backend that connects Buffer, Claude and Postgres, using Claude Code as the coding agent."
 lessons: []
 ---
 
