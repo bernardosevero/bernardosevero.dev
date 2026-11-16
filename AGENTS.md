@@ -18,6 +18,8 @@ npm test
 npm test -- tests/design-consistency.spec.ts # Focused iteration
 ```
 
+The MCP Worker in `mcp/` is a separate package with its own lockfile; its commands are in the [MCP guide](docs/mcp.md).
+
 `npm test` builds before running Chromium tests. Focused runs do not replace required full suites. CI must pass formatting, CSS linting, type checking, builds, and browser tests for both base paths before deployment.
 
 ## Read before changing

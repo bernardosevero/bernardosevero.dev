@@ -38,6 +38,7 @@ Home renders the village greeting from `src/content/pages/home.md`; About render
 | `/reading/` | Reading Codex: reading, finished, wishlist, optional ratings/reviews |
 | `/reading/[slug]/` | Review for a visible book with nonempty Markdown |
 | `/system/` | Live inventory of production tokens, components, and states |
+| `/api/v1/content.json`, `/api/v1/index.json` | Static public data snapshot read by the MCP Worker; see the [MCP guide](mcp.md) |
 
 Expose a route as finished only when its content, responsive layout, keyboard behavior, metadata, and tests are ready; otherwise use an honest unavailable state. Production components and the design system supersede historical implementation notes.
 

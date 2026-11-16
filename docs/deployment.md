@@ -27,6 +27,20 @@ GitHub Actions is the only deployment path, so every production release depends 
 
 The Pages project has a GitHub connection, but its automatic deployments must stay off. In **Settings > Builds**, disable automatic production branch deployments and set preview deployments to **None**. Both were disabled on 2026-09-25. When both paths were active, each push published an untested Cloudflare build first. That build stayed live when tests failed, and the later Actions upload replaced it without analytics.
 
+## MCP Worker
+
+The read-only MCP server in `mcp/` is a separate Cloudflare Worker named `bernardosevero-mcp`, served from the custom domain `mcp.bernardosevero.dev`. It is not the unrelated `bernardosevero-dev` Worker, and it does not change the Pages project. See the [MCP guide](mcp.md).
+
+Every pull request runs the Worker's type check and tests in the `mcp` job, and the `build` job checks the freshly built snapshot against the Worker's schema. The `deploy-mcp` job runs `wrangler deploy` after the site deploy on `main`, and only while the `MCP_DEPLOY_ENABLED` repository variable is `true`.
+
+Before setting that variable:
+
+1. Give the `CLOUDFLARE_API_TOKEN` token **Account > Workers Scripts > Edit** and, for the custom domain, **Zone > Workers Routes > Edit** and **Zone > DNS > Edit** on the `bernardosevero.dev` zone. A Pages-only token fails the deploy.
+2. Confirm no existing DNS record uses the `mcp` name; the deploy creates it.
+3. Set `MCP_DEPLOY_ENABLED` to `true` under **Settings > Secrets and variables > Actions > Variables**.
+
+The Worker reads the public `PUBLIC_POSTHOG_KEY` and `PUBLIC_POSTHOG_HOST` repository variables at deploy time. Analytics stay off when either is empty. The first deploy has not happened yet; the permission list above comes from Cloudflare's documentation and is unverified.
+
 ## Local verification
 
 Use Node.js 24:
