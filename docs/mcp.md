@@ -2,7 +2,7 @@
 
 Read before changing the public data snapshot (`src/pages/api/v1/`), its serializer, or anything in `mcp/`. The plan and scope live in [issue 47](https://github.com/bernardosevero/bernardosevero.dev/issues/47).
 
-**Status:** this guide lands before the code. `src/pages/api/v1/` and `mcp/` arrive with the tracer bullet; until then the invariants below are the contract that work must meet.
+**Status:** the tracer bullet is in place. The snapshot carries the profile only, and the Worker serves one tool, `get_profile`. The Worker deploys only while the `MCP_DEPLOY_ENABLED` repository variable is `true` (see [Deployment](deployment.md#mcp-worker)).
 
 ## Shape
 
@@ -11,10 +11,21 @@ The site emits one static snapshot of its public content. A stateless Cloudflare
 | Piece | Location | Owns |
 | --- | --- | --- |
 | Snapshot | `src/pages/api/v1/content.json.ts`, `index.json.ts` | The public data contract, built by Astro |
-| Serializer | `src/utils/` | Mapping content entries to public DTOs |
+| Serializer | `src/utils/public-snapshot.ts` (pure mapping), `public-snapshot-source.ts` (reads collections) | Mapping content entries to public DTOs |
 | Worker | `mcp/` (own `package.json`, lockfile, Vitest) | Transport, tools, cache, analytics |
 
 The Worker is a separate deploy. The site stays a static Pages upload with no server runtime.
+
+Inside `mcp/src/`: `index.ts` routes, rate-limits, and wires dependencies; `server.ts` registers tools; `tools/` holds one file per tool; `snapshot.ts` fetches and caches; `snapshot-schema.ts` is the zod contract and the source of tool output schemas; `analytics.ts` configures PostHog. Tools receive `loadSnapshot` as a dependency, so tests never touch the network.
+
+```sh
+cd mcp
+npm ci
+npm run check                                        # TypeScript
+npm test                                             # Vitest inside the Workers runtime
+npm run check:snapshot -- ../dist/api/v1/content.json # after `npm run build` at the root
+npm run dev                                          # wrangler dev at http://localhost:8787/mcp
+```
 
 ## Invariants
 
@@ -32,16 +43,17 @@ Each rule carries its enforcement: `[test]` means a test fails when it is broken
 
 ## Tools
 
-Six tools, all read-only: `get_profile`, `get_projects`, `list_posts`, `get_post`, `get_reading_list`, `get_book_review`. Adding, renaming, or removing a tool changes the public surface and needs the owner's direction. Follow the [implementing-mcp-tools skill](../.agents/skills/implementing-mcp-tools/SKILL.md) for the workflow.
+Six tools are planned, all read-only: `get_profile`, `get_projects`, `list_posts`, `get_post`, `get_reading_list`, `get_book_review`. Only `get_profile` exists today. Adding, renaming, or removing a tool changes the public surface and needs the owner's direction. Follow the [implementing-mcp-tools skill](../.agents/skills/implementing-mcp-tools/SKILL.md) for the workflow.
 
 ## Platform facts
 
-Checked against vendor documentation on 2026-11-16. None of this has run in this repository yet; the tracer bullet must prove each item and correct this section.
+Proven by the Vitest suite on 2026-11-16, which runs inside the local Workers runtime. Nothing here has run on Cloudflare's network or against a real MCP client yet.
 
-- **Stateless transport.** `createMcpHandler` from `agents/mcp/server` builds a fresh `McpServer` (`@modelcontextprotocol/server`, SDK v2) per request, defaults to the `/mcp` route, and needs no Durable Object. Pass it a server factory, not an instance. [Cloudflare reference](https://developers.cloudflare.com/agents/api-reference/mcp-handler-api/)
-- **Rate limiting.** The Workers binding is declared under `ratelimits` in the wrangler config with `simple.limit` and a `simple.period` of 10 or 60 seconds. Limits are approximate and counted per Cloudflare location. The docs do not state plan availability. [Cloudflare reference](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/)
-- **PostHog.** `@posthog/mcp` is beta; pin the version. Its docs list Cloudflare Workers under custom handlers that use `PostHogMCP` capture methods instead of `instrument()`, and note that client name and version are absent on the stateless `createMcpHandler` path. Flush with `ctx.waitUntil(posthog.flush())`. [PostHog reference](https://posthog.com/docs/mcp-analytics/installation/typescript)
-- **Turning capture off.** `context: false`, `enableConversationId: false`, and `captureModel: false` are `instrument()` options. Parameters and responses have no switch; drop `$mcp_response` in `beforeSend`. [PostHog privacy](https://posthog.com/docs/mcp-analytics/privacy)
+- **Stateless transport.** `createMcpHandler` from `agents/mcp/server` takes a server factory and builds a fresh `McpServer` (`@modelcontextprotocol/server`, SDK v2) per request, with no Durable Object. Requests without a session answer as a server-sent event stream, so the tool runs while the body streams. [Cloudflare reference](https://developers.cloudflare.com/agents/api-reference/mcp-handler-api/)
+- **PostHog.** `instrument(server, posthog, options)` from `@posthog/mcp` works on the per-request server, despite the vendor docs steering Workers to manual capture. `context: false`, `enableConversationId: false`, `captureModel: false`, and `enableExceptionAutocapture: false` turn those captures off; `$mcp_response` has no switch and is deleted in `beforeSend`. Events are flushed after the response body finishes, inside `ctx.waitUntil`. The vendor docs say client name and version are absent on this stateless path. [PostHog reference](https://posthog.com/docs/mcp-analytics/installation/typescript)
+- **Edge cache.** The snapshot is stored with the Cache API for seven days with its fetch time in a header; the Worker treats it as fresh for five minutes and as a fallback after that. The Cache API needs the custom domain; it does nothing on `workers.dev`.
+- **Rate limiting.** The `ratelimits` binding in `wrangler.jsonc` allows 60 requests per 60 seconds per caller address. Limits are approximate and counted per Cloudflare location. Plan availability is unconfirmed until the first deploy. [Cloudflare reference](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/)
+- **Tests.** `@cloudflare/vitest-plugin` runs tests inside the Workers runtime. `vi.stubGlobal('fetch', …)` replaces the Worker's outbound fetch, and `SELF.fetch` exercises the whole Worker.
 
 ## Verification
 

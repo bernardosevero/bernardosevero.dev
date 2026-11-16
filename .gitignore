@@ -24,3 +24,7 @@ Thumbs.db
 
 # Serena tool cache
 .serena/
+
+# Wrangler local state
+.wrangler/
+.dev.vars
