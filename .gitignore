@@ -18,5 +18,9 @@ playwright-report/
 .DS_Store
 Thumbs.db
 
+# Agent worktrees and local agent settings; .claude/skills/ is versioned
+.claude/worktrees/
+.claude/settings.local.json
+
 # Serena tool cache
 .serena/

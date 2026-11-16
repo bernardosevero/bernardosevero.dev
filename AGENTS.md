@@ -29,7 +29,19 @@ npm test -- tests/design-consistency.spec.ts # Focused iteration
 | UI, styles, accessibility | [Design system](docs/design-system.md) and live `/system/` specimens |
 | Editorial content or imports | [Content](docs/content.md) |
 | Builds, CI, deployment, base paths | [Deployment and local verification](docs/deployment.md#local-verification) |
-| Skill workflows or maintenance | [Skills](docs/skills.md) |
+| MCP server, `mcp/`, or the `/api/v1/` snapshot | [MCP server](docs/mcp.md) |
+| Creating or editing a skill | [Skills](docs/skills.md) |
+
+## Skills
+
+Invoke the matching skill before starting the task. Skills live in `.agents/skills/`, with pointer files in `.claude/skills/`.
+
+| Task | Skill |
+| --- | --- |
+| Adding or changing an MCP tool, or the snapshot it reads | [`implementing-mcp-tools`](.agents/skills/implementing-mcp-tools/SKILL.md) |
+| Writing or editing a pull request title or body | [`writing-pr-descriptions`](.agents/skills/writing-pr-descriptions/SKILL.md) |
+| Scaffolding a project entry | [`add-project`](.agents/skills/add-project/SKILL.md) |
+| Importing books from Notion | [`sync-notion-books`](.agents/skills/sync-notion-books/SKILL.md) |
 
 Production components and the design system are the visual source of truth. `/` (Home dialogue and notice board) and `/about/` (CV page) share the `BaseLayout` top navigation.
 
@@ -45,6 +57,7 @@ Production components and the design system are the visual source of truth. `/` 
 ## Implementation contracts
 
 - Use Astro, strict TypeScript, static generation, and vanilla CSS. Prefer `.astro` components and small local browser scripts; add a framework only for a concrete interaction need. No Tailwind, Sass, CSS-in-JS, or component library without user direction.
+- The site has no server runtime. The only server code is the read-only MCP Worker in `mcp/`: a separate package and deploy that serves the site's published snapshot.
 - Put routes in `src/pages/`, shells in `src/layouts/`, components in `src/components/`, and assets in `public/` or `src/assets/`. References and process notes belong in `docs/`.
 - Build internal paths from `import.meta.env.BASE_URL`; preserve `/` and `/bernardosevero.dev/` support. Production is Cloudflare Pages at `https://bernardosevero.dev/`.
 - `BaseLayout` owns the single `SiteNavigation`. Reuse shared geometry/material tokens; `portfolio.css` owns the backdrop and outer shell. Do not add route-local menus or compensating offsets.
@@ -82,6 +95,7 @@ Requirements are cumulative; apply each matching row.
 | Code or configuration | `npm run check`, `npm run format:check`, `npm run lint:css`, `npm run build`. |
 | Editorial content | Schema validation via check/build; review facts, links, headings, draft visibility, and affected pages at mobile/desktop widths. |
 | Routes, UI, behavior, accessibility, or shared styles | Full `npm test` at both base paths using the deployment guide; inspect affected pages and follow the design-system visual/accessibility checklist. |
+| MCP snapshot, serializer, or Worker | The matching rows in the [MCP guide](docs/mcp.md#verification). |
 | Build/test/deployment pipeline | Run both base-path browser suites locally; preserve deployment's dependency on successful checks. |
 
 Report changes, verification results, and anything incomplete. Distinguish automated checks from manual visual review.
@@ -90,4 +104,6 @@ Report changes, verification results, and anything incomplete. Distinguish autom
 
 - Preserve unrelated user changes. Do not commit, push, deploy, force-push, broadly delete, or mutate external services (including Notion) unless authorized by the task. Skill use does not grant that authorization.
 - Never commit secrets, private URLs, `node_modules/`, `.astro/`, `dist/`, browser binaries, or generated test artifacts.
+- The repository is public. Diffs, PR descriptions, and issue comments hold only what the repository already publishes: no session notes, unpublished employer detail, or tokens.
+- Changes reach `main` through a pull request from a branch off `main`. Invoke `writing-pr-descriptions` before writing the title or body; the owner merges after CI is green.
 - When authorized to commit, use English Gitmoji + Conventional Commits: `✨ feat(home): add social sharing metadata`. Match the emoji to the change.
