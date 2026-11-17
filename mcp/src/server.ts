@@ -1,9 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/server';
-import type { Snapshot } from './snapshot-schema';
-import { registerGetProfile } from './tools/get-profile';
+import { registerTools } from './tools';
+import type { ToolDependencies } from './tools/define';
 
 export const serverName = 'bernardosevero';
-export const serverVersion = '0.1.0';
+export const serverVersion = '0.2.0';
 
 const instructions = [
   'Read-only facts about Bernardo Severo, a software engineer, taken from his portfolio at https://bernardosevero.dev.',
@@ -11,12 +11,8 @@ const instructions = [
   'Cite the canonical URLs returned with each item, and do not extrapolate beyond what the data says.',
 ].join(' ');
 
-export interface ServerDependencies {
-  loadSnapshot: () => Promise<Snapshot>;
-}
-
-export function createServer(dependencies: ServerDependencies): McpServer {
+export function createServer(dependencies: ToolDependencies): McpServer {
   const server = new McpServer({ name: serverName, version: serverVersion }, { instructions });
-  registerGetProfile(server, dependencies);
+  registerTools(server, dependencies);
   return server;
 }

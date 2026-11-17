@@ -43,12 +43,61 @@ export const profileSchema = z.object({
     .describe('Public contact and profile links.'),
 });
 
+/** Lowercase kebab-case, the shape of every slug and book ID on the site. */
+export const slugSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+
+const calendarDateSchema = z.iso.date().describe('Calendar date, YYYY-MM-DD.');
+
+export const projectSchema = z.object({
+  slug: slugSchema,
+  url: z.url().describe('The Projects page on bernardosevero.dev; projects have no detail pages.'),
+  title: z.string(),
+  summary: z.string(),
+  links: z.array(z.object({ label: z.string(), url: z.url() })),
+});
+
+export const postSchema = z.object({
+  slug: slugSchema,
+  url: z.url().describe('Canonical page for this post on bernardosevero.dev.'),
+  title: z.string(),
+  description: z.string(),
+  publishedAt: calendarDateSchema,
+  updatedAt: calendarDateSchema.optional(),
+  topics: z.array(z.string()),
+  readingMinutes: z.number().int().positive(),
+  body: z.string().describe('The full post as Markdown.'),
+});
+
+export const bookStatusSchema = z.enum(['reading', 'finished', 'wishlist']);
+
+export const bookSchema = z.object({
+  id: slugSchema,
+  title: z.string(),
+  author: z.string(),
+  status: bookStatusSchema,
+  rating: z.number().min(0).max(5).optional().describe('Out of 5. Absent when not rated.'),
+  review: z
+    .object({
+      url: z.url().describe('Canonical page for this review on bernardosevero.dev.'),
+      language: z.enum(['en', 'pt-BR']),
+      finishedAt: calendarDateSchema.optional(),
+      body: z.string().describe('The full review as Markdown, in its original language.'),
+    })
+    .optional(),
+});
+
 export const snapshotSchema = z.object({
   schemaVersion: z.literal(1),
   generatedAt: z.iso.datetime(),
   site: z.url(),
   profile: profileSchema,
+  projects: z.array(projectSchema),
+  posts: z.array(postSchema),
+  books: z.array(bookSchema),
 });
 
 export type Profile = z.infer<typeof profileSchema>;
+export type Project = z.infer<typeof projectSchema>;
+export type Post = z.infer<typeof postSchema>;
+export type Book = z.infer<typeof bookSchema>;
 export type Snapshot = z.infer<typeof snapshotSchema>;

@@ -76,14 +76,22 @@ describe('analytics', () => {
   });
 
   it('adds no analytics arguments to the tools clients see', async () => {
-    const { message } = await callWithAnalytics('tools/list');
-    const { tools } = message.result as {
-      tools: { inputSchema?: { properties?: Record<string, unknown> } }[];
+    const inputProperties = (message: Record<string, unknown>) => {
+      const { tools } = message.result as {
+        tools: { name: string; inputSchema?: { properties?: Record<string, unknown> } }[];
+      };
+      return tools.map((tool) => [tool.name, Object.keys(tool.inputSchema?.properties ?? {})]);
     };
+    const plain = await callMcp(
+      () => createServer({ loadSnapshot: () => Promise.resolve(snapshotFixture) }),
+      'tools/list',
+    );
+    const { message: instrumented } = await callWithAnalytics('tools/list');
 
-    for (const tool of tools) {
-      expect(Object.keys(tool.inputSchema?.properties ?? {})).toEqual([]);
-    }
+    expect(inputProperties(instrumented)).toEqual(inputProperties(plain));
+    expect(JSON.stringify(inputProperties(instrumented))).not.toMatch(
+      /context|conversation_id|llm_model/,
+    );
   });
 
   it('stays off unless both PostHog values are configured', () => {
