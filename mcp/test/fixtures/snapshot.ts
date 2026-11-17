@@ -34,6 +34,55 @@ export const snapshotFixture: Snapshot = {
     skills: [{ group: 'Languages', items: ['Go'] }],
     links: [{ label: 'Website', url: 'https://example.dev/' }],
   },
+  projects: [
+    {
+      slug: 'sample-project',
+      url: 'https://example.dev/projects/',
+      title: 'Sample Project',
+      summary: 'A sample project.',
+      links: [{ label: 'Repository', url: 'https://github.com/example/sample' }],
+    },
+  ],
+  posts: [
+    {
+      slug: 'newer-post',
+      url: 'https://example.dev/posts/newer-post/',
+      title: 'Newer Post',
+      description: 'The newer sample post.',
+      publishedAt: '2026-02-01',
+      topics: ['Testing', 'Go'],
+      readingMinutes: 4,
+      body: '# Newer\n\nBody of the newer post.',
+    },
+    {
+      slug: 'older-post',
+      url: 'https://example.dev/posts/older-post/',
+      title: 'Older Post',
+      description: 'The older sample post.',
+      publishedAt: '2026-01-01',
+      updatedAt: '2026-01-15',
+      topics: ['Testing'],
+      readingMinutes: 2,
+      body: 'Body of the older post.',
+    },
+  ],
+  books: [
+    {
+      id: 'reviewed-book',
+      title: 'Reviewed Book',
+      author: 'An Author',
+      status: 'finished',
+      rating: 0,
+      review: {
+        url: 'https://example.dev/reading/reviewed-book/',
+        language: 'pt-BR',
+        finishedAt: '2026-01-10',
+        body: 'Uma resenha de exemplo.',
+      },
+    },
+    { id: 'current-book', title: 'Current Book', author: 'Another Author', status: 'reading' },
+    { id: 'wished-book', title: 'Wished Book', author: 'Third Author', status: 'wishlist' },
+  ],
 };
 
 export const snapshotBody = JSON.stringify(snapshotFixture);

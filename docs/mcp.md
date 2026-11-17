@@ -2,7 +2,7 @@
 
 Read before changing the public data snapshot (`src/pages/api/v1/`), its serializer, or anything in `mcp/`. The plan and scope live in [issue 47](https://github.com/bernardosevero/bernardosevero.dev/issues/47).
 
-**Status:** the tracer bullet is in place. The snapshot carries the profile only, and the Worker serves one tool, `get_profile`. The Worker deploys only while the `MCP_DEPLOY_ENABLED` repository variable is `true` (see [Deployment](deployment.md#mcp-worker)).
+**Status:** the snapshot carries the profile, projects, posts, and books, and the Worker serves all six tools. The Worker deploys only while the `MCP_DEPLOY_ENABLED` repository variable is `true` (see [Deployment](deployment.md#mcp-worker)).
 
 ## Shape
 
@@ -16,7 +16,7 @@ The site emits one static snapshot of its public content. A stateless Cloudflare
 
 The Worker is a separate deploy. The site stays a static Pages upload with no server runtime.
 
-Inside `mcp/src/`: `index.ts` routes, rate-limits, and wires dependencies; `server.ts` registers tools; `tools/` holds one file per tool; `snapshot.ts` fetches and caches; `snapshot-schema.ts` is the zod contract and the source of tool output schemas; `analytics.ts` configures PostHog. Tools receive `loadSnapshot` as a dependency, so tests never touch the network.
+Inside `mcp/src/`: `index.ts` routes, rate-limits, and wires dependencies; `server.ts` creates the server; `tools/index.ts` lists the tool surface and `tools/` holds one file per tool, each a pure `run(snapshot, input)` function; `tools/define.ts` registers them with the shared annotations, schemas, and error handling; `snapshot.ts` fetches and caches; `snapshot-schema.ts` is the zod contract and the source of tool output schemas; `analytics.ts` configures PostHog. Tools receive `loadSnapshot` as a dependency, so tests never touch the network.
 
 ```sh
 cd mcp
@@ -43,7 +43,18 @@ Each rule carries its enforcement: `[test]` means a test fails when it is broken
 
 ## Tools
 
-Six tools are planned, all read-only: `get_profile`, `get_projects`, `list_posts`, `get_post`, `get_reading_list`, `get_book_review`. Only `get_profile` exists today. Adding, renaming, or removing a tool changes the public surface and needs the owner's direction. Follow the [implementing-mcp-tools skill](../.agents/skills/implementing-mcp-tools/SKILL.md) for the workflow.
+Six tools, all read-only:
+
+| Tool | Input | Returns |
+| --- | --- | --- |
+| `get_profile` | none | Profile, experience, education, skills, and public links |
+| `get_projects` | none | Title, summary, and verified links for each project |
+| `list_posts` | `topic?` | Post metadata, newest first, and every topic in use |
+| `get_post` | `slug` | One post in full, as Markdown |
+| `get_reading_list` | `status?` | Books with rating and a review URL where one exists |
+| `get_book_review` | `id` | One review in full, in its original language |
+
+Projects expose only what the Projects page renders. Role, technologies, outcomes, and the case-study fields are the owner's records and are not published, so there is no technology filter. Adding, renaming, or removing a tool changes the public surface and needs the owner's direction. Follow the [implementing-mcp-tools skill](../.agents/skills/implementing-mcp-tools/SKILL.md) for the workflow.
 
 ## Platform facts
 

@@ -24,7 +24,14 @@ async function listTools(): Promise<ListedTool[]> {
 
 describe('tool surface', () => {
   it('exposes exactly the agreed tools', async () => {
-    expect((await listTools()).map((tool) => tool.name)).toEqual(['get_profile']);
+    expect((await listTools()).map((tool) => tool.name)).toEqual([
+      'get_profile',
+      'get_projects',
+      'list_posts',
+      'get_post',
+      'get_reading_list',
+      'get_book_review',
+    ]);
   });
 
   it('marks every tool read-only and gives it an output schema', async () => {

@@ -1,9 +1,16 @@
 import { test, expect } from '@playwright/test';
 import {
   publicUrl,
+  rewriteMarkdownImages,
   snapshotSchemaVersion,
+  toPublicBook,
+  toPublicPost,
   toPublicProfile,
+  toPublicProject,
   type AboutSource,
+  type PublicBook,
+  type PublicPost,
+  type PublicSnapshot,
 } from '../src/utils/public-snapshot';
 
 // Fields that must never reach the public contract (docs/mcp.md, invariant 3).
@@ -16,6 +23,16 @@ const privateKeys = [
   'level',
   'logo',
   'kind',
+  // Project case-study fields are the owner's records, not published content.
+  'outcomes',
+  'problem',
+  'constraints',
+  'decisions',
+  'contribution',
+  'lessons',
+  'featured',
+  'isbn',
+  'coverUrl',
 ];
 
 function collectKeys(value: unknown, keys = new Set<string>()): Set<string> {
@@ -119,11 +136,137 @@ test('snapshot URLs are absolute, sit under the base path, and resolve', async (
   expect(index.generatedAt).toBe(snapshot.generatedAt);
   expect(index.pages.about).toBe(snapshot.profile.url);
 
-  for (const url of [snapshot.site, snapshot.profile.url, index.content, index.pages.about]) {
+  const urls = [snapshot.site, snapshot.profile.url, index.content, ...Object.values(index.pages)];
+  for (const url of urls as string[]) {
     const { pathname, protocol } = new URL(url);
     expect(protocol).toBe('https:');
     expect(pathname.startsWith(basePath)).toBe(true);
     // The canonical host is production; check the same path on the local build.
     expect((await request.get(pathname)).status()).toBe(200);
+  }
+});
+
+test('projects carry only published fields and links to verified hosts', () => {
+  const project = toPublicProject(
+    'sample',
+    {
+      title: 'Sample',
+      summary: 'A sample project.',
+      links: [
+        { label: 'Repository', url: 'https://github.com/example/sample' },
+        { label: 'Unverified', url: 'https://unverified.example/' },
+      ],
+    },
+    'https://example.dev/projects/',
+  );
+
+  expect(project).toEqual({
+    slug: 'sample',
+    url: 'https://example.dev/projects/',
+    title: 'Sample',
+    summary: 'A sample project.',
+    links: [{ label: 'Repository', url: 'https://github.com/example/sample' }],
+  });
+});
+
+test('posts use calendar dates and omit an absent update date', () => {
+  const source = {
+    title: 'Post',
+    description: 'About a post.',
+    publishedAt: new Date('2026-01-02T00:00:00Z'),
+    topics: ['Testing'],
+    readingMinutes: 3,
+  };
+  const post = toPublicPost('post', source, 'https://example.dev/posts/post/', 'Body');
+  const updated = toPublicPost(
+    'post',
+    { ...source, updatedAt: new Date('2026-02-03T00:00:00Z') },
+    'https://example.dev/posts/post/',
+    'Body',
+  );
+
+  expect(post.publishedAt).toBe('2026-01-02');
+  expect(post).not.toHaveProperty('updatedAt');
+  expect(updated.updatedAt).toBe('2026-02-03');
+});
+
+test('books keep a zero rating and expose a review only when one is published', () => {
+  const book = { id: 'a-book', title: 'A Book', author: 'An Author', status: 'finished' as const };
+  const unrated = toPublicBook(book);
+  const zero = toPublicBook({ ...book, rating: 0 });
+  const reviewed = toPublicBook(
+    { ...book, rating: 4.5, finishedAt: new Date('2026-03-04T00:00:00Z'), reviewLanguage: 'pt-BR' },
+    { url: 'https://example.dev/reading/a-book/', body: 'Uma resenha.' },
+  );
+
+  expect(unrated).not.toHaveProperty('rating');
+  expect(unrated).not.toHaveProperty('review');
+  expect(zero.rating).toBe(0);
+  expect(reviewed.review).toEqual({
+    url: 'https://example.dev/reading/a-book/',
+    language: 'pt-BR',
+    finishedAt: '2026-03-04',
+    body: 'Uma resenha.',
+  });
+});
+
+test('relative Markdown images become absolute, others are untouched, unknown ones fail', () => {
+  const known = new Map([['./images/a.png', 'https://example.dev/_astro/a.webp']]);
+  const resolve = (path: string) => known.get(path);
+
+  expect(rewriteMarkdownImages('![A](./images/a.png "Title") text', resolve)).toBe(
+    '![A](https://example.dev/_astro/a.webp "Title") text',
+  );
+  expect(rewriteMarkdownImages('![B](https://cdn.example/b.png)', resolve)).toBe(
+    '![B](https://cdn.example/b.png)',
+  );
+  expect(rewriteMarkdownImages('[a link](./images/a.png)', resolve)).toBe(
+    '[a link](./images/a.png)',
+  );
+  expect(() => rewriteMarkdownImages('![C](./missing.png)', resolve)).toThrow('./missing.png');
+});
+
+test('the snapshot lists the same posts, projects, and reviews the site publishes', async ({
+  request,
+}) => {
+  const snapshot: PublicSnapshot = await (await request.get('./api/v1/content.json')).json();
+  const local = (url: string) => new URL(url).pathname;
+
+  expect(snapshot.projects.length).toBeGreaterThan(0);
+  for (const project of snapshot.projects) {
+    expect(Object.keys(project).sort()).toEqual(['links', 'slug', 'summary', 'title', 'url']);
+    expect(local(project.url).endsWith('/projects/')).toBe(true);
+  }
+
+  expect(snapshot.posts.length).toBeGreaterThan(0);
+  const dates = snapshot.posts.map((post: PublicPost) => post.publishedAt);
+  expect(dates).toEqual([...dates].sort().reverse());
+  for (const post of snapshot.posts) {
+    expect(post.publishedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(post.body.trim().length).toBeGreaterThan(0);
+    expect((await request.get(local(post.url))).status()).toBe(200);
+  }
+
+  const reviewed = snapshot.books.filter((book: PublicBook) => book.review);
+  expect(reviewed.length).toBeGreaterThan(0);
+  for (const book of snapshot.books) {
+    expect(['reading', 'finished', 'wishlist']).toContain(book.status);
+    if (!book.review) continue;
+    expect(book.review.body.trim().length).toBeGreaterThan(0);
+    expect((await request.get(local(book.review.url))).status()).toBe(200);
+  }
+});
+
+test('images in post bodies are absolute and load from the build', async ({ request }) => {
+  const snapshot: PublicSnapshot = await (await request.get('./api/v1/content.json')).json();
+  const images = snapshot.posts.flatMap((post) =>
+    [...post.body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)].map((match) => match[1] ?? ''),
+  );
+
+  expect(images.length).toBeGreaterThan(0);
+  for (const image of images) {
+    const response = await request.get(new URL(image).pathname);
+    expect(response.status(), image).toBe(200);
+    expect(response.headers()['content-type']).toContain('image/');
   }
 });
