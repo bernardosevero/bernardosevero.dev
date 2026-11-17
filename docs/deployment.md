@@ -39,6 +39,12 @@ Before setting that variable:
 2. Confirm no existing DNS record uses the `mcp` name; the deploy creates it.
 3. Set `MCP_DEPLOY_ENABLED` to `true` under **Settings > Secrets and variables > Actions > Variables**.
 
+After the first successful deploy:
+
+1. Open `https://mcp.bernardosevero.dev/mcp` in a browser and confirm the docs page loads, then call `get_profile` from one MCP client.
+2. Set `advertiseMcpServer` to `true` in `src/config/mcp.ts` so the CV page shows the connect block.
+3. Publish `mcp/server.json` to the MCP Registry with the registry's publisher CLI, signed in with the GitHub account that owns the `io.github.bernardosevero` namespace.
+
 The Worker reads the public `PUBLIC_POSTHOG_KEY` and `PUBLIC_POSTHOG_HOST` repository variables at deploy time. Analytics stay off when either is empty. The first deploy has not happened yet; the permission list above comes from Cloudflare's documentation and is unverified.
 
 ## Local verification

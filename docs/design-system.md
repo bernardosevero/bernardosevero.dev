@@ -170,6 +170,10 @@ Production content pages use the shared navigation for page switching; redundant
 
 The optional `CvDownloadLink.astro` has two variants. `icon` (the default) reuses `.social-link` from `src/styles/social-link.css` for a square action beside profile links; only `/system/` renders it today. `button` is a labelled `.rpg-button` with the same icon, used as the primary action in the CV page header. It owns native download semantics and an explicit accessible PDF label, independently of external profile navigation. Its walnut-and-gold document icon belongs to `PixelIcon.astro`. System renders both variants and their keyboard focus behavior when a public CV is configured, or the icon alone when it is absent. See `docs/content.md` for enabling and replacing the PDF.
 
+### MCP connect
+
+`McpConnect.astro` invites visitors to connect an AI assistant to the read-only MCP server. It renders a labelled section with a heading (`h2` on the CV page, `h3` in the specimen), a one-sentence purpose, the server URL and the Claude Code command as `code` blocks, and a note for other clients. The code blocks use the body pixel font at `--text-2xs` so the URL fits one line in the 300px CV sidebar; longer values wrap with `overflow-wrap: anywhere`, and `user-select: all` makes one click select the whole value, so copying needs no JavaScript. The component hides itself in print. The CV page passes `cv-box` and `cv-heading` for the sidebar material and renders it only while `advertiseMcpServer` in `src/config/mcp.ts` is true; `/system/` always shows it with a placeholder address. See the [MCP guide](mcp.md).
+
 ### Company tile
 
 `CompanyTile.astro` renders the 40px tile and owns its styles. It is decorative unless `labelled` is set, as in the Home board's company row, where the logo's `alt` (or the monogram's label) is the company name. `CvExperience.astro` (CV page) uses it beside each company name. The tile has a 2px `--wood-dark` border, `--parchment-light` fill, and the standard inset and drop shadows. A supplied logo renders at 28px with `object-fit: contain` and keeps its own colors; without one, the tile shows a monogram from `companyMonogram()` in `src/utils/format.ts` (first letter of up to three words, `--font-heading` 700 at `--text-2xs`, `--ink-soft`). Both forms are decorative (`alt=""` or `aria-hidden="true"`) because the company name sits beside the tile. The tile stays 40px on phones. `/system/` shows a static monogram specimen in the CV job entry. See `docs/content.md` for adding logos.
@@ -205,11 +209,11 @@ The four notes on Home read visible entries at build time through the pure selec
 
 ### CV page
 
-`/about/` renders `src/layouts/CvSheet.astro`, with route styles in `src/styles/cv.css`. One parchment `WoodFrame` holds a header (portrait, kicker, name as the only `h1`, class line, pinned location and focus, then the CV button and profile links in a `Professional profiles and CV` navigation), a Summary, and two columns: Experience, Education, and Side quests in the main column; Skills, Character stats, and Daily tools in the sidebar. The sidebar follows the main column at `<= 900px`.
+`/about/` renders `src/layouts/CvSheet.astro`, with route styles in `src/styles/cv.css`. One parchment `WoodFrame` holds a header (portrait, kicker, name as the only `h1`, class line, pinned location and focus, then the CV button and profile links in a `Professional profiles and CV` navigation), a Summary, and two columns: Experience, Education, and Side quests in the main column; Skills, Character stats, Daily tools, and the optional MCP connect block in the sidebar. The sidebar follows the main column at `<= 900px`.
 
 `CvExperience.astro` renders one role as an `article`: company tile, company name (`h3`), role with optional employment, period and location, an italic description, diamond highlights, and soft tech chips labelled `Tech used at <company>`. `Emphasis.astro` renders content text through `emphasisRuns`, so `**bold**` markers become `<strong>` without `set:html`. Side quests list visible projects in Projects order; a title links to its main destination only when that host is verified by `src/utils/project-links.ts`, which `ProjectCard` also uses.
 
-The print stylesheet in `cv.css` hides navigation, the footer, the actions, the stats and tools boxes, and the All projects link; removes wood, parchment, and shadows; prints black on white; and keeps each role on one page (`break-inside: avoid`).
+The print stylesheet in `cv.css` hides navigation, the footer, the actions, the stats and tools boxes, and the All projects link (the MCP connect block hides itself); removes wood, parchment, and shadows; prints black on white; and keeps each role on one page (`break-inside: avoid`).
 
 ### Tags and status labels
 

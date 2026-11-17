@@ -15,6 +15,7 @@ The project is a statically generated Astro portfolio. Content collections provi
 | Foundations | `src/styles/global.css` | Base behavior and reusable RPG component classes |
 | Route composition | `src/styles/portfolio.css`, `cv.css`, `reading-codex.css`, and route-local styles | Responsive layout without leaking page decisions into primitives |
 | Automation | `scripts/` and personal Codex skills | Safe scaffolding and normalized content import |
+| MCP server | `mcp/`, `src/pages/api/v1/`, `src/config/mcp.ts` | Read-only Worker over a static snapshot of the published content; see the [MCP guide](mcp.md) |
 | Verification | `tests/`, Astro check, build | Interaction, accessibility, overflow, assets, and schema confidence |
 
 ## Data flow

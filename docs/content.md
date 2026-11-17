@@ -6,6 +6,8 @@ Visitor-facing editorial content lives in `src/content/` and is validated by `sr
 
 Use Markdown for normal prose. Use MDX only when an article or project requires an embedded Astro component. Images belong in a clearly named production asset folder and need meaningful alt text unless they are decorative.
 
+Published content also feeds the public snapshot at `/api/v1/content.json`, which the MCP server reads. It carries only what the pages render, so a field added to a schema stays private until the serializer in `src/utils/public-snapshot.ts` names it. See the [MCP guide](mcp.md).
+
 Posts and projects live in their respective `src/content/` directories; low-frequency copy lives in `src/content/pages/`. Use lowercase kebab-case slugs and ISO dates. Keep navigation behavior and reusable UI configuration in code. Every `draft: true` entry is excluded from routes, indexes, and feeds in development and production. There is no local draft-preview mode or `preview` content field.
 
 ## Posts

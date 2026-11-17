@@ -6,6 +6,8 @@ import CvDownloadLink from '../components/CvDownloadLink.astro';
 import CvExperience from '../components/CvExperience.astro';
 import Emphasis from '../components/Emphasis.astro';
 import { cvAsset } from '../config/cv';
+import { advertiseMcpServer, mcpServer } from '../config/mcp';
+import McpConnect from '../components/McpConnect.astro';
 import { profileLinkIcons } from '../config/profile';
 import { isVisibleContent } from '../utils/content';
 import { getDestinationType, primaryProjectUrl } from '../utils/project-links';
@@ -206,6 +208,10 @@ const sideQuests = (await getCollection('projects', isVisibleContent))
             ))}
           </ul>
         </section>
+
+        {advertiseMcpServer && (
+          <McpConnect {...mcpServer} class="cv-box" headingClass="cv-heading" />
+        )}
       </aside>
     </div>
   </WoodFrame>

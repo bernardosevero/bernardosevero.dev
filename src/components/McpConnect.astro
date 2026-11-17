@@ -1,0 +1,102 @@
+---
+interface Props {
+  /** The short server name used in client configuration. */
+  name: string;
+  endpoint: string;
+  headingLevel?: 2 | 3;
+  headingClass?: string;
+  class?: string;
+}
+
+const { name, endpoint, headingLevel = 2, headingClass, class: className } = Astro.props;
+const headingTags: Record<2 | 3, 'h2' | 'h3'> = { 2: 'h2', 3: 'h3' };
+const Heading = headingTags[headingLevel];
+const claudeCodeCommand = `claude mcp add --transport http ${name} ${endpoint}`;
+---
+
+<section class:list={['mcp-connect', className]} aria-labelledby="mcp-connect-heading">
+  <Heading id="mcp-connect-heading" class={headingClass}>
+    Ask your AI about me
+  </Heading>
+  <p>
+    Connect an AI assistant to a read-only server with my profile, projects, posts, and reading
+    list.
+  </p>
+  <dl class="mcp-connect__steps">
+    <div>
+      <dt>Server URL</dt>
+      <dd>
+        <code>{endpoint}</code>
+      </dd>
+    </div>
+    <div>
+      <dt>Claude Code</dt>
+      <dd>
+        <code>{claudeCodeCommand}</code>
+      </dd>
+    </div>
+  </dl>
+  <p class="mcp-connect__note">
+    In Claude, Cursor, VS Code, or another MCP client, add a custom connector with the server URL.
+    No account or key is needed.
+  </p>
+</section>
+
+<style>
+  .mcp-connect {
+    display: grid;
+    gap: 12px;
+  }
+
+  .mcp-connect p {
+    margin: 0;
+    font-size: var(--text-sm);
+  }
+
+  .mcp-connect__steps {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+  }
+
+  .mcp-connect__steps dt {
+    color: var(--ink-soft);
+    font-family: var(--font-heading);
+    font-size: var(--text-2xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .mcp-connect__steps dd {
+    margin: 4px 0 0;
+  }
+
+  .mcp-connect code {
+    display: block;
+    padding: 6px 8px;
+    border: 2px solid var(--parchment-edge);
+    background: var(--parchment-light);
+    color: var(--ink);
+    font-family: var(--font-body);
+
+    /* Small enough for the server URL to fit one line in the CV sidebar. */
+    font-size: var(--text-2xs);
+
+    /* Long URLs and commands must wrap inside a 320px sidebar. */
+    overflow-wrap: anywhere;
+
+    /* One click selects the whole value, so copying works without JavaScript. */
+    user-select: all;
+  }
+
+  .mcp-connect__note {
+    color: var(--ink-soft);
+  }
+
+  /* Setup commands are noise on a printed CV. */
+  @media print {
+    .mcp-connect {
+      display: none;
+    }
+  }
+</style>

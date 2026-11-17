@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.bernardosevero/portfolio",
+  "description": "Read-only facts about Bernardo Severo: profile, projects, blog posts, and reading list.",
+  "version": "0.2.0",
+  "repository": {
+    "url": "https://github.com/bernardosevero/bernardosevero.dev",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.bernardosevero.dev/mcp"
+    }
+  ]
+}

@@ -16,3 +16,19 @@ export function registerTools(server: McpServer, dependencies: ToolDependencies)
   registerSnapshotTool(server, dependencies, getReadingList);
   registerSnapshotTool(server, dependencies, getBookReview);
 }
+
+export interface ToolSummary {
+  name: string;
+  title: string;
+  description: string;
+}
+
+/** What the human-readable docs page lists. A test keeps it equal to the registered tools. */
+export const toolSummaries: ToolSummary[] = [
+  getProfile,
+  getProjects,
+  listPosts,
+  getPost,
+  getReadingList,
+  getBookReview,
+].map(({ name, title, description }) => ({ name, title, description }));
