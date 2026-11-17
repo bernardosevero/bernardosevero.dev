@@ -1,7 +1,9 @@
 import { createMcpHandler } from 'agents/mcp/server';
 import { analyticsFromEnv } from './analytics';
+import { renderDocsPage, wantsDocsPage } from './docs-page';
 import { createServer } from './server';
 import { edgeCacheStore, loadSnapshot } from './snapshot';
+import { toolSummaries } from './tools';
 
 export interface Env {
   SNAPSHOT_URL: string;
@@ -16,6 +18,12 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     if (new URL(request.url).pathname !== mcpPath) {
       return new Response(`Not found. The MCP endpoint is ${mcpPath}.`, { status: 404 });
+    }
+
+    // A browser visit gets a readable page; MCP clients never ask for HTML.
+    if (wantsDocsPage(request)) {
+      const { origin } = new URL(request.url);
+      return renderDocsPage(`${origin}${mcpPath}`, toolSummaries);
     }
 
     // Anonymous server: the caller's address is the only identity to limit by.

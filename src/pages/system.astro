@@ -15,6 +15,7 @@ import { defaultProjectImage } from '../utils/project-images';
 import ChapterBar from '../components/ChapterBar.astro';
 import type { OutlineSection } from '../utils/outline';
 import CvExperience from '../components/CvExperience.astro';
+import McpConnect from '../components/McpConnect.astro';
 import HomeDialogue from '../components/HomeDialogue.astro';
 import NoticeNote from '../components/NoticeNote.astro';
 import '../styles/portfolio.css';
@@ -354,6 +355,14 @@ const specimenCoverUrl = 'https://images1.penguinrandomhouse.com/cover/978024161
               <p>
                 One role on the CV page: company tile, role and dates, italic description, diamond
                 highlights with bold metrics, and soft tech chips.
+              </p>
+            </article>
+            <article>
+              <McpConnect name="example" endpoint="https://mcp.example.dev/mcp" headingLevel={3} />
+              <p>
+                The CV sidebar's invitation to connect an AI assistant, shown with a placeholder
+                address. It appears on the CV page only while the server is advertised, and never in
+                print.
               </p>
             </article>
             <article>

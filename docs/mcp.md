@@ -56,6 +56,14 @@ Six tools, all read-only:
 
 Projects expose only what the Projects page renders. Role, technologies, outcomes, and the case-study fields are the owner's records and are not published, so there is no technology filter. Adding, renaming, or removing a tool changes the public surface and needs the owner's direction. Follow the [implementing-mcp-tools skill](../.agents/skills/implementing-mcp-tools/SKILL.md) for the workflow.
 
+## Docs page and discovery
+
+A browser that opens `/mcp` (a `GET` that accepts `text/html`) receives a small page with the server URL, the Claude Code command, and the tool list. `toolSummaries` in `mcp/src/tools/index.ts` feeds that page, and a test keeps it equal to the registered tools. MCP clients never ask for HTML, so they are unaffected.
+
+The CV page shows the `McpConnect` block only while `advertiseMcpServer` in `src/config/mcp.ts` is `true`. Keep it `false` until the Worker answers at the endpoint.
+
+`mcp/server.json` is the entry for the official MCP Registry, under the GitHub namespace `io.github.bernardosevero`. It has not been published. Its `version` must equal `serverVersion` in `mcp/src/server.ts`; a test enforces that. The file follows the registry's published example for a remote server and has not been validated by the registry itself.
+
 ## Platform facts
 
 Proven by the Vitest suite on 2026-11-16, which runs inside the local Workers runtime. Nothing here has run on Cloudflare's network or against a real MCP client yet.
