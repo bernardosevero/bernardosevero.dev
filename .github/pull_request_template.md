@@ -13,6 +13,8 @@
 
 <!-- Only what actually ran. Do not claim manual testing that did not happen. -->
 
+<!-- A bug fix names its regression test and confirms it failed before the fix. -->
+
 **Automated:**
 
 **Manual:**

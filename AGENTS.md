@@ -85,6 +85,7 @@ Apply these to all new or modified code, including generated code, scripts, and 
 - Keep decisions and side effects explicit. Give functions one responsibility, use meaningful names, explain non-obvious constraints, and reuse existing helpers without speculative abstractions.
 - Use narrow types and boundary validation. Do not bypass unresolved types with `any`, unchecked assertions, non-null assertions, or suppression comments. Handle missing DOM nodes and empty collections deliberately.
 - Surface actionable failures; never swallow exceptions or promises. Preserve valid zero values, keyboard defaults, focus, and boundary behavior during refactors. Test behavior and meaningful edge cases.
+- Every bug fix ships with a unit test that reproduces the bug: it fails without the fix and passes with it. Confirm the failure before applying the fix, and name the bug in the test so the regression is traceable. When a test double hid the bug, make it behave like the real dependency.
 - Inspect the full diff before finishing. Correct readability, failure-path, duplication, and scope problems. Automated checks do not enforce every review rule; never weaken checks to pass.
 
 ## Verification by change

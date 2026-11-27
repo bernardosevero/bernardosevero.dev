@@ -1,8 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   SnapshotUnavailableError,
   freshForMs,
   loadSnapshot,
+  runtimeSnapshotSource,
   type SnapshotSource,
   type SnapshotStore,
   type StoredSnapshot,
@@ -104,5 +105,46 @@ describe('loadSnapshot', () => {
 
     await expect(loadSnapshot(source)).rejects.toThrow(SnapshotUnavailableError);
     await expect(loadSnapshot(source)).rejects.toThrow('HTTP 503');
+  });
+});
+
+describe('runtimeSnapshotSource', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  // Regression: the deployed Worker failed every tool call with "Illegal
+  // invocation" because the global fetch was passed bare and then called as
+  // source.fetch(url). The stub rejects a foreign `this`, as the runtime does.
+  function stubRuntimeFetch(requested: string[]) {
+    vi.stubGlobal('fetch', async function (this: unknown, input: RequestInfo | URL) {
+      if (this !== undefined && this !== globalThis) {
+        throw new TypeError('Illegal invocation: function called with incorrect `this` reference.');
+      }
+      requested.push(String(input));
+      return new Response(snapshotBody);
+    });
+  }
+
+  it('calls the global fetch safely when used as a method of the source', async () => {
+    const requested: string[] = [];
+    stubRuntimeFetch(requested);
+    const source = runtimeSnapshotSource('https://example.dev/api/v1/content.json', memoryStore());
+
+    const response = await source.fetch(source.url);
+
+    expect(response.ok).toBe(true);
+    expect(requested).toEqual(['https://example.dev/api/v1/content.json']);
+  });
+
+  it('loads the snapshot end to end through loadSnapshot', async () => {
+    const requested: string[] = [];
+    stubRuntimeFetch(requested);
+    const store = memoryStore();
+
+    const snapshot = await loadSnapshot(
+      runtimeSnapshotSource('https://example.dev/api/v1/content.json', store),
+    );
+
+    expect(snapshot).toEqual(snapshotFixture);
+    expect(store.stored?.body).toBe(snapshotBody);
   });
 });
