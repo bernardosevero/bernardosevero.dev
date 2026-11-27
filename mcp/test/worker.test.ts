@@ -50,7 +50,11 @@ describe('get_profile through the Worker', () => {
 
   it('fetches only the configured snapshot URL, then serves from the edge cache', async () => {
     const requested: string[] = [];
-    vi.stubGlobal('fetch', async (input: RequestInfo | URL) => {
+    // Like the Workers runtime, reject a call whose `this` is anything but the global scope.
+    vi.stubGlobal('fetch', async function (this: unknown, input: RequestInfo | URL) {
+      if (this !== undefined && this !== globalThis) {
+        throw new TypeError('Illegal invocation: function called with incorrect `this` reference.');
+      }
       requested.push(String(input));
       return new Response(snapshotBody);
     });

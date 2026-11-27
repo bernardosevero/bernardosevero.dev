@@ -43,7 +43,15 @@ export default {
     const handler = createMcpHandler(
       () => {
         const server = createServer({
-          loadSnapshot: () => loadSnapshot({ url: env.SNAPSHOT_URL, fetch, store, now: Date.now }),
+          loadSnapshot: () =>
+            loadSnapshot({
+              url: env.SNAPSHOT_URL,
+              // The runtime rejects `fetch` called as a method of another object
+              // ("Illegal invocation"), so wrap it instead of passing it bare.
+              fetch: (url) => fetch(url),
+              store,
+              now: Date.now,
+            }),
         });
         analytics?.instrument(server);
         return server;
