@@ -22,6 +22,15 @@ export interface SnapshotSource {
   now: () => number;
 }
 
+/**
+ * The production source: the runtime's `fetch` and clock. `fetch` is wrapped
+ * because the Workers runtime rejects it when called as a method of another
+ * object ("Illegal invocation"), which is how `loadSnapshot` calls it.
+ */
+export function runtimeSnapshotSource(url: string, store: SnapshotStore): SnapshotSource {
+  return { url, fetch: (target) => fetch(target), store, now: () => Date.now() };
+}
+
 export class SnapshotUnavailableError extends Error {
   constructor(reason: string) {
     super(`The portfolio snapshot is unavailable: ${reason}`);

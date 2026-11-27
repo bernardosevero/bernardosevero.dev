@@ -2,7 +2,7 @@ import { createMcpHandler } from 'agents/mcp/server';
 import { analyticsFromEnv } from './analytics';
 import { renderDocsPage, wantsDocsPage } from './docs-page';
 import { createServer } from './server';
-import { edgeCacheStore, loadSnapshot } from './snapshot';
+import { edgeCacheStore, loadSnapshot, runtimeSnapshotSource } from './snapshot';
 import { toolSummaries } from './tools';
 
 export interface Env {
@@ -43,15 +43,7 @@ export default {
     const handler = createMcpHandler(
       () => {
         const server = createServer({
-          loadSnapshot: () =>
-            loadSnapshot({
-              url: env.SNAPSHOT_URL,
-              // The runtime rejects `fetch` called as a method of another object
-              // ("Illegal invocation"), so wrap it instead of passing it bare.
-              fetch: (url) => fetch(url),
-              store,
-              now: Date.now,
-            }),
+          loadSnapshot: () => loadSnapshot(runtimeSnapshotSource(env.SNAPSHOT_URL, store)),
         });
         analytics?.instrument(server);
         return server;
